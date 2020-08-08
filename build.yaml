@@ -34,7 +34,7 @@ stages:
         displayName: 'dotnet build'
         inputs:
           command: 'build'
-          projects: 'src/_6NF.sln'
+          projects: 'src/affolterNET.Data.sln'
           arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(SourceVersionShort)'
 
       - task: DotNetCoreCLI@2
