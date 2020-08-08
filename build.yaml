@@ -46,6 +46,7 @@ stages:
         inputs:
           command: 'pack'
           packagesToPack: 'src/affolterNET.Data/affolterNET.Data.csproj'
+          nobuild: true
           versioningScheme: 'off'
 
       - task: DotNetCoreCLI@2
@@ -53,6 +54,7 @@ stages:
         inputs:
           command: 'pack'
           packagesToPack: 'src/affolterNET.Data.TestHelpers/affolterNET.Data.TestHelpers.csproj'
+          nobuild: true
           versioningScheme: 'off'
 
       - task: DotNetCoreCLI@2
