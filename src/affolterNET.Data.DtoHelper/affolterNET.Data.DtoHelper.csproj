@@ -6,8 +6,8 @@
     <Copyright>Martin Affolter</Copyright>
     <PackageLicenseUrl>http://www.affolter.net</PackageLicenseUrl>
     <ProjectGuid>024E3895-4BC1-4A57-938A-009FFF961644</ProjectGuid>
-    <PackageVersion>1.0.1</PackageVersion>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <PackageVersion>1.0.2</PackageVersion>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
