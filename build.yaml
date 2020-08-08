@@ -44,8 +44,16 @@ stages:
           projects: '**/Test/*.Test/*.Test.csproj'
           arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
 
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
-          packagesToPack: '**/*.csproj'
+          packagesToPack: 'src/*.csproj'
           versioningScheme: 'off'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: 'e27a58c6-e50a-44d8-a798-55c10e05709c'
+          
