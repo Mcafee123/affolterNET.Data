@@ -47,7 +47,7 @@ stages:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
-          packagesToPack: 'src/*.csproj'
+          packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
           versioningScheme: 'off'
 
       - task: DotNetCoreCLI@2
