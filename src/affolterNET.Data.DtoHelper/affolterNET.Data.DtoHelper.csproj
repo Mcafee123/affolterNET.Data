@@ -4,8 +4,11 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageLicenseUrl>http://www.affolter.net</PackageLicenseUrl>
     <ProjectGuid>024E3895-4BC1-4A57-938A-009FFF961644</ProjectGuid>
-    <PackageVersion>1.0.4</PackageVersion>
+    <PackageVersion>1.0.5</PackageVersion>
     <AssemblyVersion>$(PackageVersion)</AssemblyVersion>
+    <IsPackable>true</IsPackable>
+    <Authors>Martin Affolter</Authors>
+    <Company>affolter.NET GmbH</Company>
   </PropertyGroup>
 
   <ItemGroup>

@@ -42,19 +42,10 @@ stages:
           arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
 
       - task: DotNetCoreCLI@2
-        displayName: 'nuget pack affolterNET.Data'
+        displayName: 'nuget pack'
         inputs:
           command: 'pack'
-          packagesToPack: 'src/affolterNET.Data/affolterNET.Data.csproj'
-          nobuild: true
-          versioningScheme: 'off'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'nuget pack affolterNET.Data.TestHelpers'
-        inputs:
-          command: 'pack'
-          packagesToPack: 'src/affolterNET.Data.TestHelpers/affolterNET.Data.TestHelpers.csproj'
-          nobuild: true
+          packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
           versioningScheme: 'off'
 
       - task: DotNetCoreCLI@2
