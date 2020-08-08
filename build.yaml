@@ -38,19 +38,21 @@ stages:
           arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(SourceVersionShort)'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Run Unit Tests'
+        displayName: 'run unit tests'
         inputs:
           command: test
           projects: '**/Test/*.Test/*.Test.csproj'
           arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
 
       - task: DotNetCoreCLI@2
+        displayName: 'nuget pack'
         inputs:
           command: 'pack'
           packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
           versioningScheme: 'off'
 
       - task: DotNetCoreCLI@2
+        displayName: 'nuget push'
         inputs:
           command: 'push'
           packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
