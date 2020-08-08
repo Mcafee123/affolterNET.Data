@@ -1,0 +1,45 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  
+pool:
+  vmImage: 'ubuntu-18.04'
+
+variables:
+  - group: 'zadr-settings'
+
+name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+stages:
+  - stage: Build
+    displayName: 'Build Code and Run Unit Tests'
+    variables:
+      - name: 'buildConfiguration'
+        value: 'Release'
+    jobs:
+  
+    - job: Build
+      displayName: 'Build Code and run Unit Tests'
+      steps:
+
+      - task: DotNetCoreCLI@2
+      displayName: dotnet restore
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+
+      - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: 'build'
+        projects: 'src/_6NF.sln'
+        arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(SourceVersionShort)'
+
+      - task: DotNetCoreCLI@2
+      displayName: 'Run Unit Tests'
+      inputs:
+        command: test
+        projects: '**/Test/*.Test/*.Test.csproj'
+        arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
