@@ -4,7 +4,8 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageLicenseUrl>http://www.affolter.net</PackageLicenseUrl>
     <ProjectGuid>024E3895-4BC1-4A57-938A-009FFF961644</ProjectGuid>
-    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <PackageVersion>1.0.3</PackageVersion>
+    <AssemblyVersion>$(PackageVersion)</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
