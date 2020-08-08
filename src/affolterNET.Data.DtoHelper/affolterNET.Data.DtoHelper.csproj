@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Copyright>Martin Affolter</Copyright>
     <PackageLicenseUrl>http://www.affolter.net</PackageLicenseUrl>
     <ProjectGuid>024E3895-4BC1-4A57-938A-009FFF961644</ProjectGuid>
-    <PackageVersion>1.0.2</PackageVersion>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
