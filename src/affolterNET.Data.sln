@@ -6,9 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.DtoHelper"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.Test", "Test\affolterNET.Data.Test\affolterNET.Data.Test.csproj", "{D86FC426-65E1-4B34-A7FA-1CF4C0C343DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.TestHelpers", "Test\affolterNET.Data.TestHelpers\affolterNET.Data.TestHelpers.csproj", "{BB3D9D5C-5917-436B-B3AC-4A20CAF0FD67}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0AE11873-73B9-4E66-A7BE-FFDDD812952A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.TestHelpers", "affolterNET.Data.TestHelpers\affolterNET.Data.TestHelpers.csproj", "{BB3D9D5C-5917-436B-B3AC-4A20CAF0FD67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +35,5 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D86FC426-65E1-4B34-A7FA-1CF4C0C343DA} = {0AE11873-73B9-4E66-A7BE-FFDDD812952A}
-		{BB3D9D5C-5917-436B-B3AC-4A20CAF0FD67} = {0AE11873-73B9-4E66-A7BE-FFDDD812952A}
 	EndGlobalSection
 EndGlobal
