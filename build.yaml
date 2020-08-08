@@ -25,21 +25,21 @@ stages:
       steps:
 
       - task: DotNetCoreCLI@2
-      displayName: dotnet restore
-      inputs:
-        command: 'restore'
-        projects: '**/*.csproj'
+        displayName: dotnet restore
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
 
       - task: DotNetCoreCLI@2
-      displayName: 'dotnet build'
-      inputs:
-        command: 'build'
-        projects: 'src/_6NF.sln'
-        arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(SourceVersionShort)'
+        displayName: 'dotnet build'
+        inputs:
+          command: 'build'
+          projects: 'src/_6NF.sln'
+          arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(SourceVersionShort)'
 
       - task: DotNetCoreCLI@2
-      displayName: 'Run Unit Tests'
-      inputs:
-        command: test
-        projects: '**/Test/*.Test/*.Test.csproj'
-        arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
+        displayName: 'Run Unit Tests'
+        inputs:
+          command: test
+          projects: '**/Test/*.Test/*.Test.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
