@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>Martin Affolter</Copyright>
+    <PackageLicenseUrl>http://www.affolter.net</PackageLicenseUrl>
+    <ProjectGuid>024E3895-4BC1-4A57-938A-009FFF961644</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
+    <PackageReference Include="PluralizeService.Core" Version="1.2.19339.3" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\affolterNET.Data\affolterNET.Data.csproj" />
+  </ItemGroup>
+
+</Project>
