@@ -1,16 +1,24 @@
 using System;
 using System.Linq;
 using Xunit;
+using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace affolterNET.Data.TestHelpers.Test
 {
     public class DbObjectsBaseTest
     {
+        private readonly ITestOutputHelper _output;
+
+        public DbObjectsBaseTest(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+        
         [Fact]
         public void Get_DifferentObjects_SameName_Test()
         {
-            var testee = new DbObjects();
+            var testee = new DbObjects(_output);
             testee.Create1("a");
             Assert.Throws<XunitException>(() => testee.Create2("a"));
         }
@@ -18,7 +26,7 @@ namespace affolterNET.Data.TestHelpers.Test
         [Fact]
         public void Get_SameObjects_SameName_Test()
         {
-            var testee = new DbObjects();
+            var testee = new DbObjects(_output);
             testee.Create1("a", "erster");
             testee.Create1("a", "zweiter");
             var result = testee.Get<Obj1>("a");
@@ -28,7 +36,7 @@ namespace affolterNET.Data.TestHelpers.Test
         [Fact]
         public void GetAllTest()
         {
-            var testee = new DbObjects();
+            var testee = new DbObjects(_output);
             
             testee.Create1("a");
             testee.Create1("b");
@@ -68,6 +76,11 @@ namespace affolterNET.Data.TestHelpers.Test
 
     public class DbObjects : DbObjectsBase
     {
+        public DbObjects(ITestOutputHelper output): base(output)
+        {
+            
+        }
+        
         public void Create1(string name, string objname = null)
         {
             objname ??= name;

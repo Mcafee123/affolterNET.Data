@@ -2,6 +2,7 @@
 using affolterNET.Data.Interfaces;
 using affolterNET.Data.Interfaces.SessionHandler;
 using affolterNET.Data.TestHelpers.Builders;
+using Xunit.Abstractions;
 
 namespace affolterNET.Data.TestHelpers
 {
@@ -14,7 +15,7 @@ namespace affolterNET.Data.TestHelpers
 
         private DbOperations _ops;
 
-        protected IntegrationTestBase(DbFixture dbFixture, IDtoFactory dtoFactory)
+        protected IntegrationTestBase(DbFixture dbFixture, IDtoFactory dtoFactory, ITestOutputHelper output = null)
         {
             Fixture = dbFixture;
             _dtoFactory = dtoFactory;
