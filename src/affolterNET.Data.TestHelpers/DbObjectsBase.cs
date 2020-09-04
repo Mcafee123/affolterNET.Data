@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 
 namespace affolterNET.Data.TestHelpers
@@ -11,6 +12,11 @@ namespace affolterNET.Data.TestHelpers
         public T Get<T>(string name) where T : class
         {
             return _dbobjects[name] as T;
+        }
+
+        public IEnumerable<T> GetAll<T>()
+        {
+            return _dbobjects.Values.Where(o => o.GetType() == typeof(T)).Cast<T>();
         }
 
         protected T GetSet<T>(Func<T> create, string name)
@@ -33,7 +39,7 @@ namespace affolterNET.Data.TestHelpers
             }
 
             var o = _dbobjects[name] as T;
-            o.Should().NotBeNull("DbObject-Erstellen Fehler, Objekt ist null");
+            o.Should().NotBeNull($"Unter dem Namen \"{name}\" wurde bereits ein Objekt vom Typ \"{_dbobjects[name].GetType().FullName}\" hinzugefügt");
             return o;
         }
     }

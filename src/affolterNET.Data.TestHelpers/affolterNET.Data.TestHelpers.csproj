@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <ProjectGuid>BB3D9D5C-5917-436B-B3AC-4A20CAF0FD67</ProjectGuid>
-    <PackageVersion>1.0.5</PackageVersion>
+    <PackageVersion>1.0.6</PackageVersion>
     <AssemblyVersion>$(PackageVersion)</AssemblyVersion>
     <IsPackable>true</IsPackable>
     <Authors>Martin Affolter</Authors>
