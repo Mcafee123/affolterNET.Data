@@ -2,6 +2,7 @@
 using System.Linq;
 using affolterNET.Data.DtoHelper.Database;
 using affolterNET.Data.Extensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace affolterNET.Data.DtoHelper.CodeGen
@@ -27,15 +28,19 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             sgSelect.Generate(add);
         }
 
+        private string Statement(Column col)
+        {
+            return $"(@{col.Name} is null or {col.Name.EnsureSquareBrackets()}=@{col.Name})";
+        }
+
         private string SelectCommand()
         {
-            var col = tbl.AllColumns.FirstOrDefault(c => c.IsPK);
+            var keys = tbl.GetPrimaryKeyColumns().ToList();
             var selectWhere = string.Empty;
-            if (col != null)
+            if (keys.Count > 0)
             {
-                selectWhere = $" where @{col.Name} is null or {col.Name.EnsureSquareBrackets()}=@{col.Name}";
+                selectWhere = " where " + string.Join(" and ", keys.Select(Statement));
             }
-
             return
                 $"$\"select top({{maxCount}}) {string.Join(", ", tbl.AllColumns.Select(c => c.Name.EnsureSquareBrackets()))} from {tbl.Schema}.{tbl.Name}{selectWhere}\"";
         }

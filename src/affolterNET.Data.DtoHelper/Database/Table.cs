@@ -112,6 +112,11 @@ namespace affolterNET.Data.DtoHelper.Database
 
             return pkCol;
         }
+        
+        public IEnumerable<Column> GetPrimaryKeyColumns()
+        {
+            return AllColumns.Where(x => x.IsPK);
+        }
 
         public Column GetColumn(string columnName)
         {

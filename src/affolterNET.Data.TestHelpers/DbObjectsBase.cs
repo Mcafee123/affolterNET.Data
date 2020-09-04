@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit.Abstractions;
 
 namespace affolterNET.Data.TestHelpers
@@ -63,6 +64,8 @@ namespace affolterNET.Data.TestHelpers
             {
                 var obj = create();
 
+                WriteLine($"created: " + JsonConvert.SerializeObject(obj));
+
                 // nochmals fragen - ein anderes create könnte das objekt schon erstellt haben
                 if (!_dbobjects.ContainsKey(name))
                 {
@@ -75,7 +78,7 @@ namespace affolterNET.Data.TestHelpers
 
             var o = _dbobjects[name] as T;
             o.Should().NotBeNull(
-                $"Unter dem Namen \"{name}\" wurde bereits ein Objekt vom Typ \"{_dbobjects[name].GetType().FullName}\" hinzugefügt");
+                $"Unter dem Namen \"{name}\" wurde bereits ein Objekt vom Typ \"{_dbobjects[name].GetType().FullName}\" hinzugefügt (aktuell: {typeof(T).FullName})");
             return o;
         }
     }

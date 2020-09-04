@@ -57,11 +57,41 @@ namespace affolterNET.Data.TestHelpers.Test
             Assert.Contains("e", a.Select(o => o.Name));
             Assert.Contains("f", a.Select(o => o.Name));
         }
+        
+        [Fact]
+        public void ClosureTest() {
+            var testee = new DbObjects(_output);
+            var t1 = testee.Create1WithParams("a", 1, true);
+            Assert.Equal(1, t1.Num);
+            Assert.True(t1.Bol);
+            var t2 = testee.Create1WithParams("b", 2, true);
+            Assert.Equal(2, t2.Num);
+            Assert.True(t2.Bol);
+            var t3 = testee.Create1WithParams("d",3, false);
+            Assert.Equal(3, t3.Num);
+            Assert.False(t3.Bol);
+            var t4 = testee.Create1WithParams("e", 4, true);
+            Assert.Equal(4, t4.Num);
+            Assert.True(t4.Bol);
+            var t5 = testee.Create1WithParams("g", 5, false);
+            Assert.Equal(5, t5.Num);
+            Assert.False(t5.Bol);
+            var t6 = testee.Create1WithParams("h", 6, false);
+            Assert.Equal(6, t6.Num);
+            Assert.False(t6.Bol);
+            var t7 = testee.Create1WithParams("i", 7, true);
+            Assert.Equal(7, t7.Num);
+            Assert.True(t7.Bol);
+        }
     }
 
     public class Obj1
     {
         public string Name { get; set; }
+
+        public int Num { get; set; }
+
+        public bool Bol { get; set; }
     }
 
     public class Obj2
@@ -76,11 +106,23 @@ namespace affolterNET.Data.TestHelpers.Test
 
     public class DbObjects : DbObjectsBase
     {
+        public const string Test1 = "test 1";
+        public const string Test2 = "test 2";
+        
         public DbObjects(ITestOutputHelper output): base(output)
         {
             
         }
-        
+
+        public Obj1 Create1WithParams(string name, int num, bool check, string objname = null)
+        {
+            objname ??= name;
+            return GetSet(() =>
+            {
+                return new Obj1 {Name = check ? Test1 : Test2, Num = num, Bol = check};
+            }, name);
+        }
+
         public void Create1(string name, string objname = null)
         {
             objname ??= name;

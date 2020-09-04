@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.TestHelper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.TestHelpers.Test", "Test\affolterNET.Data.TestHelpers.Test\affolterNET.Data.TestHelpers.Test.csproj", "{A5A306A3-C9FA-487C-BC54-23A4A7F0259A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "affolterNET.Data.DtoHelper.Test", "Test\affolterNET.Data.DtoHelper.Test\affolterNET.Data.DtoHelper.Test.csproj", "{963A708B-DF27-4E68-9A95-AE9119755B6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,9 +40,14 @@ Global
 		{A5A306A3-C9FA-487C-BC54-23A4A7F0259A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5A306A3-C9FA-487C-BC54-23A4A7F0259A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5A306A3-C9FA-487C-BC54-23A4A7F0259A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{963A708B-DF27-4E68-9A95-AE9119755B6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{963A708B-DF27-4E68-9A95-AE9119755B6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{963A708B-DF27-4E68-9A95-AE9119755B6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{963A708B-DF27-4E68-9A95-AE9119755B6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D86FC426-65E1-4B34-A7FA-1CF4C0C343DA} = {0AE11873-73B9-4E66-A7BE-FFDDD812952A}
 		{A5A306A3-C9FA-487C-BC54-23A4A7F0259A} = {0AE11873-73B9-4E66-A7BE-FFDDD812952A}
+		{963A708B-DF27-4E68-9A95-AE9119755B6D} = {0AE11873-73B9-4E66-A7BE-FFDDD812952A}
 	EndGlobalSection
 EndGlobal
