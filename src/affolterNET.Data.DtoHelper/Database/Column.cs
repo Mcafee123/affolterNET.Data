@@ -118,7 +118,10 @@ namespace affolterNET.Data.DtoHelper.Database
             }
             else if (PropertyType == "Guid")
             {
-                setid = string.Format("{0}{1}var guidId = Guid.Parse(id.ToString());", setid, GetIndent(indent + 4));
+                setid = string.Format("{0}{1}if (!Guid.TryParse(id.ToString(), out var guidId))", setid, GetIndent(indent + 4));
+                setid = string.Format("{0}{1}{{", setid, GetIndent(indent + 4));
+                setid = string.Format("{0}{1}throw new InvalidOperationException(\"invalid id\");", setid, GetIndent(indent + 8));
+                setid = string.Format("{0}{1}}}", setid, GetIndent(indent + 4));
                 setid = string.Format("{0}{1}{2} = guidId;", setid, GetIndent(indent + 4), PropertyName);
             }
             else
