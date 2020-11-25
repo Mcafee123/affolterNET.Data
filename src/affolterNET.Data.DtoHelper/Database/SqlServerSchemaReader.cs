@@ -80,8 +80,8 @@ namespace affolterNET.Data.DtoHelper.Database
                         var tbl = new Table(props)
                         {
                             FullName = rdr["TABLE_SCHEMA"] + "_" + rdr["TABLE_NAME"],
-                            Name = rdr["TABLE_NAME"].ToString(),
-                            Schema = rdr["TABLE_SCHEMA"].ToString(),
+                            Name = rdr["TABLE_NAME"].ToString()!,
+                            Schema = rdr["TABLE_SCHEMA"].ToString()!,
                             IsView = string.Compare(
                                          rdr["TABLE_TYPE"].ToString(),
                                          "View",
@@ -165,8 +165,8 @@ namespace affolterNET.Data.DtoHelper.Database
                         var key = new Key
                         {
                             Name = rdr["FK"].ToString(),
-                            PropertyName =
-                                rdr["Referencing_tbl"].ToString().Replace("_", string.Empty),
+                            PropertyName = rdr["Referencing_tbl"].ToString()!
+                                    .Replace("_", string.Empty),
                             ReferencingTableName = rdr["Schema"] + "_" + rdr["Referencing_tbl"],
                             ReferencedTableColumnName = rdr["Referenced_col"].ToString(),
                             ReferencingTableColumnName = rdr["Referencing_col"].ToString()
@@ -205,8 +205,8 @@ namespace affolterNET.Data.DtoHelper.Database
                         var key = new Key
                         {
                             Name = rdr["FK"].ToString(),
-                            PropertyName =
-                                rdr["Referenced_tbl"].ToString().Replace("_", string.Empty),
+                            PropertyName = rdr["Referenced_tbl"].ToString()!
+                                .Replace("_", string.Empty),
                             ReferencedTableName =
                                 rdr["Referenced_schema"] + "_" + rdr["Referenced_tbl"],
                             ReferencedTableColumnName = rdr["Referenced_col"].ToString(),

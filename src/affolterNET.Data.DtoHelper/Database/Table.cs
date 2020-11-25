@@ -38,13 +38,8 @@ namespace affolterNET.Data.DtoHelper.Database
 
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
-        private static readonly Func<string?, string?> CleanUp = str =>
+        private static readonly Func<string, string> CleanUp = str =>
         {
-            if (str == null)
-            {
-                return str;
-            }
-
             str = RxCleanUp.Replace(str, "_");
             if (char.IsDigit(str[0]))
             {
@@ -58,7 +53,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         private readonly GeneratorCfg cfg;
 
-        private string? cleanName;
+        private string cleanName = null!;
 
         public Table(GeneratorCfg cfg)
         {
@@ -70,7 +65,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         public string? ClassName { get; set; }
 
-        public string? CleanName
+        public string CleanName
         {
             get => cleanName;
             set => cleanName = CleanUp(value);
@@ -83,7 +78,7 @@ namespace affolterNET.Data.DtoHelper.Database
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string? DebugText { get; set; }
 
-        public string? FullName { get; set; }
+        public string FullName { get; set; } = null!;
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool Ignore { get; set; }
@@ -96,7 +91,7 @@ namespace affolterNET.Data.DtoHelper.Database
         // ReSharper disable once StyleCop.SA1126
         public Column this[string columnName] => GetColumn(columnName);
 
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public string NotAvailable { get; } = "n.a.";
 
@@ -105,7 +100,7 @@ namespace affolterNET.Data.DtoHelper.Database
         // ReSharper disable once CollectionNeverQueried.Global
         public List<Key> OuterKeys { get; }
 
-        public string? Schema { get; set; }
+        public string Schema { get; set; } = null!;
 
         public Column GetPrimaryKeyColumn()
         {
@@ -155,19 +150,19 @@ namespace affolterNET.Data.DtoHelper.Database
                 {
                     while (rdr.Read())
                     {
-                        if (cfg.IsColumnExcluded(rdr["ColumnName"].ToString()))
+                        if (cfg.IsColumnExcluded(rdr["ColumnName"].ToString()!))
                         {
                             continue;
                         }
 
                         var col = new Column(cfg)
                         {
-                            Name = rdr["ColumnName"].ToString(),
+                            Name = rdr["ColumnName"].ToString()!,
                             MaxLength = rdr["MaxLength"] as int?
                         };
 
                         col.PropertyName = CleanUp(col.Name);
-                        col.PropertyType = GetPropertyType(rdr["DataType"].ToString());
+                        col.PropertyType = GetPropertyType(rdr["DataType"].ToString()!);
                         col.IsNullable = rdr["IsNullable"].ToString() == "YES";
                         col.IsAutoIncrement = (int)rdr["IsIdentity"] == 1;
                         if (col.MaxLength < 1)

@@ -14,12 +14,17 @@ namespace affolterNET.Data.Extensions
 
             var idName = dto.GetIdName();
             var idProp = dto.GetType().GetProperty(idName);
-            if (idProp == null)
+            if (idProp == null || idProp.GetMethod == null)
             {
                 throw new InvalidOperationException("Invalid Id Prop on Dto");
             }
 
             var id = idProp.GetMethod.Invoke(dto, new object[] { });
+            if (!(id is Guid))
+            {
+                throw new InvalidOperationException("id was null or not a guid");
+            }
+
             return (Guid)id;
         }
 
@@ -36,7 +41,7 @@ namespace affolterNET.Data.Extensions
             }
 
             var idProp = dto.GetType().GetProperty(propertyname);
-            if (idProp == null)
+            if (idProp == null || idProp.GetMethod == null)
             {
                 throw new InvalidOperationException("Invalid Id Prop on Dto");
             }

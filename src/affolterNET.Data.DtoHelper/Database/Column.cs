@@ -21,7 +21,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         public int? MaxLength { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public string? PropertyName { get; set; }
 

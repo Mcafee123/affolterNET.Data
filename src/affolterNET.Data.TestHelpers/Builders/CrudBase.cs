@@ -13,7 +13,7 @@ namespace affolterNET.Data.TestHelpers.Builders
 
         protected readonly IDtoBase Dto;
 
-        protected readonly IDictionary<string, object> Paras = new ExpandoObject();
+        protected readonly IDictionary<string, object> Paras = new ExpandoObject()!;
 
         protected readonly IDbTransaction Trsact;
 

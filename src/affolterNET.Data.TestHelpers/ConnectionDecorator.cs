@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using affolterNET.Data.TestHelpers.Interfaces;
 
 namespace affolterNET.Data.TestHelpers
@@ -15,7 +16,9 @@ namespace affolterNET.Data.TestHelpers
             ConnectionString = "";
         }
 
+#pragma warning disable 8767
         public string ConnectionString { get; set; }
+#pragma warning restore 8767
 
         public int ConnectionTimeout => _conn.ConnectionTimeout;
 

@@ -11,12 +11,12 @@ namespace affolterNET.Data.TestHelpers
         public TransactionDecorator(IDbTransaction trsact, bool allowCommit = false)
         {
             WrappedTransaction = trsact;
-            this._allowCommit = allowCommit;
+            _allowCommit = allowCommit;
         }
 
         public IDbTransaction WrappedTransaction { get; private set; }
 
-        public IDbConnection Connection => WrappedTransaction.Connection;
+        public IDbConnection? Connection => WrappedTransaction.Connection;
 
         public IsolationLevel IsolationLevel => WrappedTransaction.IsolationLevel;
 

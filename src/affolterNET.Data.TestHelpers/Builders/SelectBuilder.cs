@@ -30,7 +30,7 @@ namespace affolterNET.Data.TestHelpers.Builders
         public T ExecuteSingle()
         {
             sql = $"select top(1) * from {TableName}";
-            return RunExecute().FirstOrDefault();
+            return RunExecute().FirstOrDefault()!;
         }
 
         public IEnumerable<T> Execute()
