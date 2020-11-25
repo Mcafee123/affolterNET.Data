@@ -7,6 +7,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-18.04'
 
+variables:
+  - group: zadr-settings
+
 name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
 stages:
@@ -27,7 +30,7 @@ stages:
         informationalVersion: $(Build.BuildNumber)
         assemblyVersion: $(Build.BuildNumber)
         assemblyDefaultVersion: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
-        
+
       steps:
 
       - bash: echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
