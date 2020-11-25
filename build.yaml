@@ -10,16 +10,28 @@ pool:
 name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
 stages:
+
+  - template: _versioning.yml
+
   - stage: Build
     displayName: 'Build Code and Run Unit Tests'
     variables:
       - name: 'buildConfiguration'
         value: 'Release'
+
     jobs:
   
     - job: Build
       displayName: 'Build Code and run Unit Tests'
+      variables:
+        informationalVersion: $(Build.BuildNumber)
+        assemblyVersion: $(Build.BuildNumber)
+        assemblyDefaultVersion: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
+        
       steps:
+
+      - bash: echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
+        condition: contains(variables['Build.BuildNumber'], '-')
 
       - task: DotNetCoreCLI@2
         displayName: dotnet restore
@@ -32,7 +44,7 @@ stages:
         inputs:
           command: 'build'
           projects: 'src/affolterNET.Data.sln'
-          arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(SourceVersionShort)'
+          arguments: '--configuration $(buildConfiguration) -p:Version=$(assemblyVersion) -p:InformationalVersion=$(informationalVersion)'
 
       - task: DotNetCoreCLI@2
         displayName: 'run unit tests'

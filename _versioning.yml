@@ -1,0 +1,37 @@
+stages:
+
+- stage: Versioning
+  displayName: Versioning
+  jobs:
+    
+  # Build number to use when on the master branch
+  - job: Build_Master_Version_Number
+    displayName: Build version for Master branch
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    variables:
+        patch: $[counter(variables['minor'], 0)]
+    steps:
+      - checkout: none
+      - bash: |
+          echo "Generating Build Number"
+          echo "##vso[build.updatebuildnumber]$(major).$(minor).$(patch)"
+        name: SetMasterBuildName
+          
+  # Slightly different build number when this is on any other branch than master
+  - job: Build_Branch_Version_Number
+    displayName: Build version for other branch
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    variables:
+        brpatch: $[counter(variables['build.sourcebranchname'], 0)]
+    steps:
+      - checkout: none
+      - bash: |
+          echo "Generating Build Number"
+          echo "##vso[build.updatebuildnumber]$(major).$(minor)-PullRequest.$(prpatch)"
+        condition: eq(variables['Build.Reason'], 'PullRequest')
+        name: SetPRBuildName
+      - bash: |
+          echo "Generating Build Number"
+          echo "##vso[build.updatebuildnumber]$(major).$(minor)-$(Build.SourceBranchName).$(brpatch)"
+        condition: ne(variables['Build.Reason'], 'PullRequest')
+        name: SetBranchBuildName
