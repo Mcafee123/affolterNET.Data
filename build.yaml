@@ -76,4 +76,9 @@ stages:
           packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
           nuGetFeedType: 'internal'
           publishVstsFeed: 'e27a58c6-e50a-44d8-a798-55c10e05709c'
+
+      - task: git-tag-on-release-task@9
+        displayName: "add tag to git"
+        inputs:
+          staticTagName: "nuget-$(Build.BuildNumber)"
           
