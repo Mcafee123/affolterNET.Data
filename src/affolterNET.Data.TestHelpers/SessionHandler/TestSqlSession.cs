@@ -5,7 +5,7 @@ namespace affolterNET.Data.TestHelpers.SessionHandler
 {
     public sealed class TestSqlSession : ISqlSession
     {
-        public TestSqlSession(IDbConnection cnn, IDbTransaction transaction)
+        public TestSqlSession(IDbConnection cnn, IDbTransaction? transaction)
         {
             Connection = cnn;
             Transaction = transaction;
@@ -23,7 +23,7 @@ namespace affolterNET.Data.TestHelpers.SessionHandler
 
         public bool HasTransaction => true;
 
-        public IDbTransaction Transaction
+        public IDbTransaction? Transaction
         {
             get;
         }

@@ -28,15 +28,15 @@ namespace affolterNET.Data.DtoHelper.Test.CodeGen
             cols.Add(new Column(generatorCfg) { Name = "Bezeichnung" });
             // ReSharper disable once PossibleNullReferenceException
             typeof(Table)
-                .GetField("AllColumns",BindingFlags.Instance|BindingFlags.NonPublic)
+                .GetField("AllColumns",BindingFlags.Instance|BindingFlags.NonPublic)!
                 .SetValue(tbl, cols);
             var gen = new SelectGenerator(tbl);
             var list = new List<MemberDeclarationSyntax>();
             gen.Generate(mds => list.Add(mds));
             var m = Assert.Single(list) as MethodDeclarationSyntax;
             Assert.NotNull(m);
-            Assert.NotNull(m.Body);
-            var method = Regex.Replace(m.Body.ToString(), @"\s+", " ", RegexOptions.Multiline);
+            Assert.NotNull(m!.Body);
+            var method = Regex.Replace(m.Body!.ToString(), @"\s+", " ", RegexOptions.Multiline);
             _output.WriteLine(method);
             const string expectation = "{ return $\"select top({maxCount}) [TestId], [Bezeichnung] from dbo.T_Test where (@TestId is null or [TestId]=@TestId)\"; }";
             Assert.Equal(expectation, method);
@@ -53,15 +53,15 @@ namespace affolterNET.Data.DtoHelper.Test.CodeGen
             cols.Add(new Column(generatorCfg) { Name = "Bezeichnung" });
             // ReSharper disable once PossibleNullReferenceException
             typeof(Table)
-                .GetField("AllColumns",BindingFlags.Instance|BindingFlags.NonPublic)
+                .GetField("AllColumns",BindingFlags.Instance|BindingFlags.NonPublic)!
                 .SetValue(tbl, cols);
             var gen = new SelectGenerator(tbl);
             var list = new List<MemberDeclarationSyntax>();
             gen.Generate(mds => list.Add(mds));
             var m = Assert.Single(list) as MethodDeclarationSyntax;
             Assert.NotNull(m);
-            Assert.NotNull(m.Body);
-            var method = Regex.Replace(m.Body.ToString(), @"\s+", " ", RegexOptions.Multiline);
+            Assert.NotNull(m!.Body);
+            var method = Regex.Replace(m!.Body!.ToString(), @"\s+", " ", RegexOptions.Multiline);
             _output.WriteLine(method);
             const string expectation = "{ return $\"select top({maxCount}) [TestId], [OtherId], [Bezeichnung] from dbo.T_TestOther where (@TestId is null or [TestId]=@TestId) and (@OtherId is null or [OtherId]=@OtherId)\"; }";
             Assert.Equal(expectation, method);

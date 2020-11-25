@@ -9,7 +9,7 @@ namespace affolterNET.Data.Interfaces.SessionHandler
 
         bool HasTransaction { get; }
 
-        IDbTransaction Transaction { get; }
+        IDbTransaction? Transaction { get; }
 
         void Begin(IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted);
 

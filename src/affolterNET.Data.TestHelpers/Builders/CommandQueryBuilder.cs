@@ -18,14 +18,14 @@ namespace affolterNET.Data.TestHelpers.Builders
 
         private readonly DbOperations _dbOperations;
 
-        private Func<DbOperations, IQuery<TResult>> _arrange;
+        private Func<DbOperations, IQuery<TResult>>? _arrange;
 
-        private Action<DbOperations> _arrangeSimple;
+        private Action<DbOperations>? _arrangeSimple;
 
         public CommandQueryBuilder(DbFixture dbFixture, IDtoFactory dtoFactory, bool checkParameters = true)
         {
-            Connection = dbFixture.Connection;
-            Transaction = dbFixture.Transaction;
+            Connection = dbFixture.Connection ?? throw new InvalidOperationException($"{nameof(dbFixture.Connection)} was null");
+            Transaction = dbFixture.Transaction ?? throw new InvalidOperationException($"{nameof(dbFixture.Transaction)} was null");
             WrappedTransaction = ((ITransactionDecorator)Transaction).WrappedTransaction;
             _dbOperations = new DbOperations(Connection, WrappedTransaction, dtoFactory);
             _assertHelper = new AssertHelper(_dbOperations, dtoFactory);
@@ -95,7 +95,7 @@ namespace affolterNET.Data.TestHelpers.Builders
                 return Task.Run(() => query.ExecuteAsync(Connection, WrappedTransaction)).GetAwaiter().GetResult();
             }
 
-            return default;
+            return default!;
         }
 
         public void Commit()

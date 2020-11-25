@@ -1,4 +1,5 @@
-﻿using affolterNET.Data.DtoHelper.Database;
+﻿using System;
+using affolterNET.Data.DtoHelper.Database;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -28,6 +29,10 @@ namespace affolterNET.Data.DtoHelper.CodeGen
         public PropertyDeclarationSyntax Generate()
         {
             var type = SyntaxFactory.ParseTypeName(col.PropertyType);
+            if (string.IsNullOrWhiteSpace(col.PropertyName))
+            {
+                throw new InvalidOperationException($"{nameof(col.PropertyName)} was empty");
+            }
             var name = col.PropertyName;
             var propertyDeclaration = SyntaxFactory.PropertyDeclaration(type, name)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))

@@ -72,7 +72,7 @@ namespace affolterNET.Data.TestHelpers.Helpers
 
                 // ReSharper disable once PossibleInvalidOperationException
                 toCompare.Value.Should().BeCloseTo(
-                    toCheck.Value,
+                    toCheck!.Value,
                     TimeSpan.FromSeconds(1),
                     "Das Datum ist mehr als 1 Sekunden daneben");
             }
@@ -90,7 +90,7 @@ namespace affolterNET.Data.TestHelpers.Helpers
 
                 // ReSharper disable once PossibleInvalidOperationException
                 toCompare.Value.Should().BeCloseTo(
-                    toCheck.Value,
+                    toCheck!.Value,
                     TimeSpan.FromSeconds(30),
                     "Das Datum ist mehr als 30 Sekunden daneben");
             }

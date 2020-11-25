@@ -7,11 +7,12 @@ namespace affolterNET.Data.TestHelpers
     {
         private readonly IDbConnection _conn;
 
-        private IDbTransaction _trsact;
+        private IDbTransaction? _trsact;
 
         public ConnectionDecorator(IDbConnection conn)
         {
             _conn = conn;
+            ConnectionString = "";
         }
 
         public string ConnectionString { get; set; }

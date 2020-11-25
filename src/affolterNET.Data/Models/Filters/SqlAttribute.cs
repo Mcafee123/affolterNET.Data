@@ -4,7 +4,7 @@ namespace affolterNET.Data.Models.Filters
 {
     public class SqlAttribute
     {
-        private string _column;
+        private string? _column;
 
         public SqlAttribute() { }
 
@@ -14,11 +14,11 @@ namespace affolterNET.Data.Models.Filters
             Prefix = prefix;
         }
 
-        public string Prefix { get; set; }
+        public string? Prefix { get; set; }
 
         public string Column
         {
-            get => _column;
+            get => _column!;
             set => _column = value?.StripSquareBrackets();
         }
 

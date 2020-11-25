@@ -8,7 +8,7 @@ namespace affolterNET.Data.Test.Models.Filters
 {
     public class FilterTest
     {
-        private T Create<T>(string json = null)
+        private T Create<T>(string? json = null)
         {
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -40,7 +40,7 @@ namespace affolterNET.Data.Test.Models.Filters
             if (fromJson)
             {
                 Assert.NotNull(rootFilter.Attribute);
-                Assert.Equal("Name", rootFilter.Attribute.Column);
+                Assert.Equal("Name", rootFilter.Attribute!.Column);
                 Assert.Equal("i", rootFilter.Attribute.Prefix);
             }
         }

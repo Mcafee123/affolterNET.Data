@@ -11,7 +11,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         private readonly CultureInfo cultureInfo;
 
-        public PluralizationServiceWrapper(CultureInfo ci = null)
+        public PluralizationServiceWrapper(CultureInfo? ci = null)
         {
             var builder = new PluralizationApiBuilder();
             builder.AddEnglishProvider();

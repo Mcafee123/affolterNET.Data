@@ -4,11 +4,11 @@ namespace affolterNET.Data.DtoHelper.Database
 {
     public class Column : ElementBase
     {
-        private readonly GeneratorCfg cfg;
+        private readonly GeneratorCfg _cfg;
 
         public Column(GeneratorCfg cfg)
         {
-            this.cfg = cfg;
+            _cfg = cfg;
         }
 
         public bool Ignore { get; set; }
@@ -21,32 +21,32 @@ namespace affolterNET.Data.DtoHelper.Database
 
         public int? MaxLength { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string PropertyName { get; set; }
+        public string? PropertyName { get; set; }
 
-        public string PropertyType { get; set; }
+        public string? PropertyType { get; set; }
 
         public bool IsVersionCol()
         {
-            return cfg.VersionFunc(Name);
+            return _cfg.VersionFunc(Name);
         }
 
         public bool IsInsertTriggerField()
         {
-            return cfg.InsertUserFunc(Name) || cfg.InsertDateFunc(Name);
+            return _cfg.InsertUserFunc(Name) || _cfg.InsertDateFunc(Name);
         }
 
         public bool IsUpdateTriggerField(bool forInsert = false)
         {
-            if (cfg.UpdateUserFunc(Name))
+            if (_cfg.UpdateUserFunc(Name))
             {
-                return !(forInsert && cfg.AddUpdateUserToInsert);
+                return !(forInsert && _cfg.AddUpdateUserToInsert);
             }
 
-            if (cfg.UpdateDateFunc(Name))
+            if (_cfg.UpdateDateFunc(Name))
             {
-                return !forInsert || !cfg.AddUpdateDateToInsert;
+                return !forInsert || !_cfg.AddUpdateDateToInsert;
             }
 
             return false;
@@ -54,7 +54,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         public bool IsActiveCol()
         {
-            return cfg.IsActiveFunc(Name);
+            return _cfg.IsActiveFunc(Name);
         }
 
         public bool IsPkWithAutoincrement()

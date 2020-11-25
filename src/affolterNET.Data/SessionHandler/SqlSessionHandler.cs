@@ -13,7 +13,7 @@ namespace affolterNET.Data.SessionHandler
     {
         private readonly ISqlSessionFactory _factory;
         private readonly Guid _id;
-        private ISqlSession _session;
+        private ISqlSession? _session;
 
         public SqlSessionHandler(ISqlSessionFactory factory)
         {
@@ -51,7 +51,7 @@ namespace affolterNET.Data.SessionHandler
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
             Log.Verbose(query.ToString());
-            return await QueryMultipleAsync(() => query.ExecuteAsync(_session.Connection, _session.Transaction), isolationLevel);
+            return await QueryMultipleAsync(() => query.ExecuteAsync(_session!.Connection, _session.Transaction!), isolationLevel);
         }
 
         public async Task<DataResult<TResult>> QueryMultipleAsync<TResult>(
@@ -64,7 +64,7 @@ namespace affolterNET.Data.SessionHandler
                 _session = CreateSqlSession();
             }
 
-            var hasTransaction = _session.HasTransaction;
+            var hasTransaction = _session!.HasTransaction;
             if (!hasTransaction)
             {
                 _session.Begin(isolationLevel);
@@ -91,7 +91,7 @@ namespace affolterNET.Data.SessionHandler
             {
                 if (!hasTransaction)
                 {
-                    _session.Transaction.Rollback();
+                    _session.Transaction!.Rollback();
                 }
 
                 throw;

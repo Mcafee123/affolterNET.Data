@@ -18,11 +18,11 @@ namespace affolterNET.Data.Models.Filters
             Attribute = new SqlAttribute(column, prefix);
         }
 
-        public SqlAttribute Attribute { get; set; }
+        public SqlAttribute? Attribute { get; set; }
 
         public string Comparer { get; set; }
 
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         public string FilterType { get; set; }
 
@@ -39,13 +39,13 @@ namespace affolterNET.Data.Models.Filters
                 switch (FilterType.ToLower())
                 {
                     case "number":
-                        return new NumberFilter(Attribute, Comparer, Index);
+                        return new NumberFilter(Attribute!, Comparer, Index);
 
                     case "date":
-                        return new DateFilter(Attribute, Comparer, Index);
+                        return new DateFilter(Attribute!, Comparer, Index);
 
                     default:
-                        return new TextFilter(Attribute, Comparer, Index);
+                        return new TextFilter(Attribute!, Comparer, Index);
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace affolterNET.Data.Models.Filters
             var list = new Dictionary<string, object>();
             if (WasSet)
             {
-                list.Add(Attribute.ToParam(Index), Value);
+                list.Add(Attribute!.ToParam(Index), Value!);
             }
             else
             {
@@ -126,7 +126,7 @@ namespace affolterNET.Data.Models.Filters
         {
             if (WasSet)
             {
-                attributes.Add(Attribute);
+                attributes.Add(Attribute!);
             }
             else
             {

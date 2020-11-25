@@ -14,18 +14,20 @@ namespace affolterNET.Data.Result
 
         public DataResult(Exception ex)
         {
+            Data = default(T)!;
             Exception = ex;
             StatusCode = HttpStatusCode.InternalServerError;
         }
 
         public DataResult(HttpStatusCode code)
         {
+            Data = default(T)!;
             StatusCode = code;
         }
 
         public T Data { get; }
 
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         public bool HasException => Exception != null;
 
@@ -37,7 +39,7 @@ namespace affolterNET.Data.Result
         {
             if (HasException)
             {
-                return Exception.Message;
+                return Exception!.Message;
             }
 
             return $"StatusCode: {StatusCode} (no exception thrown";

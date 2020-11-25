@@ -9,10 +9,10 @@ namespace affolterNET.Data.TestHelpers
 {
     public abstract class DbObjectsBase
     {
-        private readonly ITestOutputHelper _output;
+        private readonly ITestOutputHelper? _output;
         private readonly Dictionary<string, object> _dbobjects = new Dictionary<string, object>();
 
-        public DbObjectsBase(ITestOutputHelper output = null)
+        public DbObjectsBase(ITestOutputHelper? output = null)
         {
             _output = output;
         }
@@ -45,7 +45,13 @@ namespace affolterNET.Data.TestHelpers
         public T Get<T>(string name) where T : class
         {
             WriteLine($"Get: \"{name}\" ({typeof(T).FullName})");
-            return _dbobjects[name] as T;
+            var obj = _dbobjects[name] as T;
+            if (obj == null)
+            {
+                throw new InvalidOperationException("obj was null");
+            }
+
+            return obj;
         }
 
         public IEnumerable<T> GetAll<T>()
@@ -79,7 +85,7 @@ namespace affolterNET.Data.TestHelpers
             var o = _dbobjects[name] as T;
             o.Should().NotBeNull(
                 $"Unter dem Namen \"{name}\" wurde bereits ein Objekt vom Typ \"{_dbobjects[name].GetType().FullName}\" hinzugefügt (aktuell: {typeof(T).FullName})");
-            return o;
+            return o!;
         }
     }
 }

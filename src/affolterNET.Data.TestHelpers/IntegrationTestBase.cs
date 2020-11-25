@@ -13,9 +13,9 @@ namespace affolterNET.Data.TestHelpers
         private readonly DateTime _startTime;
         protected readonly DbFixture Fixture;
 
-        private DbOperations _ops;
+        private DbOperations? _ops;
 
-        protected IntegrationTestBase(DbFixture dbFixture, IDtoFactory dtoFactory, ITestOutputHelper output = null)
+        protected IntegrationTestBase(DbFixture dbFixture, IDtoFactory dtoFactory, ITestOutputHelper? output = null)
         {
             Fixture = dbFixture;
             _dtoFactory = dtoFactory;
@@ -32,6 +32,15 @@ namespace affolterNET.Data.TestHelpers
             {
                 if (_ops == null)
                 {
+                    if (Fixture.Connection == null)
+                    {
+                        throw new InvalidOperationException($"{nameof(Fixture.Connection)} was null");
+                    }
+                    if (Fixture.Transaction == null)
+                    {
+                        throw new InvalidOperationException($"{nameof(Fixture.Transaction)} was null");
+                    }
+
                     _ops = new DbOperations(
                         Fixture.Connection,
                         Fixture.Transaction.WrappedTransaction,

@@ -22,9 +22,9 @@ namespace affolterNET.Data.DtoHelper
 
         private readonly TablesLoader tl;
 
-        private NamespaceDeclarationSyntax ns;
+        private NamespaceDeclarationSyntax? ns;
 
-        private CompilationUnitSyntax root;
+        private CompilationUnitSyntax? root;
 
         public Generator(GeneratorCfg cfg, IFileHandler fh)
         {
@@ -120,7 +120,7 @@ namespace affolterNET.Data.DtoHelper
             var sgStaticTableFactory = new StringGenerator(dbString);
             var listTables = new List<MemberDeclarationSyntax>();
             sgStaticTableFactory.Generate(mds => listTables.Add(mds));
-            ns = ns.AddMembers(listTables.ToArray());
+            ns = ns!.AddMembers(listTables.ToArray());
 
             // viewfactory
             var getViewString =
@@ -135,14 +135,14 @@ namespace affolterNET.Data.DtoHelper
         private void FillDtos(Tables tables)
         {
             // classes
-            ns = cg.Generate(ns, tables);
-            root = root.AddMembers(ns);
+            ns = cg.Generate(ns!, tables);
+            root = root!.AddMembers(ns);
         }
 
         private void WriteTargetFile()
         {
             // Write the new file.
-            fh.WriteCode(root.NormalizeWhitespace().ToFullString());
+            fh.WriteCode(root!.NormalizeWhitespace().ToFullString());
         }
     }
 }

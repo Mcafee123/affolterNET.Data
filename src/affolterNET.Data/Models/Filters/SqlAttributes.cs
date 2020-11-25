@@ -29,7 +29,7 @@ namespace affolterNET.Data.Models.Filters
             return Contains(attribute.Column, attribute.Prefix);
         }
 
-        public bool Contains(string column, string prefix)
+        public bool Contains(string column, string? prefix)
         {
             return _list.Any(
                 a => string.Equals(a.Prefix, prefix, StringComparison.CurrentCultureIgnoreCase) &&

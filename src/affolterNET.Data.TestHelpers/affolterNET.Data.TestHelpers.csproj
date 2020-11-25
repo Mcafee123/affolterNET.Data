@@ -8,6 +8,8 @@
     <IsPackable>true</IsPackable>
     <Authors>Martin Affolter</Authors>
     <Company>affolter.NET GmbH</Company>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>true</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

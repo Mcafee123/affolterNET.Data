@@ -51,7 +51,7 @@ namespace affolterNET.Data.DtoHelper.Database
         // SchemaReader.ReadSchema
         private readonly TextWriter tw;
 
-        private SqlConnection connection;
+        private SqlConnection? connection;
 
         public SqlServerSchemaReader(TextWriter tw)
         {

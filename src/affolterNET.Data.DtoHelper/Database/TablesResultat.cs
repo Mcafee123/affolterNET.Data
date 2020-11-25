@@ -5,7 +5,7 @@ namespace affolterNET.Data.DtoHelper.Database
 {
     public class TablesResultat
     {
-        public TablesResultat(IEnumerable<string> schemas = null)
+        public TablesResultat(IEnumerable<string>? schemas = null)
         {
             if (schemas != null)
             {
@@ -13,9 +13,9 @@ namespace affolterNET.Data.DtoHelper.Database
             }
         }
 
-        public string Error { get; set; }
+        public string? Error { get; set; }
 
-        public Exception Ex { get; set; }
+        public Exception? Ex { get; set; }
 
         public List<string> Schemas { get; } = new List<string>();
 

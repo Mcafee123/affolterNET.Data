@@ -87,7 +87,7 @@ namespace affolterNET.Data.TestHelpers.Test
 
     public class Obj1
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public int Num { get; set; }
 
@@ -96,12 +96,12 @@ namespace affolterNET.Data.TestHelpers.Test
 
     public class Obj2
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     public class Obj3
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     public class DbObjects : DbObjectsBase
@@ -114,7 +114,7 @@ namespace affolterNET.Data.TestHelpers.Test
             
         }
 
-        public Obj1 Create1WithParams(string name, int num, bool check, string objname = null)
+        public Obj1 Create1WithParams(string name, int num, bool check, string? objname = null)
         {
             objname ??= name;
             return GetSet(() =>
@@ -123,19 +123,19 @@ namespace affolterNET.Data.TestHelpers.Test
             }, name);
         }
 
-        public void Create1(string name, string objname = null)
+        public void Create1(string name, string? objname = null)
         {
             objname ??= name;
             GetSet(() => new Obj1 { Name = objname }, name);
         }
         
-        public void Create2(string name, string objname = null)
+        public void Create2(string name, string? objname = null)
         {
             objname ??= name;
             GetSet(() => new Obj2 { Name = objname }, name);
         }
         
-        public void Create3(string name, string objname = null)
+        public void Create3(string name, string? objname = null)
         {
             objname ??= name;
             GetSet(() => new Obj3 { Name = objname }, name);

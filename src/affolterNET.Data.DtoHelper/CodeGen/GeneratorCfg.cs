@@ -34,7 +34,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public List<string> Comments { get; } = new List<string>();
 
-        public string ConnString { get; private set; }
+        public string? ConnString { get; private set; }
 
         public string[] ExcludeSchemas => excludeSchemas.ToArray();
 
@@ -44,25 +44,25 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public bool IncludeViews { get; }
 
-        public Func<string, bool> InsertDateFunc { get; private set; } = s => false;
+        public Func<string?, bool> InsertDateFunc { get; private set; } = s => false;
 
-        public Func<string, bool> InsertUserFunc { get; private set; } = s => false;
+        public Func<string?, bool> InsertUserFunc { get; private set; } = s => false;
 
-        public Func<string, bool> IsActiveFunc { get; set; } = s => false;
+        public Func<string?, bool> IsActiveFunc { get; set; } = s => false;
 
-        public string Namespace { get; private set; }
+        public string? Namespace { get; private set; }
 
         public Dictionary<string, string> RenameTableSchemas { get; } = new Dictionary<string, string>();
 
-        public string TargetFile { get; private set; }
+        public string? TargetFile { get; private set; }
 
-        public Func<string, bool> UpdateDateFunc { get; private set; } = s => false;
+        public Func<string?, bool> UpdateDateFunc { get; private set; } = s => false;
 
-        public Func<string, bool> UpdateUserFunc { get; private set; } = s => false;
+        public Func<string?, bool> UpdateUserFunc { get; private set; } = s => false;
 
         public List<string> Usings { get; } = new List<string>();
 
-        public Func<string, bool> VersionFunc { get; private set; } = s => false;
+        public Func<string?, bool> VersionFunc { get; private set; } = s => false;
 
         public GeneratorCfg WithSchemaExclusion(string schemaName)
         {
@@ -114,6 +114,14 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public bool IsTableExcluded(Table tbl)
         {
+            if (string.IsNullOrWhiteSpace(tbl.Name))
+            {
+                throw new InvalidOperationException($"{nameof(tbl.Name)} was empty");
+            }
+            if (string.IsNullOrWhiteSpace(tbl.Schema))
+            {
+                throw new InvalidOperationException($"{nameof(tbl.Schema)} was empty");
+            }
             if (excludeSchemas.IndexOf(tbl.Schema) > -1)
             {
                 tbl.Ignore = true;
@@ -173,39 +181,39 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             return this;
         }
 
-        public GeneratorCfg WithInsertUser(Func<string, bool> func)
+        public GeneratorCfg WithInsertUser(Func<string?, bool> func)
         {
             InsertUserFunc = func;
             return this;
         }
 
-        public GeneratorCfg WithInsertDate(Func<string, bool> func)
+        public GeneratorCfg WithInsertDate(Func<string?, bool> func)
         {
             InsertDateFunc = func;
             return this;
         }
 
-        public GeneratorCfg WithUpdateUser(Func<string, bool> func, bool addToInsertCommand = false)
+        public GeneratorCfg WithUpdateUser(Func<string?, bool> func, bool addToInsertCommand = false)
         {
             UpdateUserFunc = func;
             AddUpdateUserToInsert = addToInsertCommand;
             return this;
         }
 
-        public GeneratorCfg WithUpdateDate(Func<string, bool> func, bool addToInsertCommand = false)
+        public GeneratorCfg WithUpdateDate(Func<string?, bool> func, bool addToInsertCommand = false)
         {
             UpdateDateFunc = func;
             AddUpdateDateToInsert = addToInsertCommand;
             return this;
         }
 
-        public GeneratorCfg WithIsActive(Func<string, bool> func)
+        public GeneratorCfg WithIsActive(Func<string?, bool> func)
         {
             IsActiveFunc = func;
             return this;
         }
 
-        public GeneratorCfg WithVersion(Func<string, bool> func)
+        public GeneratorCfg WithVersion(Func<string?, bool> func)
         {
             VersionFunc = func;
             return this;

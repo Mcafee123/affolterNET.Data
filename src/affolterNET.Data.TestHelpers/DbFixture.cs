@@ -9,12 +9,12 @@ namespace affolterNET.Data.TestHelpers
     // ReSharper disable once ClassNeverInstantiated.Global
     public abstract class DbFixture : IDisposable
     {
-        private string _connString;
-        private ISqlSessionHandler _handler;
+        private string? _connString;
+        private ISqlSessionHandler? _handler;
 
-        public IConnectionDecorator Connection { get; private set; }
+        public IConnectionDecorator? Connection { get; private set; }
 
-        public ITransactionDecorator Transaction { get; set; }
+        public ITransactionDecorator? Transaction { get; set; }
 
         public ISqlSessionHandler SqlSessionHandler
         {
@@ -37,9 +37,9 @@ namespace affolterNET.Data.TestHelpers
 
         public void EndTest()
         {
-            Connection.RollbackTestTransaction();
-            Transaction.Dispose();
-            Transaction = null;
+            Connection?.RollbackTestTransaction();
+            Transaction?.Dispose();
+            Transaction = null!;
         }
 
         public void StartTest()

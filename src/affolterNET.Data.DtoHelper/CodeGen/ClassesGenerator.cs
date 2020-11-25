@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using affolterNET.Data.DtoHelper.Database;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,6 +22,11 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             // dtos
             foreach (var tbl in tables)
             {
+                if (string.IsNullOrWhiteSpace(tbl.ObjectName))
+                {
+                    throw new InvalidOperationException($"{nameof(tbl.ObjectName)} was empty");
+                }
+
                 // class
                 var classDeclaration = SyntaxFactory.ClassDeclaration(tbl.ObjectName);
                 classDeclaration = classDeclaration.AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));

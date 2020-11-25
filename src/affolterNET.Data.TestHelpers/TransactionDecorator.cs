@@ -40,12 +40,9 @@ namespace affolterNET.Data.TestHelpers
 
         public void Rollback()
         {
-            if (WrappedTransaction != null)
-            {
-                WrappedTransaction.Rollback();
-                WrappedTransaction.Dispose();
-                WrappedTransaction = null;
-            }
+            WrappedTransaction.Rollback();
+            WrappedTransaction.Dispose();
+            WrappedTransaction = null!;
         }
     }
 }

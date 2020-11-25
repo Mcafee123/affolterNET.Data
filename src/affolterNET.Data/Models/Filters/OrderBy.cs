@@ -12,7 +12,7 @@ namespace affolterNET.Data.Models.Filters
             Attribute = new SqlAttribute(attribute, prefix);
         }
 
-        public SqlAttribute Attribute { get; set; }
+        public SqlAttribute? Attribute { get; set; }
 
         public bool Desc { get; set; }
 
@@ -20,7 +20,7 @@ namespace affolterNET.Data.Models.Filters
 
         public bool IsValid(SqlAttributes attributes)
         {
-            if (!attributes.Contains(Attribute))
+            if (Attribute != null && !attributes.Contains(Attribute))
             {
                 return false;
             }

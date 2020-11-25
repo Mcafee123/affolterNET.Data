@@ -11,10 +11,10 @@ namespace affolterNET.Data.TestHelpers.SessionHandler
     {
         private readonly IDbConnection _cnn;
         private readonly Guid _id;
-        private readonly IDbTransaction _transaction;
-        private TestSqlSession _session;
+        private readonly IDbTransaction? _transaction;
+        private TestSqlSession? _session;
 
-        public TestSqlSessionHandler(IDbConnection cnn, IDbTransaction transaction)
+        public TestSqlSessionHandler(IDbConnection cnn, IDbTransaction? transaction)
         {
             _cnn = cnn;
             _transaction = transaction;
@@ -44,6 +44,11 @@ namespace affolterNET.Data.TestHelpers.SessionHandler
             IQuery<TResult> query,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
+            if (_session == null)
+            {
+                throw new InvalidOperationException("Db Session was null");
+            }
+
             return await query.ExecuteAsync(_session.Connection, _session.Transaction);
         }
 

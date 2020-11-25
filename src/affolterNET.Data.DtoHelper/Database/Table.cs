@@ -38,8 +38,13 @@ namespace affolterNET.Data.DtoHelper.Database
 
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
-        private static readonly Func<string, string> CleanUp = str =>
+        private static readonly Func<string?, string?> CleanUp = str =>
         {
+            if (str == null)
+            {
+                return str;
+            }
+
             str = RxCleanUp.Replace(str, "_");
             if (char.IsDigit(str[0]))
             {
@@ -53,7 +58,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         private readonly GeneratorCfg cfg;
 
-        private string cleanName;
+        private string? cleanName;
 
         public Table(GeneratorCfg cfg)
         {
@@ -63,9 +68,9 @@ namespace affolterNET.Data.DtoHelper.Database
             this.cfg = cfg;
         }
 
-        public string ClassName { get; set; }
+        public string? ClassName { get; set; }
 
-        public string CleanName
+        public string? CleanName
         {
             get => cleanName;
             set => cleanName = CleanUp(value);
@@ -76,9 +81,9 @@ namespace affolterNET.Data.DtoHelper.Database
                 .ThenBy(c => c.PropertyName);
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public string DebugText { get; set; }
+        public string? DebugText { get; set; }
 
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool Ignore { get; set; }
@@ -91,16 +96,16 @@ namespace affolterNET.Data.DtoHelper.Database
         // ReSharper disable once StyleCop.SA1126
         public Column this[string columnName] => GetColumn(columnName);
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public string NotAvailable { get; } = "n.a.";
 
-        public string ObjectName { get; set; }
+        public string? ObjectName { get; set; }
 
         // ReSharper disable once CollectionNeverQueried.Global
         public List<Key> OuterKeys { get; }
 
-        public string Schema { get; set; }
+        public string? Schema { get; set; }
 
         public Column GetPrimaryKeyColumn()
         {
@@ -241,7 +246,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
             foreach (var primaryKey in primaryKeys)
             {
-                var pkColumn = AllColumns.SingleOrDefault(x => x.Name.ToLower().Trim() == primaryKey.ToLower().Trim());
+                var pkColumn = AllColumns.SingleOrDefault(x => x.Name?.ToLower().Trim() == primaryKey.ToLower().Trim());
                 if (pkColumn != null)
                 {
                     pkColumn.IsPK = true;
@@ -368,7 +373,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
         public string GetVersionName()
         {
             var versionCol = Columns.FirstOrDefault(c => cfg.VersionFunc(c.Name));
-            if (versionCol != null)
+            if (versionCol != null && !string.IsNullOrWhiteSpace(versionCol.Name))
             {
                 return versionCol.Name;
             }
@@ -379,7 +384,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
         public string GetIsActiveName()
         {
             var isActiveCol = Columns.FirstOrDefault(c => cfg.IsActiveFunc(c.Name));
-            if (isActiveCol != null)
+            if (isActiveCol != null && !string.IsNullOrWhiteSpace(isActiveCol.Name))
             {
                 return isActiveCol.Name;
             }
@@ -390,7 +395,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
         public string GetUpdatedUserName()
         {
             var updateUserCol = Columns.FirstOrDefault(c => cfg.UpdateUserFunc(c.Name));
-            if (updateUserCol != null)
+            if (updateUserCol != null && !string.IsNullOrWhiteSpace(updateUserCol.Name))
             {
                 return updateUserCol.Name;
             }
@@ -401,7 +406,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
         public string GetInsertedUserName()
         {
             var insertUserCol = Columns.FirstOrDefault(c => cfg.InsertUserFunc(c.Name));
-            if (insertUserCol != null)
+            if (insertUserCol != null && !string.IsNullOrWhiteSpace(insertUserCol.Name))
             {
                 return insertUserCol.Name;
             }
@@ -412,7 +417,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
         public string GetUpdatedDateName()
         {
             var updateDateCol = Columns.FirstOrDefault(c => cfg.UpdateDateFunc(c.Name));
-            if (updateDateCol != null)
+            if (updateDateCol != null && !string.IsNullOrWhiteSpace(updateDateCol.Name))
             {
                 return updateDateCol.Name;
             }
@@ -423,7 +428,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
         public string GetInsertedDateName()
         {
             var insertDateCol = Columns.FirstOrDefault(c => cfg.InsertDateFunc(c.Name));
-            if (insertDateCol != null)
+            if (insertDateCol != null && !string.IsNullOrWhiteSpace(insertDateCol.Name))
             {
                 return insertDateCol.Name;
             }

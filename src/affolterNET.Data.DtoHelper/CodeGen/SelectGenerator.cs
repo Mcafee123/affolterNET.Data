@@ -30,7 +30,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         private string Statement(Column col)
         {
-            return $"(@{col.Name} is null or {col.Name.EnsureSquareBrackets()}=@{col.Name})";
+            return $"(@{col.Name} is null or {col.Name!.EnsureSquareBrackets()}=@{col.Name})";
         }
 
         private string SelectCommand()
@@ -42,7 +42,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 selectWhere = " where " + string.Join(" and ", keys.Select(Statement));
             }
             return
-                $"$\"select top({{maxCount}}) {string.Join(", ", tbl.AllColumns.Select(c => c.Name.EnsureSquareBrackets()))} from {tbl.Schema}.{tbl.Name}{selectWhere}\"";
+                $"$\"select top({{maxCount}}) {string.Join(", ", tbl.AllColumns.Select(c => c.Name!.EnsureSquareBrackets()))} from {tbl.Schema}.{tbl.Name}{selectWhere}\"";
         }
     }
 }

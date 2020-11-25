@@ -19,7 +19,7 @@ namespace affolterNET.Data.SessionHandler
 
         public IDbConnection Connection { get; private set; }
 
-        public IDbTransaction Transaction { get; private set; }
+        public IDbTransaction? Transaction { get; private set; }
 
         public void Begin(IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
@@ -34,11 +34,20 @@ namespace affolterNET.Data.SessionHandler
 
         public void Commit()
         {
+            if (Transaction == null)
+            {
+                throw new InvalidOperationException("Transaction was null");
+            }
+
             Transaction.Commit();
         }
 
         public void Rollback()
         {
+            if (Transaction == null)
+            {
+                throw new InvalidOperationException("Transaction was null");
+            }
             Transaction.Rollback();
         }
 
@@ -61,7 +70,7 @@ namespace affolterNET.Data.SessionHandler
                     // Connection Dispose
                     Connection?.Close();
                     Connection?.Dispose();
-                    Connection = null;
+                    Connection = null!;
                 }
 
                 _disposed = true;

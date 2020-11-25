@@ -21,7 +21,7 @@ namespace affolterNET.Data
 
         protected object ParamsObject => Params;
 
-        public string Sql { get; protected set; }
+        public string? Sql { get; protected set; }
 
         protected void AddParam(string propertyName, object propertyValue)
         {

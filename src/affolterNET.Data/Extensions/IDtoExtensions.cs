@@ -23,7 +23,7 @@ namespace affolterNET.Data.Extensions
             return (Guid)id;
         }
 
-        public static string GetString(this IDtoBase dto, string propertyname)
+        public static string? GetString(this IDtoBase dto, string propertyname)
         {
             if (dto == null)
             {

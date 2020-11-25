@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
@@ -14,7 +15,7 @@ namespace affolterNET.Data.DtoHelper.Database
 
         private readonly TextWriter tw;
 
-        public TablesLoader(GeneratorCfg cfg, TextWriter tw = null)
+        public TablesLoader(GeneratorCfg cfg, TextWriter? tw = null)
         {
             if (string.IsNullOrWhiteSpace(cfg.ConnString))
             {
@@ -40,7 +41,7 @@ namespace affolterNET.Data.DtoHelper.Database
             tw.WriteLine("// ");
             tw.WriteLine("// The following connection settings were used to generate this file");
             tw.WriteLine("// ");
-            tw.WriteLine("//     Connection String:      `{0}`", ZapPassword(builder.ConnectionString));
+            tw.WriteLine("//     Connection String:      `{0}`", ZapPassword(builder.ConnectionString!));
             tw.WriteLine("//     Include Views:          `{0}`", cfg.IncludeViews);
             tw.WriteLine(string.Empty);
 
@@ -74,6 +75,11 @@ namespace affolterNET.Data.DtoHelper.Database
                         t.ClassName = cfg.ClassPrefix + t.ClassName + cfg.ClassSuffix;
                         foreach (var c in t.AllColumns)
                         {
+                            if (c.PropertyName == null)
+                            {
+                                throw new InvalidOperationException($"{nameof(c.PropertyName)} was empty");
+                            }
+
                             c.PropertyName = rxClean.Replace(c.PropertyName, "_$1");
 
                             // Make sure property name doesn't clash with class name
@@ -84,8 +90,12 @@ namespace affolterNET.Data.DtoHelper.Database
                         }
                     }
 
-                    var schemas = result.Select(t => t.Schema).Distinct();
-
+                    var schemas = result
+                        .Select(t => t.Schema)
+                        .Distinct()
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                        .Select(s => s!);
+ 
                     return new TablesResultat(schemas) { Tables = result };
                 }
             }
