@@ -54,14 +54,14 @@ stages:
         inputs:
           command: test
           projects: '**/Test/*.Test/*.Test.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings -- RunConfiguration.DisableAppDomain=true'
+          arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --settings src/Test/coverlet.runsettings --RunConfiguration.DisableAppDomain=true'
 
       - task: DotNetCoreCLI@2
         displayName: 'nuget pack'
         inputs:
           command: 'pack'
           packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
-          versioningScheme: 'off'
+          versioningScheme: 'byBuildNumber'
 
       - task: DotNetCoreCLI@2
         displayName: 'nuget push'
