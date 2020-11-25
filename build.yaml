@@ -36,6 +36,12 @@ stages:
       - bash: echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
         condition: contains(variables['Build.BuildNumber'], '-')
 
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '5.x'
+          includePreviewVersions: false
+
       - task: DotNetCoreCLI@2
         displayName: dotnet restore
         inputs:
