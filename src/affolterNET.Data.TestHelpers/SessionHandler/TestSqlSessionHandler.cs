@@ -48,6 +48,10 @@ namespace affolterNET.Data.TestHelpers.SessionHandler
             {
                 throw new InvalidOperationException("Db Session was null");
             }
+            if (_session.Transaction == null)
+            {
+                throw new InvalidOperationException("Db Transaction was null");
+            }
 
             return await query.ExecuteAsync(_session.Connection, _session.Transaction);
         }

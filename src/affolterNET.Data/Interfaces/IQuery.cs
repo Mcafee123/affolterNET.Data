@@ -11,6 +11,6 @@ namespace affolterNET.Data.Interfaces
 
         DataResult<T> Execute(IDbConnection connection, IDbTransaction transaction);
 
-        Task<DataResult<T>> ExecuteAsync(IDbConnection connection, IDbTransaction? transaction);
+        Task<DataResult<T>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction);
     }
 }
