@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using affolterNET.Data.DtoHelper.CodeGen;
 using affolterNET.Data.DtoHelper.Database;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using Xunit.Abstractions;
@@ -33,7 +34,8 @@ namespace affolterNET.Data.DtoHelper.Test.CodeGen
             var gen = new SelectGenerator(tbl);
             var list = new List<MemberDeclarationSyntax>();
             gen.Generate(mds => list.Add(mds));
-            var m = Assert.Single(list) as MethodDeclarationSyntax;
+            
+            var m = Assert.Single(list) as BaseMethodDeclarationSyntax;
             Assert.NotNull(m);
             Assert.NotNull(m!.Body);
             var method = Regex.Replace(m.Body!.ToString(), @"\s+", " ", RegexOptions.Multiline);

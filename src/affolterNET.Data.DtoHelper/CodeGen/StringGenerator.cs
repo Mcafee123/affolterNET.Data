@@ -16,18 +16,14 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public void Generate(Action<MemberDeclarationSyntax> add)
         {
-            var node = CSharpSyntaxTree.ParseText(input);
-            var root = node.GetCompilationUnitRoot();
-            if (root.Members.Count < 1)
+            var node = SyntaxFactory.ParseMemberDeclaration(input);
+            if (node == null)
             {
-                throw new InvalidOperationException("Kein Rootnode gefunden beim Parsing");
+                throw new InvalidOperationException("could not parse member declaration");
             }
-
-            foreach (var r in root.Members)
-            {
-                var ws = r.NormalizeWhitespace()!;
-                add(ws);
-            }
+            
+            var ws = node.NormalizeWhitespace()!;
+            add(ws);
         }
     }
 }
