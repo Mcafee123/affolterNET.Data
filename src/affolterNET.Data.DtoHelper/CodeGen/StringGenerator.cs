@@ -25,7 +25,8 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
             foreach (var r in root.Members)
             {
-                add(r.NormalizeWhitespace());
+                var ws = r.NormalizeWhitespace()!;
+                add(ws);
             }
         }
     }

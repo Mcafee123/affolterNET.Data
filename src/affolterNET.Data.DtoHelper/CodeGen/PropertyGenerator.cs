@@ -28,6 +28,11 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public PropertyDeclarationSyntax Generate()
         {
+            if (string.IsNullOrWhiteSpace(col.PropertyType))
+            {
+                throw new InvalidOperationException($"{nameof(col.PropertyType)} was empty");
+            }
+
             var type = SyntaxFactory.ParseTypeName(col.PropertyType);
             if (string.IsNullOrWhiteSpace(col.PropertyName))
             {

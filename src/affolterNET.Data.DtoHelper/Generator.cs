@@ -14,24 +14,24 @@ namespace affolterNET.Data.DtoHelper
 {
     public class Generator
     {
-        private readonly GeneratorCfg cfg;
+        private readonly GeneratorCfg _cfg;
 
-        private readonly ClassesGenerator cg;
+        private readonly ClassesGenerator _cg;
 
-        private readonly IFileHandler fh;
+        private readonly IFileHandler _fh;
 
-        private readonly TablesLoader tl;
+        private readonly TablesLoader _tl;
 
-        private NamespaceDeclarationSyntax? ns;
+        private NamespaceDeclarationSyntax? _ns;
 
-        private CompilationUnitSyntax? root;
+        private CompilationUnitSyntax? _root;
 
         public Generator(GeneratorCfg cfg, IFileHandler fh)
         {
-            this.cfg = cfg;
-            this.fh = fh;
-            tl = new TablesLoader(this.cfg);
-            cg = new ClassesGenerator(cfg);
+            _cfg = cfg;
+            _fh = fh;
+            _tl = new TablesLoader(_cfg);
+            _cg = new ClassesGenerator(cfg);
         }
 
         public async Task Generate()
@@ -49,7 +49,7 @@ namespace affolterNET.Data.DtoHelper
 
         private TablesResultat LoadTables()
         {
-            var res = tl.LoadTables();
+            var res = _tl.LoadTables();
             if ((res.Error != null) || (res.Ex != null))
             {
                 throw new InvalidOperationException(res.Error, res.Ex);
@@ -60,19 +60,24 @@ namespace affolterNET.Data.DtoHelper
 
         private async Task SetRootAndNamespace()
         {
+            if (string.IsNullOrWhiteSpace(_cfg.Namespace))
+            {
+                throw new InvalidOperationException($"{nameof(_cfg.Namespace)} was empty");
+            }
+
             // Parse the code into a SyntaxTree.
             var tree = CSharpSyntaxTree.ParseText(string.Empty);
 
             // Get the root CompilationUnitSyntax.
-            root = await tree.GetRootAsync().ConfigureAwait(false) as CompilationUnitSyntax;
+            _root = await tree.GetRootAsync().ConfigureAwait(false) as CompilationUnitSyntax;
 
-            if (root == null)
+            if (_root == null)
             {
                 throw new InvalidOperationException("Root des Codefiles war null");
             }
 
             // usings
-            var usings = cfg.Usings.Select(
+            var usings = _cfg.Usings.Select(
                 u =>
                 {
                     var us = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(u));
@@ -83,14 +88,14 @@ namespace affolterNET.Data.DtoHelper
 
                     return us;
                 }).ToArray();
-            root = root.AddUsings(usings);
+            _root = _root.AddUsings(usings);
 
             // namespace
-            ns = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(cfg.Namespace));
+            _ns = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(_cfg.Namespace));
 
             // comments
-            var comm = cfg.Comments.Select(SyntaxFactory.Comment).ToArray();
-            ns = ns.WithLeadingTrivia(comm);
+            var comm = _cfg.Comments.Select(SyntaxFactory.Comment).ToArray();
+            _ns = _ns.WithLeadingTrivia(comm);
         }
 
         private void FillStatics(TablesResultat tr)
@@ -120,7 +125,7 @@ namespace affolterNET.Data.DtoHelper
             var sgStaticTableFactory = new StringGenerator(dbString);
             var listTables = new List<MemberDeclarationSyntax>();
             sgStaticTableFactory.Generate(mds => listTables.Add(mds));
-            ns = ns!.AddMembers(listTables.ToArray());
+            _ns = _ns!.AddMembers(listTables.ToArray());
 
             // viewfactory
             var getViewString =
@@ -129,20 +134,20 @@ namespace affolterNET.Data.DtoHelper
             var sgStaticViewFactory = new StringGenerator(viewString);
             var listViews = new List<MemberDeclarationSyntax>();
             sgStaticViewFactory.Generate(mds => listViews.Add(mds));
-            ns = ns.AddMembers(listViews.ToArray());
+            _ns = _ns.AddMembers(listViews.ToArray());
         }
 
         private void FillDtos(Tables tables)
         {
             // classes
-            ns = cg.Generate(ns!, tables);
-            root = root!.AddMembers(ns);
+            _ns = _cg.Generate(_ns!, tables);
+            _root = _root!.AddMembers(_ns);
         }
 
         private void WriteTargetFile()
         {
             // Write the new file.
-            fh.WriteCode(root!.NormalizeWhitespace().ToFullString());
+            _fh.WriteCode(_root!.NormalizeWhitespace().ToFullString());
         }
     }
 }
