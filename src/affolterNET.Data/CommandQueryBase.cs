@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Dynamic;
 using System.Text;
+using System.Threading.Tasks;
+using affolterNET.Data.Result;
 
 namespace affolterNET.Data
 {
-    public abstract class CommandQueryBase
+    public abstract class CommandQueryBase<TResult>
     {
         public const string ScopeIdentity = "select scope_identity() as id";
         public const string LastChangedDate = "LastChangedDate";
@@ -34,6 +37,13 @@ namespace affolterNET.Data
                 ParamsDict.Add(propertyName, propertyValue);
             }
         }
+
+        public virtual DataResult<TResult> Execute(IDbConnection connection, IDbTransaction transaction)
+        {
+            return ExecuteAsync(connection, transaction).GetAwaiter().GetResult();
+        }
+
+        public abstract Task<DataResult<TResult>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction);
 
         public override string ToString()
         {
@@ -80,7 +90,7 @@ namespace affolterNET.Data
                     return v.HasValue ? v.Value ? "1" : "0" : "null";
                 case "binary":
                     // hex wert bauen
-                    var hex = BitConverter.ToString((byte[])val);
+                    var hex = BitConverter.ToString((byte[]) val);
                     hex = $"0x{hex.Replace("-", string.Empty)}";
                     return hex;
                 case "datetime":
