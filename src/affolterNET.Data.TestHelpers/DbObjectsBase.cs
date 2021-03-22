@@ -10,7 +10,7 @@ namespace affolterNET.Data.TestHelpers
     public abstract class DbObjectsBase
     {
         private readonly ITestOutputHelper? _output;
-        private readonly Dictionary<string, object> _dbobjects = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _dbobjects = new();
 
         public DbObjectsBase(ITestOutputHelper? output = null)
         {
@@ -60,6 +60,26 @@ namespace affolterNET.Data.TestHelpers
             return _dbobjects.Values.Where(o => o.GetType() == typeof(T)).Cast<T>();
         }
 
+        protected T Set<T>(Func<T> create, Func<T, string> getkey)
+            where T : class
+        {
+            return Set(create, getkey, out _);
+        }
+
+        protected T Set<T>(Func<T> create, Func<T, string> getkey, out string key)
+            where T : class
+        {
+            var obj = create(); 
+            key = getkey(obj);
+            _dbobjects.Add(key, obj);
+            WriteLine($"set: " + JsonConvert.SerializeObject(obj));
+            var o = _dbobjects[key] as T;
+            o.Should().NotBeNull(
+                $"Unter dem Namen \"{key}\" wurde bereits ein Objekt vom Typ \"{_dbobjects[key].GetType().FullName}\" hinzugefügt (aktuell: {typeof(T).FullName})");
+            return o!;
+        }
+
+        [Obsolete("please use \"Set\"")]
         protected T GetSet<T>(Func<T> create, string name)
             where T : class
         {
