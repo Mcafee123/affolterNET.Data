@@ -29,17 +29,24 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             }
             var columns = columnsBuilder.ToString();
 
-            var sgRefresh = new StringGenerator(
+            var sgGetFromDb = new StringGenerator(
                 $@"
-            public {tbl.ObjectName} GetFromDb(IDbConnection conn, IDbTransaction trsact) {{
-                return conn.QueryFirstOrDefault<{tbl.ObjectName}>(this.GetSelectCommand(1), this, trsact);
-            }}
+                public {tbl.ObjectName} GetFromDb(IDbConnection conn, IDbTransaction trsact) {{
+                    return conn.QueryFirstOrDefault<{tbl.ObjectName}>(this.GetSelectCommand(1), this, trsact);
+                }}
 
-            public void Reload(IDbConnection conn, IDbTransaction trsact) {{
-                var loaded = this.GetFromDb(conn, trsact);
-                {columns}
-            }}");
-            sgRefresh.Generate(add);
+            ");
+            sgGetFromDb.Generate(add);
+
+            var sgReload = new StringGenerator(
+                $@"
+                public void Reload(IDbConnection conn, IDbTransaction trsact) {{
+                    var loaded = this.GetFromDb(conn, trsact);
+                    {columns}
+                }}
+            ");
+            
+            sgReload.Generate(add);
         }
     }
 }

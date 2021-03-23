@@ -11,7 +11,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public StringGenerator(string input)
         {
-            this.input = input.Replace(Environment.NewLine, string.Empty);
+            this.input = input; // .Replace(Environment.NewLine, string.Empty);
         }
 
         public void Generate(Action<MemberDeclarationSyntax> add)

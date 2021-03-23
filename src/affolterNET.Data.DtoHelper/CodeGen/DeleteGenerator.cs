@@ -41,12 +41,18 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 public string GetDeleteCommand() {{
                     {sql};
                 }}
+            ");
 
+            sg.Generate(add);
+            
+            var sgAll = new StringGenerator(
+                $@"
                 public string GetDeleteAllCommand() {{
                     {sqlAll}"";
                 }}
             ");
-            sg.Generate(add);
+            
+            sgAll.Generate(add);
         }
     }
 }

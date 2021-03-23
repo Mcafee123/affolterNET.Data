@@ -58,6 +58,10 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             // DeleteGenerator
             var sgDelete = new DeleteGenerator(tbl);
             sgDelete.Generate(Add);
+            
+            // SaveByIdGenerator
+            var sgSaveById = new SaveByIdGenerator(tbl);
+            sgSaveById.Generate(Add);
 
             if (!tbl.IsView)
             {
