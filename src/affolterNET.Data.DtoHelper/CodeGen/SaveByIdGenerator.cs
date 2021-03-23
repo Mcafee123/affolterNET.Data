@@ -24,14 +24,15 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
             var sg = new StringGenerator(
                 $@"
-                public string GetSaveByIdCommand()
+                public string GetSaveByIdCommand(bool select = true)
                 {{
                     return 
                         @$""if exists (select {pk.Name} from {tbl.Schema}.{tbl.Name} where {pk.Name} = @{pk.Name})
-                            {{GetUpdateCommand()}}
+                            {{GetUpdateCommand()}};
                         else
                             {{GetInsertCommand()}}
-                        "";
+
+                        {{(select ? GetSelectCommand() : string.Empty)}}"";
                 }}
             ");
             sg.Generate(add);
