@@ -24,19 +24,19 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
             var sg = new StringGenerator(
                 $@"
-                public string GetSaveByIdCommand(bool select = true)
+                public string GetSaveByIdCommand(bool select = false)
                 {{
                     return 
                         @$""
                         if exists (select {pk.Name} from {tbl.Schema}.{tbl.Name} where {pk.Name} = @{pk.Name})
                             begin
                                 {{GetUpdateCommand()}};
-                                {{(select ? string.Empty : ""select 'updated'"")}}
+                                {{(select ? string.Empty : ""select '{tbl.Schema}' as [Schema], '{tbl.Name}' as [Table], convert(nvarchar(50), @{pk.Name}) as [Id], 'updated' as [Action]"")}}
                             end
                         else
                             begin
                                 {{GetInsertCommand({(tbl.GetPrimaryKeyColumn()?.IsAutoIncrement == true ? "true" : "false")})}}
-                                {{(select ? string.Empty : ""select 'inserted'"")}}
+                                {{(select ? string.Empty : ""select '{tbl.Schema}' as [Schema], '{tbl.Name}' as [Table], convert(nvarchar(50), @{pk.Name}) as [Id], 'inserted' as [Action]"")}}
                             end
                         {{(select ? GetSelectCommand() : string.Empty)}}"";
                 }}
