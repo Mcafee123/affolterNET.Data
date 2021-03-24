@@ -26,6 +26,23 @@ namespace affolterNET.Data
 
         public string? Sql { get; protected set; }
 
+        protected void AddParams<T>(T paramsObject, Func<string, bool>? predicate = null)
+        {
+            if (paramsObject == null)
+            {
+                throw new ArgumentNullException(nameof(paramsObject), "object cannot be null");
+            }
+
+            foreach (var property in paramsObject.GetType().GetProperties())
+            {
+                if (predicate == null || predicate(property.Name))
+                {
+                    var val = property.GetValue(paramsObject);
+                    AddParam(property.Name, val!);   
+                }
+            }
+        }
+
         protected void AddParam(string propertyName, object propertyValue)
         {
             if (ParamsDict.ContainsKey(propertyName))

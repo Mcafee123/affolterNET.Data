@@ -27,11 +27,17 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 public string GetSaveByIdCommand(bool select = true)
                 {{
                     return 
-                        @$""if exists (select {pk.Name} from {tbl.Schema}.{tbl.Name} where {pk.Name} = @{pk.Name})
-                            {{GetUpdateCommand()}};
+                        @$""
+                        if exists (select {pk.Name} from {tbl.Schema}.{tbl.Name} where {pk.Name} = @{pk.Name})
+                            begin
+                                {{GetUpdateCommand()}};
+                                {{(select ? string.Empty : ""select 'updated'"")}}
+                            end
                         else
-                            {{GetInsertCommand()}}
-
+                            begin
+                                {{GetInsertCommand({(tbl.GetPrimaryKeyColumn()?.IsAutoIncrement == true ? "true" : "false")})}}
+                                {{(select ? string.Empty : ""select 'inserted'"")}}
+                            end
                         {{(select ? GetSelectCommand() : string.Empty)}}"";
                 }}
             ");

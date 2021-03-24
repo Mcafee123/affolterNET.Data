@@ -43,7 +43,7 @@ namespace affolterNET.Data.TestHelpers
 
                     _ops = new DbOperations(
                         Fixture.Connection,
-                        Fixture.Transaction.WrappedTransaction,
+                        Fixture.Transaction,
                         _dtoFactory);
                 }
 

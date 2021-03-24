@@ -24,19 +24,19 @@ namespace affolterNET.Data.TestHelpers.Builders
 
         public CommandQueryBuilder(DbFixture dbFixture, IDtoFactory dtoFactory, bool checkParameters = true)
         {
-            Connection = dbFixture.Connection ?? throw new InvalidOperationException($"{nameof(dbFixture.Connection)} was null");
-            Transaction = dbFixture.Transaction ?? throw new InvalidOperationException($"{nameof(dbFixture.Transaction)} was null");
-            WrappedTransaction = ((ITransactionDecorator)Transaction).WrappedTransaction;
-            _dbOperations = new DbOperations(Connection, WrappedTransaction, dtoFactory);
+            Connection = dbFixture.Connection ??
+                         throw new InvalidOperationException($"{nameof(dbFixture.Connection)} was null");
+            Transaction = dbFixture.Transaction ??
+                          throw new InvalidOperationException($"{nameof(dbFixture.Transaction)} was null");
+            _dbOperations = new DbOperations(Connection, Transaction, dtoFactory);
             _assertHelper = new AssertHelper(_dbOperations, dtoFactory);
-            this._checkParameters = checkParameters;
+            _checkParameters = checkParameters;
         }
 
         public IConnectionDecorator Connection { get; }
 
         public IDbTransaction Transaction { get; }
 
-        public IDbTransaction WrappedTransaction { get; }
 
         public void Rollback()
         {
@@ -92,7 +92,7 @@ namespace affolterNET.Data.TestHelpers.Builders
                 var query = _arrange(_dbOperations);
                 _assertHelper.SetParams(query.ParamsDict);
                 Debug.WriteLine(query.ToString());
-                return Task.Run(() => query.ExecuteAsync(Connection, WrappedTransaction)).GetAwaiter().GetResult();
+                return Task.Run(() => query.ExecuteAsync(Connection, Transaction)).GetAwaiter().GetResult();
             }
 
             return default!;

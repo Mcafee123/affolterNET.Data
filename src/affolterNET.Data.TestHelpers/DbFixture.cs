@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using affolterNET.Data.Interfaces.SessionHandler;
 using affolterNET.Data.TestHelpers.Interfaces;
@@ -11,10 +12,11 @@ namespace affolterNET.Data.TestHelpers
     {
         private string? _connString;
         private ISqlSessionHandler? _handler;
-
+        private ITransactionDecorator? _transaction;
+        
         public IConnectionDecorator? Connection { get; private set; }
 
-        public ITransactionDecorator? Transaction { get; set; }
+        public IDbTransaction? Transaction => _transaction?.WrappedTransaction;
 
         public ISqlSessionHandler SqlSessionHandler
         {
@@ -38,8 +40,8 @@ namespace affolterNET.Data.TestHelpers
         public void EndTest()
         {
             Connection?.RollbackTestTransaction();
-            Transaction?.Dispose();
-            Transaction = null!;
+            _transaction?.Dispose();
+            _transaction = null!;
         }
 
         public void StartTest()
@@ -50,10 +52,10 @@ namespace affolterNET.Data.TestHelpers
                 var cn = new SqlConnection(_connString);
                 Connection = new ConnectionDecorator(cn);
                 Connection.Open();
-                _handler = new TestSqlSessionHandler(Connection, Transaction);
             }
 
-            Transaction = Connection.BeginTransaction() as ITransactionDecorator;
+            _transaction = Connection.BeginTransaction() as ITransactionDecorator;
+            _handler = new TestSqlSessionHandler(Connection, _transaction!.WrappedTransaction);
         }
 
         protected virtual void Dispose(bool disposing)
