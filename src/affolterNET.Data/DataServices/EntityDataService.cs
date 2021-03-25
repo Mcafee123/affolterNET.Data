@@ -5,6 +5,7 @@ using affolterNET.Data.Commands;
 using affolterNET.Data.Interfaces;
 using affolterNET.Data.Interfaces.DataServices;
 using affolterNET.Data.Interfaces.SessionHandler;
+using affolterNET.Data.Models;
 using affolterNET.Data.Queries;
 using affolterNET.Data.Result;
 using Microsoft.Extensions.Logging;
@@ -46,7 +47,7 @@ namespace affolterNET.Data.DataServices
             return result.Data.First();
         }
 
-        public async Task<string> Save(T dto)
+        public async Task<SaveInfo> Save(T dto)
         {
             var cmd = new SaveEntityCommand<T>(dto);
             var result = await _sessionHandler.QueryAsync(cmd);

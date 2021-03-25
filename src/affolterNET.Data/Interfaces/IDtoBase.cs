@@ -15,7 +15,7 @@ namespace affolterNET.Data.Interfaces
 
         string GetDeleteAllCommand();
 
-        string GetSaveByIdCommand(bool select = true);
+        string GetSaveByIdCommand(bool select = false);
 
         bool IsAutoincrementId();
 
