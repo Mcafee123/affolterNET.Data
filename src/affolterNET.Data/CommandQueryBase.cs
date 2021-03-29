@@ -4,7 +4,10 @@ using System.Data;
 using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
+using affolterNET.Data.Extensions;
+using affolterNET.Data.Models;
 using affolterNET.Data.Result;
+using Dapper;
 
 namespace affolterNET.Data
 {
@@ -62,6 +65,32 @@ namespace affolterNET.Data
 
         public abstract Task<DataResult<TResult>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction);
 
+        protected async Task<DataResult<IEnumerable<SaveInfo>>> ExecuteSaveInfo(IDbConnection connection,
+            IDbTransaction transaction)
+        {
+            var reader = await connection.QueryMultipleAsync(Sql, ParamsObject, transaction);
+            try
+            {
+                return await TransformSaveInfo(reader);
+            }
+            finally
+            {
+                reader.EndQueryMultiple();
+            }
+        }
+
+        protected async Task<DataResult<IEnumerable<SaveInfo>>> TransformSaveInfo(SqlMapper.GridReader reader)
+        {
+            var results = new List<SaveInfo>();
+            do
+            {
+                var info = await reader.ReadFirstOrDefaultAsync<SaveInfo>();
+                results.Add(info);
+            } while (!reader.IsConsumed);
+
+            return new DataResult<IEnumerable<SaveInfo>>(results);
+        }
+        
         public override string ToString()
         {
             var sb = new StringBuilder();
