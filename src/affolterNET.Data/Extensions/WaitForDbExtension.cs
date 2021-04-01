@@ -8,7 +8,17 @@ namespace affolterNET.Data.Extensions
 {
     public static class WaitForDbExtension
     {
-        public static async Task WaitForDbConnection(
+        public static void WaitForDbConnection(
+            this string connstring,
+            bool logFailures = true,
+            TextWriter? outputWriter = null,
+            int sleepTime = 500, 
+            int retries = 100)
+        {
+            connstring.WaitForDbConnectionAsync(logFailures, outputWriter, sleepTime, retries).GetAwaiter().GetResult();
+        }
+
+        public static async Task WaitForDbConnectionAsync(
             this string connstring,
             bool logFailures = true,
             TextWriter? outputWriter = null,
