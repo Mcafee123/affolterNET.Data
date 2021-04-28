@@ -1,8 +1,5 @@
 trigger:
   batch: true
-  branches:
-    include:
-      - main
   
 pool:
   vmImage: 'ubuntu-18.04'
@@ -74,6 +71,7 @@ stages:
 
       - task: DotNetCoreCLI@2
         displayName: 'nuget push'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'push'
           packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
@@ -82,6 +80,7 @@ stages:
 
       - task: git-tag-on-release-task@9
         displayName: "add tag to git"
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           staticTagName: "nuget-$(Build.BuildNumber)"
           
