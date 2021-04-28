@@ -48,13 +48,14 @@ namespace affolterNET.Data
 
         protected void AddParam(string propertyName, object propertyValue)
         {
-            if (ParamsDict.ContainsKey(propertyName))
+            var pn = propertyName.StripSquareBrackets();
+            if (ParamsDict.ContainsKey(pn))
             {
-                ParamsDict[propertyName] = propertyValue;
+                ParamsDict[pn] = propertyValue;
             }
             else
             {
-                ParamsDict.Add(propertyName, propertyValue);
+                ParamsDict.Add(pn, propertyValue);
             }
         }
 
