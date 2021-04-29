@@ -9,6 +9,8 @@ variables:
   value: 1
 - name: minor
   value: 5
+- name: assemblyDefaultVersion
+  value: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
 
 name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
@@ -33,8 +35,11 @@ stages:
 
       steps:
 
-      - bash: echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
+      - bash: | 
+          echo Version: $(assemblyDefaultVersion)
+          echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
         condition: contains(variables['Build.BuildNumber'], '-')
+        displayName: 'fix assembly version'
 
       - task: UseDotNet@2
         inputs:
