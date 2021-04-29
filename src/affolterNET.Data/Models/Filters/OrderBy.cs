@@ -30,7 +30,7 @@ namespace affolterNET.Data.Models.Filters
 
         public static OrderBy For(string attribute, string prefix = "")
         {
-            return new OrderBy(attribute, prefix);
+            return new(attribute, prefix);
         }
 
         public override string ToString()
