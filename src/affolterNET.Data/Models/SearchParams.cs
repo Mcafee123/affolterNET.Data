@@ -47,7 +47,7 @@ namespace affolterNET.Data.Models
             return RootFilter.ToString();
         }
 
-        public string GetSearchSql(string viewName, string firstViewColumn)
+        public string GetSearchSql(string viewName, string viewIdColumn)
         {
             var fields = string.Join("\n, ", GridLayout.Columns);
             if (!string.IsNullOrWhiteSpace(fields))
@@ -58,26 +58,29 @@ namespace affolterNET.Data.Models
             return $@"
                 select
                 ResultRowNum
-                , {firstViewColumn}
+                , result.{viewIdColumn}
                 {fields}
                 from (
-                    select
-                    InstitutionId as InstId
-                    , count(InstitutionId) as InstCount
-                    , min(RowNum) as MinRowNum
-                    , row_number() over (order by min(RowNum)) as ResultRowNum
-                    from (
-                        select InstitutionId
-                        , row_number() over (order by {SortString()}) as RowNum
-                        from {viewName}
-                        {RootFilter}
-                    ) search
-                    group by InstitutionId
-                ) dist
-                join {viewName}
-                    on dist.InstId = InstitutionId
+                     select {viewIdColumn}
+                          , min(RowNum) as RowNum
+                          , row_number() over (order by min(RowNum)) as ResultRowNum
+                     from (
+                              select search.{viewIdColumn}
+                                   , row_number() over (order by {SortString()}) as RowNum
+                              from (
+                                       select
+                                       {viewIdColumn}
+                                       {fields}
+                                       from {viewName}
+                                       {RootFilter}
+                                   ) search
+                          ) rows
+                     group by {viewIdColumn}
+                 ) result
+                join {viewName} jn
+                    on result.{viewIdColumn} = jn.{viewIdColumn}
                 {Paging("ResultRowNum")}
-                order by ResultRowNum
+                order by {SortString()}
             ";
         }
     }
