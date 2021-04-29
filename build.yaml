@@ -9,8 +9,6 @@ variables:
   value: 1
 - name: minor
   value: 5
-- name: assemblyDefaultVersion
-  value: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
 
 name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
@@ -21,17 +19,19 @@ stages:
   - stage: Build
     displayName: 'Build Code and Run Unit Tests'
     variables:
-      - name: 'buildConfiguration'
-        value: 'Release'
+    - name: 'buildConfiguration'
+      value: 'Release'
+    - name: informationalVersion
+      value: $(Build.BuildNumber)
+    - name: assemblyVersion
+      value: $(Build.BuildNumber)
+    - name: assemblyDefaultVersion
+      value: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
 
     jobs:
   
     - job: Build
       displayName: 'Build Code and run Unit Tests'
-      variables:
-        informationalVersion: $(Build.BuildNumber)
-        assemblyVersion: $(Build.BuildNumber)
-        assemblyDefaultVersion: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
 
       steps:
 
@@ -69,6 +69,7 @@ stages:
 
       - task: DotNetCoreCLI@2
         displayName: 'nuget pack'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'pack'
           packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
