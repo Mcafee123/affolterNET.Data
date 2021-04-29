@@ -47,7 +47,7 @@ namespace affolterNET.Data.Models
             return RootFilter.ToString();
         }
 
-        public string GetSearchSql(string viewName, string viewIdColumn)
+        public string GetSearchSql(string viewName, string viewIdColumn, params string[] fieldsAfterGenericType)
         {
             var fields = string.Join("\n, ", GridLayout.Columns);
             if (!string.IsNullOrWhiteSpace(fields))
@@ -60,6 +60,7 @@ namespace affolterNET.Data.Models
                 ResultRowNum
                 , result.{viewIdColumn}
                 {fields}
+                ,{string.Join(", ", fieldsAfterGenericType)}
                 from (
                      select {viewIdColumn}
                           , min(RowNum) as RowNum
