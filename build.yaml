@@ -1,11 +1,8 @@
 trigger:
   batch: true
-  branches:
-    include:
-      - main
   
 pool:
-  vmImage: 'ubuntu-18.04'
+  vmImage: 'ubuntu-20.04'
 
 variables:
 - name: major
@@ -22,22 +19,27 @@ stages:
   - stage: Build
     displayName: 'Build Code and Run Unit Tests'
     variables:
-      - name: 'buildConfiguration'
-        value: 'Release'
+    - name: 'buildConfiguration'
+      value: 'Release'
+    - name: informationalVersion
+      value: $(Build.BuildNumber)
+    - name: assemblyVersion
+      value: $(Build.BuildNumber)
+    - name: assemblyDefaultVersion
+      value: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
 
     jobs:
   
     - job: Build
       displayName: 'Build Code and run Unit Tests'
-      variables:
-        informationalVersion: $(Build.BuildNumber)
-        assemblyVersion: $(Build.BuildNumber)
-        assemblyDefaultVersion: $[ format('{0}.{1}', variables['major'], variables['minor']) ]
 
       steps:
 
-      - bash: echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
+      - bash: | 
+          echo Version: $(assemblyDefaultVersion)
+          echo '##vso[task.setvariable variable=assemblyVersion]$(assemblyDefaultVersion)'
         condition: contains(variables['Build.BuildNumber'], '-')
+        displayName: 'fix assembly version'
 
       - task: UseDotNet@2
         inputs:
@@ -67,6 +69,7 @@ stages:
 
       - task: DotNetCoreCLI@2
         displayName: 'nuget pack'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'pack'
           packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
@@ -74,6 +77,7 @@ stages:
 
       - task: DotNetCoreCLI@2
         displayName: 'nuget push'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'push'
           packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
@@ -82,6 +86,7 @@ stages:
 
       - task: git-tag-on-release-task@9
         displayName: "add tag to git"
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           staticTagName: "nuget-$(Build.BuildNumber)"
           

@@ -28,16 +28,6 @@ namespace affolterNET.Data.Models.Filters
             return true;
         }
 
-        public static OrderBy ForInstitution()
-        {
-            return new OrderBy("Name", "i");
-        }
-
-        public static OrderBy ForPerson()
-        {
-            return new OrderBy("Nachname", "p");
-        }
-
         public static OrderBy For(string attribute, string prefix = "")
         {
             return new OrderBy(attribute, prefix);
