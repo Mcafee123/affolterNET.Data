@@ -200,6 +200,9 @@ namespace affolterNET.Data.DtoHelper.Database
                 case "time":
                     sysType = "DateTime";
                     break;
+                case "datetimeoffset":
+                    sysType = nameof(DateTimeOffset);
+                    break;
                 case "float":
                     sysType = "double";
                     break;
