@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace affolterNET.Data.Result
 {
@@ -54,11 +54,11 @@ namespace affolterNET.Data.Result
 
             if (HasException)
             {
-                logger.LogError("Exception in {methodName}", methodName, Exception);
+                logger.Error("Exception in {methodName}", methodName, Exception);
             }
             else
             {
-                logger.LogError("Error in {methodName}, returning StatusCode {statusCode}", methodName, StatusCode);
+                logger.Error("Error in {methodName}, returning StatusCode {statusCode}", methodName, StatusCode);
             }
         }
     }

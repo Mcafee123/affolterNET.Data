@@ -8,16 +8,16 @@ using affolterNET.Data.Interfaces.SessionHandler;
 using affolterNET.Data.Models;
 using affolterNET.Data.Queries;
 using affolterNET.Data.Result;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace affolterNET.Data.DataServices
 {
     public class EntityDataService<T>: IEntityDataService<T>  where T: class, IDtoBase
     {
         private readonly ISqlSessionHandler _sessionHandler;
-        private readonly ILogger<EntityDataService<T>> _logger;
+        private readonly ILogger _logger;
 
-        public EntityDataService(ISqlSessionHandler sessionHandler, ILogger<EntityDataService<T>> logger)
+        public EntityDataService(ISqlSessionHandler sessionHandler, ILogger logger)
         {
             _sessionHandler = sessionHandler;
             _logger = logger;
