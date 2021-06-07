@@ -5,7 +5,7 @@ namespace affolterNET.Data.Extensions
 {
     public static class DtoBaseExtensions
     {
-        public static Guid GetId(this IDtoBase dto)
+        public static T GetId<T>(this IDtoBase dto)
         {
             if (dto == null)
             {
@@ -20,12 +20,12 @@ namespace affolterNET.Data.Extensions
             }
 
             var id = idProp.GetMethod.Invoke(dto, new object[] { });
-            if (!(id is Guid))
+            if (!(id is T))
             {
                 throw new InvalidOperationException("id was null or not a guid");
             }
 
-            return (Guid)id;
+            return (T)id;
         }
 
         public static string? GetString(this IDtoBase dto, string propertyname)
