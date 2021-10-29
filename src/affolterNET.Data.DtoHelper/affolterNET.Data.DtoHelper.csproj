@@ -2,7 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <PackageLicenseUrl>http://www.affolter.net</PackageLicenseUrl>
+    <PackageId>affolterNET.Data.DtoHelper</PackageId>
+    <Authors>affolter.NET GmbH</Authors>
+    <Company>affolter.NET GmbH</Company>
+    <Description>Library to create DTO classes for affolterNET.Data</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>SQL, DB, Generate, Dto, Code, C#</PackageTags>
+    <RepositoryUrl>https://github.com/Mcafee123/affolterNET.Data</RepositoryUrl>
     <ProjectGuid>024E3895-4BC1-4A57-938A-009FFF961644</ProjectGuid>
     <IsPackable>true</IsPackable>
     <Authors>Martin Affolter</Authors>

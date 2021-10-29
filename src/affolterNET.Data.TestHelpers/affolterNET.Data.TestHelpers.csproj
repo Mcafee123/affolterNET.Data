@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageId>affolterNET.Data.TestHelpers</PackageId>
+    <Authors>affolter.NET GmbH</Authors>
+    <Company>affolter.NET GmbH</Company>
+    <Description>Utility Library to create Unit Tests for Commands and Queries using affolterNET.Data</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>SQL, DB, Unit, Testing</PackageTags>
+    <RepositoryUrl>https://github.com/Mcafee123/affolterNET.Data</RepositoryUrl>
     <ProjectGuid>BB3D9D5C-5917-436B-B3AC-4A20CAF0FD67</ProjectGuid>
     <IsPackable>true</IsPackable>
     <Authors>Martin Affolter</Authors>
