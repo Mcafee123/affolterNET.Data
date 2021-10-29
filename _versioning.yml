@@ -22,7 +22,7 @@ stages:
     displayName: Build version for other branch
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/main')
     variables:
-        brpatch: $[counter(variables['build.sourcebranchname'], 0)]
+        prpatch: $[counter(variables['build.sourcebranchname'], 0)]
     steps:
       - checkout: none
       - bash: |
@@ -32,6 +32,6 @@ stages:
         name: SetPRBuildName
       - bash: |
           echo "Generating Build Number"
-          echo "##vso[build.updatebuildnumber]$(major).$(minor)-$(Build.SourceBranchName).$(brpatch)"
+          echo "##vso[build.updatebuildnumber]$(major).$(minor)-$(Build.SourceBranchName).$(prpatch)"
         condition: ne(variables['Build.Reason'], 'PullRequest')
         name: SetBranchBuildName

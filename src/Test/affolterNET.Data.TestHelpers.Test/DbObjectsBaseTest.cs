@@ -110,9 +110,7 @@ namespace affolterNET.Data.TestHelpers.Test
         public const string Test2 = "test 2";
         
         public DbObjects(ITestOutputHelper output): base(output)
-        {
-            
-        }
+        {}
 
         public Obj1 Create1WithParams(string name, int num, bool check, string? objname = null)
         {

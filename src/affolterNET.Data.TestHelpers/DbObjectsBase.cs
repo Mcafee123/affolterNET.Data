@@ -54,7 +54,7 @@ namespace affolterNET.Data.TestHelpers
             return obj;
         }
         
-        public T Get<T>(Func<T, bool> predicate, bool throwIfNotExists = true) where T : class
+        public T? Get<T>(Func<T, bool> predicate, bool throwIfNotExists = true) where T : class
         {
             var item = GetAll<T>().FirstOrDefault(predicate);
             WriteLine($"Get ({typeof(T).FullName}) by predicate");
