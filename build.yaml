@@ -89,7 +89,7 @@ stages:
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'push'
-          packagesToPush: '$(Agent.BuildDirectory)/$(ArtifactNugetName)/*.nupkg'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'NuGet.org'
 
