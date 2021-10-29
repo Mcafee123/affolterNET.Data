@@ -75,14 +75,23 @@ stages:
           packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
           versioningScheme: 'byBuildNumber'
 
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'nuget push'
+      #   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+      #   inputs:
+      #     command: 'push'
+      #     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      #     nuGetFeedType: 'internal'
+      #     publishVstsFeed: 'e27a58c6-e50a-44d8-a798-55c10e05709c'
+
       - task: DotNetCoreCLI@2
         displayName: 'nuget push'
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'push'
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-          nuGetFeedType: 'internal'
-          publishVstsFeed: 'e27a58c6-e50a-44d8-a798-55c10e05709c'
+          packagesToPush: '$(Agent.BuildDirectory)/$(ArtifactNugetName)/*.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'NuGet.org'
 
       - task: git-tag-on-release-task@9
         displayName: "add tag to git"
