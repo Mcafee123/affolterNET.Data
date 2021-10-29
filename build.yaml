@@ -97,6 +97,7 @@ stages:
         
       - task: DotNetCoreCLI@2
         displayName: 'nuget push'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         env:
           NuGetApiKey: $(NuGetApiKey)
         inputs:
