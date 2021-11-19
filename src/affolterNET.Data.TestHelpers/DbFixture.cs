@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using affolterNET.Data.Interfaces.SessionHandler;
 using affolterNET.Data.TestHelpers.Interfaces;
 using affolterNET.Data.TestHelpers.SessionHandler;
+using Microsoft.Extensions.Configuration;
 
 namespace affolterNET.Data.TestHelpers
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public abstract class DbFixture : IDisposable
     {
+        private readonly string _connStringKey;
+        private readonly string? _userSecretsId;
         private string? _connString;
         private ISqlSessionHandler? _handler;
         private ITransactionDecorator? _transaction;
@@ -29,6 +33,12 @@ namespace affolterNET.Data.TestHelpers
 
                 return _handler;
             }
+        }
+
+        protected DbFixture(string connStringKey = "CONNSTRING", string? userSecretsId = null)
+        {
+            _connStringKey = connStringKey;
+            _userSecretsId = userSecretsId;
         }
 
         public void Dispose()
@@ -70,6 +80,26 @@ namespace affolterNET.Data.TestHelpers
             }
         }
 
-        protected abstract string GetConnString();
+        protected virtual string GetConnString()
+        {
+            if (_connString == null)
+            {
+                var builder = new ConfigurationBuilder();
+                if (!string.IsNullOrWhiteSpace(_userSecretsId))
+                {
+                    builder.AddUserSecrets(_userSecretsId);
+                }
+                var config = builder.AddEnvironmentVariables().Build();
+                _connString = config.GetValue<string>(_connStringKey);
+                if (string.IsNullOrWhiteSpace(_connString))
+                {
+                    var msg = $@"ConnString empty. For local development, 
+add '{_connStringKey}' with the connection to the database to user secrets.";
+                    throw new ConfigurationErrorsException(msg);
+                }
+            }
+
+            return _connString;
+        }
     }
 }
