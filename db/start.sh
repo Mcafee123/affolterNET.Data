@@ -2,18 +2,21 @@
 
 # author: martin@affolter.net
 
+dbname="example"
+projectname="Example"
+default_sql_port="1433"
+password="Som3V3ryS3cretP4ssw0rd!"
+update_tool_path="../src/$projectname.Update"
+update_tool_dll="$projectname.Update.dll"
+
 echo
 echo
-echo "starting zadr db in docker"
+echo "starting $dbname db in docker"
 echo
 echo
 
-projectname="affolterNET.Example"
-default_sql_port="1433"
-password="2xp0KRpi9c"
-update_tool_path="../src/$projectname.DbUpdate"
-update_tool_dll="$projectname.DbUpdate.dll"
-connstring_param="CONNSTRING"
+# write init sql
+echo "create database $dbname" > init.sql
 
 # set variables if not set "outside"
 if [ -z "$restart" ]; then
@@ -23,17 +26,17 @@ if [ -z "$network" ]; then
     network=${2:-"$projectname-network"}
 fi
 if [ -z "$port" ]; then
-    port=${3:-"1434"}
+    port=${3:-"1435"}
 fi
 
-dbcontainername="${projectname,,}-db-$port" #commas make it lowercase
+dbcontainername="$dbname-db-$port" #commas make it lowercase
 
 echo
 echo "start $dbcontainername / network: $network / db-port: $port"
 echo
 
-localconnstring="Server=localhost,$port;Database=zadr;User Id=sa;Password=${password};"
-connstring="Server=$dbcontainername,$default_sql_port;Database=zadr;User Id=sa;Password=${password};"
+localconnstring="Server=localhost,$port;Database=$dbname;User Id=sa;Password=${password};"
+connstring="Server=$dbcontainername,$default_sql_port;Database=$dbname;User Id=sa;Password=${password};"
 echo "localconnstring: $localconnstring"
 echo "##vso[task.setvariable variable=localconnstring]$localconnstring"
 
@@ -60,6 +63,12 @@ if [ "$running" == "0" ]; then
     pushd .
     cd "$update_tool_path"
     dotnet publish -c Release -o ./pub
-    dotnet "./pub/$update_tool_dll" "$connstring_param=$localconnstring"
+    cd "pub"
+    
+    echo "dotnet $update_tool_dll \"dbup\" \"$localconnstring\""
+    dotnet $update_tool_dll "dbup" "$localconnstring"
+    
+    echo "dotnet $update_tool_dll \"gen\" \"$localconnstring\""
+    dotnet $update_tool_dll "gen" "$localconnstring"
     popd
 fi

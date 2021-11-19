@@ -1,1 +1,1 @@
-create database zadr
+create database example

@@ -19,8 +19,7 @@ namespace affolterNET.Data.DtoHelper.Database
             fileName = props.TargetFile;
             if (!Path.IsPathRooted(fileName))
             {
-                var root = Path.Combine(Environment.CurrentDirectory, "..", "..", "..", "..");
-                fileName = Path.Combine(root, fileName);
+                fileName = Path.Combine(Environment.CurrentDirectory, fileName);
             }
 
             if (!File.Exists(fileName))
