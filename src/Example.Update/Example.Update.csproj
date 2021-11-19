@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="affolterNET.Data.DtoHelper" Version="1.6.18" />
         <PackageReference Include="Spectre.Console" Version="0.42.0" />
         <PackageReference Include="dbup" Version="4.5.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
