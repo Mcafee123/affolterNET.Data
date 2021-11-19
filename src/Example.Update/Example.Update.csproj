@@ -20,9 +20,6 @@
     <ItemGroup>
         <None Remove="Scripts\init-tables.sql" />
         <EmbeddedResource Include="Scripts\init-tables.sql" />
-        <None Update="generatorsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
     <ItemGroup>

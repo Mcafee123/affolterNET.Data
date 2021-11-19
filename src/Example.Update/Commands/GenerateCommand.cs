@@ -20,7 +20,7 @@ namespace Example.Update.Commands
             public string NameSpace { get; set; } = null!;
 
             [CommandArgument(2, "[targetfile]")]
-            [DefaultValue("../../../../Example.Data/Dto.cs")]
+            [DefaultValue("../../Example.Data/Dto.cs")]
             public string TargetFile { get; set; } = null!;
 
             [CommandOption("-b|--baseclass")]
