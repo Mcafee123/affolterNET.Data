@@ -8,4 +8,7 @@
     <ItemGroup>
         <PackageReference Include="affolterNET.Data" Version="1.6.18" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\affolterNET.Data\affolterNET.Data.csproj" />
+    </ItemGroup>
 </Project>

@@ -22,6 +22,14 @@ namespace Example.Update.Commands
             [CommandArgument(2, "[targetfile]")]
             [DefaultValue("../../../../Example.Data/Dto.cs")]
             public string TargetFile { get; set; } = null!;
+
+            [CommandOption("-b|--baseclass")]
+            [DefaultValue("IDtoBase")]
+            public string BaseClass { get; set; } = null!;
+            
+            [CommandOption("-v|--viewbaseclass")]
+            [DefaultValue("IViewBase")]
+            public string ViewBaseClass { get; set; } = null!;
         }
         
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
@@ -59,8 +67,8 @@ namespace Example.Update.Commands
                     .WithComment("// ReSharper disable StyleCop.SA1115")
                     .WithComment("// ReSharper disable StyleCop.SA1116")
                     .WithNamespace(settings.NameSpace)
-                    .WithBaseType("IDto")
-                    .WithBaseViewType("IView");
+                    .WithBaseType(settings.BaseClass)
+                    .WithBaseViewType(settings.ViewBaseClass);
                 var gen = new Generator(tlp, new FileHandler(tlp));
                 await gen.Generate();
                 return 0;

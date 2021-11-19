@@ -32,9 +32,9 @@ namespace Example.Data
         public IDtoBase Get<T>()
             where T : IDtoBase
         {
-            if (typeof(dbo_DemoTable) == typeof(T))
+            if (typeof(dbo_T_DemoTable) == typeof(T))
             {
-                return new dbo_DemoTable();
+                return new dbo_T_DemoTable();
             }
 
             throw new InvalidOperationException();
@@ -46,13 +46,18 @@ namespace Example.Data
         public IViewBase Get<T>()
             where T : IViewBase
         {
+            if (typeof(dbo_V_Demo) == typeof(T))
+            {
+                return new dbo_V_Demo();
+            }
+
             throw new InvalidOperationException();
         }
     }
 
-    public class dbo_DemoTable : IDto
+    public class dbo_T_DemoTable : IDtoBase
     {
-        public const string TABLE_NAME = "[dbo].[DemoTable]";
+        public const string TABLE_NAME = "[dbo].[T_DemoTable]";
         [Da.Key]
         public Guid Id { get; set; }
 
@@ -72,12 +77,12 @@ namespace Example.Data
 
         public string GetSelectCommand(int maxCount = 1000)
         {
-            return $"select top({maxCount}) [Id], [Message] from dbo.DemoTable where (@Id is null or [Id]=@Id)";
+            return $"select top({maxCount}) [Id], [Message] from dbo.T_DemoTable where (@Id is null or [Id]=@Id)";
         }
 
         public string GetInsertCommand(bool returnScopeIdentity = false)
         {
-            var sql = "insert into dbo.DemoTable (Id, Message) values (@Id, @Message)";
+            var sql = "insert into dbo.T_DemoTable (Id, Message) values (@Id, @Message)";
             if (returnScopeIdentity)
             {
                 sql += "; select scope_identity() as id;";
@@ -88,38 +93,38 @@ namespace Example.Data
 
         public string GetUpdateCommand()
         {
-            return "update dbo.DemoTable set Message=@Message where Id=@Id";
+            return "update dbo.T_DemoTable set Message=@Message where Id=@Id";
         }
 
         public string GetDeleteCommand()
         {
-            return "delete from dbo.DemoTable where Id=@Id";
+            return "delete from dbo.T_DemoTable where Id=@Id";
         }
 
         public string GetDeleteAllCommand()
         {
-            return "delete from dbo.DemoTable";
+            return "delete from dbo.T_DemoTable";
         }
 
         public string GetSaveByIdCommand(bool select = false)
         {
             return @$"
-                        if exists (select Id from dbo.DemoTable where Id = @Id)
+                        if exists (select Id from dbo.T_DemoTable where Id = @Id)
                             begin
                                 {GetUpdateCommand()};
-                                {(select ? string.Empty : "select 'dbo' as [Schema], 'DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'updated' as [Action]")}
+                                {(select ? string.Empty : "select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'updated' as [Action]")}
                             end
                         else
                             begin
                                 {GetInsertCommand(false)}
-                                {(select ? string.Empty : "select 'dbo' as [Schema], 'DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'inserted' as [Action]")}
+                                {(select ? string.Empty : "select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'inserted' as [Action]")}
                             end
                         {(select ? GetSelectCommand() : string.Empty)}";
         }
 
-        public dbo_DemoTable GetFromDb(IDbConnection conn, IDbTransaction trsact)
+        public dbo_T_DemoTable GetFromDb(IDbConnection conn, IDbTransaction trsact)
         {
-            return conn.QueryFirstOrDefault<dbo_DemoTable>(this.GetSelectCommand(1), this, trsact);
+            return conn.QueryFirstOrDefault<dbo_T_DemoTable>(this.GetSelectCommand(1), this, trsact);
         }
 
         public void Reload(IDbConnection conn, IDbTransaction trsact)
@@ -141,6 +146,108 @@ namespace Example.Data
             }
 
             Id = guidId;
+        }
+
+        public string GetVersionName()
+        {
+            return "n.a.";
+        }
+
+        public string GetIsActiveName()
+        {
+            return "n.a.";
+        }
+
+        public void SetIsActive(bool isActive)
+        {
+        }
+
+        public string GetUpdatedUserName()
+        {
+            return "n.a.";
+        }
+
+        public void SetUpdatedUser(string userName)
+        {
+        }
+
+        public string GetInsertedUserName()
+        {
+            return "n.a.";
+        }
+
+        public void SetInsertedUser(string userName)
+        {
+        }
+
+        public string GetUpdatedDateName()
+        {
+            return "n.a.";
+        }
+
+        public void SetUpdatedDate(DateTime date)
+        {
+        }
+
+        public string GetInsertedDateName()
+        {
+            return "n.a.";
+        }
+
+        public void SetInsertedDate(DateTime date)
+        {
+        }
+
+        public override string ToString()
+        {
+            return $"Id: {Id}; Message: {Message}";
+        }
+    }
+
+    public class dbo_V_Demo : IViewBase
+    {
+        public const string TABLE_NAME = "[dbo].[V_Demo]";
+        public Guid Id { get; set; }
+
+        [Da.MaxLength(1000)]
+        public string Message { get; set; }
+
+        private static readonly List<string> colNames = new List<string>{"Id", "Message"}; public  static  IEnumerable < string > ColNames  =>  colNames ;  public  static  class  Cols { public  const  string  Id  =  "[Id]" ;  public  const  string  Message  =  "[Message]" ;  }
+        public string GetTableName()
+        {
+            return TABLE_NAME;
+        }
+
+        public string GetSelectCommand(int maxCount = 1000)
+        {
+            return $"select top({maxCount}) [Id], [Message] from dbo.V_Demo";
+        }
+
+        public string GetInsertCommand(bool returnScopeIdentity = false)
+        {
+            var sql = "insert into dbo.V_Demo (Id, Message) values (@Id, @Message)";
+            if (returnScopeIdentity)
+            {
+                sql += "; select scope_identity() as id;";
+            }
+
+            return sql;
+        }
+
+        public string GetUpdateCommand()
+        {
+            throw new InvalidOperationException("no updates on views");
+        }
+
+        public string GetDeleteCommand()
+        {
+            throw new InvalidOperationException("Kein Primary Key");
+            ;
+        }
+
+        public string GetDeleteAllCommand()
+        {
+            return "delete from dbo.V_Demo";
         }
 
         public string GetVersionName()

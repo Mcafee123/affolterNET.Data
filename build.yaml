@@ -45,7 +45,7 @@ stages:
       - task: UseDotNet@2
         inputs:
           packageType: 'sdk'
-          version: '5.x'
+          version: '6.x'
           includePreviewVersions: false
 
       - task: DotNetCoreCLI@2
