@@ -40,3 +40,4 @@ Files/
 .vs/
 .DS_Store
 /src/.idea/**
+src/**/pub/**
