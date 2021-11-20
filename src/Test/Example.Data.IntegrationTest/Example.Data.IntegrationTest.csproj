@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>affolterNET.Data.IntegrationTest</RootNamespace>
+        <UserSecretsId>7a5e67ca-eb7f-47c8-b694-a4566bc9617b</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="DataServices" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\affolterNET.Data.TestHelpers\affolterNET.Data.TestHelpers.csproj" />
+      <ProjectReference Include="..\..\Example.Data\Example.Data.csproj" />
+    </ItemGroup>
+
+</Project>

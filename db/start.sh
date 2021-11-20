@@ -26,7 +26,7 @@ if [ -z "$network" ]; then
     network=${2:-"$projectname-network"}
 fi
 if [ -z "$port" ]; then
-    port=${3:-"1435"}
+    port=${3:-"1436"}
 fi
 
 dbcontainername="$dbname-db-$port" #commas make it lowercase
