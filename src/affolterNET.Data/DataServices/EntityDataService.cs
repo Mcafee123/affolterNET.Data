@@ -25,7 +25,7 @@ namespace affolterNET.Data.DataServices
         
         public async Task<DataResult<IEnumerable<T>>> GetAll(int maxcount = 1000)
         {
-            var qry = new LoadEntityCommand<T>(maxcount);
+            var qry = new LoadEntityQuery<T>(maxcount);
             var result = await _sessionHandler.QueryAsync(qry);
             if (!result.IsSuccessful)
             {
@@ -37,7 +37,7 @@ namespace affolterNET.Data.DataServices
         
         public async Task<T> GetById(object pkValue, string? param = null)
         {
-            var qry = new LoadEntityCommand<T>(pkValue, param);
+            var qry = new LoadEntityQuery<T>(pkValue, param);
             var result = await _sessionHandler.QueryAsync(qry);
             if (!result.IsSuccessful)
             {

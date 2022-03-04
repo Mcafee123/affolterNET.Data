@@ -36,7 +36,7 @@ namespace affolterNET.Data.TestHelpers
         }
 
         protected DbFixture(string connStringKey = "CONNSTRING", string? userSecretsId = null)
-        {
+        { 
             _connStringKey = connStringKey;
             _userSecretsId = userSecretsId;
         }

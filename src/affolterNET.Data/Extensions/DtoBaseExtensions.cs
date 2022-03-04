@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using affolterNET.Data.Interfaces;
 
 namespace affolterNET.Data.Extensions
@@ -48,6 +50,35 @@ namespace affolterNET.Data.Extensions
 
             var id = idProp.GetMethod.Invoke(dto, new object[] { });
             return id?.ToString();
+        }
+        
+        public static IEnumerable<string> GetColumns(this string columnsString, params string[] excludedColumns) {
+            var cols = columnsString
+                .Split(",")
+                .Select(s => s.Trim())
+                .Where(s => excludedColumns.All(exc => s.ToLower().StripSquareBrackets() != exc.ToLower().StripSquareBrackets()));
+            return cols;
+        }
+
+        public static string JoinCols(this IEnumerable<string> cols, bool withAdd = false)
+        {
+            var columns = cols.Select(c => c.Trim());
+            if (withAdd)
+            {
+                columns = columns.Select(c => $"@{c.StripSquareBrackets()}");
+            }
+            else
+            {
+                columns = columns.Select(c => c.EnsureSquareBrackets());
+            }
+
+            return string.Join(", ", columns);
+        }
+        
+        public static string JoinForUpdate(this IEnumerable<string> cols)
+        {
+            var columns = cols.Select(c => c.Trim());
+            return string.Join(", ", columns.Select(c => $"{c.EnsureSquareBrackets()}=@{c.StripSquareBrackets()}"));
         }
     }
 }

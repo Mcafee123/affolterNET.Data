@@ -6,5 +6,6 @@ namespace affolterNET.Data.Models
         public string? Table { get; set; }
         public string? Id { get; set; }
         public string? Action { get; set; }
+        public object? Dto { get; set; }
     }
 }

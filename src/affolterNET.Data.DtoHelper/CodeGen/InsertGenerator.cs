@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using affolterNET.Data.DtoHelper.Database;
+using affolterNET.Data.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace affolterNET.Data.DtoHelper.CodeGen
@@ -23,8 +24,9 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 .Select(c => c.Name).ToList();
             var sg = new StringGenerator(
                 $@"
-                public string GetInsertCommand(bool returnScopeIdentity = false) {{
-                    var sql = ""insert into {tbl.Schema}.{tbl.Name} ({string.Join(", ", cols)}) values (@{string.Join(", @", cols)})"";
+                public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns) {{
+                    var cols = ""{cols.JoinCols()}"".GetColumns(excludedColumns);
+                    var sql = $""insert into {tbl.Schema}.{tbl.Name} ({{cols.JoinCols()}}) values ({{cols.JoinCols(true)}})"";
                     if (returnScopeIdentity) {{
                         sql += ""; select scope_identity() as id;"";
                     }}

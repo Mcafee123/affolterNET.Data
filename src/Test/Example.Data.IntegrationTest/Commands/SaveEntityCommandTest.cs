@@ -1,20 +1,21 @@
 using System;
+using System.Data.SqlClient;
 using affolterNET.Data.Commands;
 using affolterNET.Data.Models;
-using affolterNET.Data.TestHelpers;
-using Example.Data;
+using Dapper;
 using Xunit;
 
-namespace affolterNET.Data.IntegrationTest.Commands
+namespace Example.Data.IntegrationTest.Commands
 {
-    [Collection("ExampleFixture")]
-    public class SaveEntityCommandTest: IntegrationTest
+    [Collection(nameof(ExampleFixture))]
+    public class SaveEntityCommandTest : IntegrationTest
     {
-        public SaveEntityCommandTest(DbFixture dbFixture) : base(dbFixture)
-        {}
+        public SaveEntityCommandTest(ExampleFixture dbFixture) : base(dbFixture)
+        {
+        }
 
         [Fact]
-        public void SaveEntityTest()
+        public void SaveEntityCommandTestOk()
         {
             CQB<SaveInfo>().Arrange(db =>
             {
@@ -23,11 +24,25 @@ namespace affolterNET.Data.IntegrationTest.Commands
                     Id = Guid.NewGuid(),
                     Message = "I was inserted!"
                 };
-                return new SaveEntityCommand<dbo_T_DemoTable>(dto);
+                return new SaveEntityCommand<dbo_T_DemoTable>(dto, true, dbo_T_DemoTable.Cols.Status);
             }).ActAndAssert((result, ah) =>
             {
-                
+                Assert.Equal("inserted", result.Data.Action);
             });
+        }
+
+        [Fact]
+        public void SaveEntityCommandTestNOk()
+        {
+            var ex = Assert.Throws<SqlException>(() => CQB<SaveInfo>().Arrange(db =>
+            {
+                var dto = new dbo_T_DemoTable
+                {
+                    Id = Guid.NewGuid()
+                };
+                return new SaveEntityCommand<dbo_T_DemoTable>(dto, true, dbo_T_DemoTable.Cols.Status);
+            }).Act());
+            Assert.Equal("Cannot insert the value NULL into column 'Message', table 'example.dbo.T_DemoTable'; column does not allow nulls. INSERT fails.\nThe statement has been terminated.", ex.Message);
         }
     }
 }

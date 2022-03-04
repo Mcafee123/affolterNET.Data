@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using affolterNET.Data.DtoHelper.CodeGen;
 using affolterNET.Data.DtoHelper.Database;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using Xunit.Abstractions;
@@ -40,8 +39,10 @@ namespace affolterNET.Data.DtoHelper.Test.CodeGen
             Assert.NotNull(m!.Body);
             var method = Regex.Replace(m.Body!.ToString(), @"\s+", " ", RegexOptions.Multiline);
             _output.WriteLine(method);
-            const string expectation = "{ return $\"select top({maxCount}) [TestId], [Bezeichnung] from dbo.T_Test where (@TestId is null or [TestId]=@TestId)\"; }";
-            Assert.Equal(expectation, method);
+            const string expectation = "{ var cols = \"[TestId], [Bezeichnung]\".GetColumns(excludedColumns)";
+            var parts = method.Split(";");
+            Assert.True(parts.Length > 0);
+            Assert.Equal(expectation, parts[0]);
         }
         
         [Fact]
@@ -65,8 +66,10 @@ namespace affolterNET.Data.DtoHelper.Test.CodeGen
             Assert.NotNull(m!.Body);
             var method = Regex.Replace(m!.Body!.ToString(), @"\s+", " ", RegexOptions.Multiline);
             _output.WriteLine(method);
-            const string expectation = "{ return $\"select top({maxCount}) [TestId], [OtherId], [Bezeichnung] from dbo.T_TestOther where (@TestId is null or [TestId]=@TestId) and (@OtherId is null or [OtherId]=@OtherId)\"; }";
-            Assert.Equal(expectation, method);
+            const string expectation = "{ var cols = \"[TestId], [OtherId], [Bezeichnung]\".GetColumns(excludedColumns)";
+            var parts = method.Split(";");
+            Assert.True(parts.Length > 0);
+            Assert.Equal(expectation, parts[0]);
         }
     }
 }

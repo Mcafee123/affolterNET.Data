@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using affolterNET.Data.Extensions;
@@ -36,7 +37,7 @@ namespace affolterNET.Data
                 throw new ArgumentNullException(nameof(paramsObject), "object cannot be null");
             }
 
-            foreach (var property in paramsObject.GetType().GetProperties())
+            foreach (var property in paramsObject.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 if (predicate == null || predicate(property.Name))
                 {

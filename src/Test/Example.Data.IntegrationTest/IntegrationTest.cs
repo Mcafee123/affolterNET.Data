@@ -1,12 +1,14 @@
-﻿using affolterNET.Data.TestHelpers;
-using Example.Data;
+﻿using System;
+using System.Data;
+using affolterNET.Data.TestHelpers;
+using Dapper;
 using Xunit.Abstractions;
 
-namespace affolterNET.Data.IntegrationTest
+namespace Example.Data.IntegrationTest
 {
     public class IntegrationTest : IntegrationTestBase
     {
-        public IntegrationTest(DbFixture dbFixture, ITestOutputHelper? output = null) : base(dbFixture,
+        public IntegrationTest(ExampleFixture dbFixture, ITestOutputHelper? output = null) : base(dbFixture,
             new DtoFactory(), output)
         {
         }
