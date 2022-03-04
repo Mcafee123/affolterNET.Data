@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using affolterNET.Data.Models.Filters;
 using affolterNET.Data.Queries;
 using Xunit;
 
@@ -50,8 +51,11 @@ namespace Example.Data.IntegrationTest.Queries
                 .Arrange(db =>
                 {
                     var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new LoadEntityQuery<dbo_T_DemoTable>(1000,
-                        new Tuple<string, object>(dbo_T_DemoTable.Cols.Message, singleEntry.Message));
+                    var filter = new RootFilter(dbo_T_DemoTable.Cols.Message)
+                    {
+                        Value = singleEntry.Message
+                    };
+                    return new LoadEntityQuery<dbo_T_DemoTable>(filter);
                 })
                 .ActAndAssert((result, ah) =>
                 {
