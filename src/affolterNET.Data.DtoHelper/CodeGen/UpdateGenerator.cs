@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using affolterNET.Data.DtoHelper.Database;
+using affolterNET.Data.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace affolterNET.Data.DtoHelper.CodeGen
@@ -19,7 +20,6 @@ namespace affolterNET.Data.DtoHelper.CodeGen
         {
             var updateWhere = string.Empty;
             var versionWhere = string.Empty;
-            var cols = new List<string>();
             foreach (var col in tbl.AllColumns.Where(c => !c.Ignore))
             {
                 if (col.IsVersionCol())
@@ -31,22 +31,23 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 {
                     updateWhere = string.Format("where {0}=@{0}", col.Name);
                 }
-                else
-                {
-                    if (!col.IsVersionCol() && !col.IsInsertTriggerField() && !col.IsActiveCol())
-                    {
-                        cols.Add(string.Format("{0}=@{0}", col.Name));
-                    }
-                }
             }
-
-            var sql = $"update {tbl.Schema}.{tbl.Name} set {string.Join(", ", cols)} {updateWhere}{versionWhere}";
+            var columns = tbl.AllColumns
+                .Where(
+                    c => !c.Ignore && !c.IsPkWithAutoincrement() && !c.IsVersionCol() &&
+                         !c.IsInsertTriggerField() && !c.IsActiveCol())
+                .Select(c => c.Name!.StripSquareBrackets()).ToList();
+            
+            var content = $@"
+                var cols = ""{columns.JoinCols()}"".GetColumns(excludedColumns);
+                return $""update {tbl.Schema}.{tbl.Name} set {{cols.JoinForUpdate()}} {updateWhere}{versionWhere}"";
+            ";
             var inner = tbl.IsView
                 ? "throw new InvalidOperationException(\"no updates on views\");"
-                : $"return \"{sql}\";";
+                : content;
             var sg = new StringGenerator(
                 $@"
-                public string GetUpdateCommand()
+                public string GetUpdateCommand(params string[] excludedColumns)
                 {{
                     {inner}
                 }}

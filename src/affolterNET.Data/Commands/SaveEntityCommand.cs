@@ -1,5 +1,7 @@
+using System;
 using System.Data;
 using System.Threading.Tasks;
+using affolterNET.Data.Extensions;
 using affolterNET.Data.Interfaces;
 using affolterNET.Data.Models;
 using affolterNET.Data.Result;
@@ -9,17 +11,38 @@ namespace affolterNET.Data.Commands
 {
     public class SaveEntityCommand<T> : CommandQueryBase<SaveInfo>, IQuery<SaveInfo> where T : class, IDtoBase
     {
-        public SaveEntityCommand(T dto)
+        private readonly bool _select;
+
+        public SaveEntityCommand(T dto, bool select = false, params string[] excludedColumns)
         {
-            Sql = dto.GetSaveByIdCommand();
+            _select = select;
+            Sql = dto.GetSaveByIdCommand(select, excludedColumns);
             AddParams(dto);
         }
 
         public override async Task<DataResult<SaveInfo>> ExecuteAsync(IDbConnection connection,
             IDbTransaction transaction)
         {
-            var result = await connection.QueryFirstOrDefaultAsync<SaveInfo>(Sql, ParamsObject, transaction);
-            return new DataResult<SaveInfo>(result);
+            var reader = await connection.QueryMultipleAsync(Sql, ParamsDict, transaction);
+            try
+            {
+                return await Transform(reader);
+            }
+            finally
+            {
+                reader.EndQueryMultiple();
+            }
+        }
+
+        private async Task<DataResult<SaveInfo>> Transform(SqlMapper.GridReader reader)
+        {
+            var saveInfo = await reader.ReadFirstOrDefaultAsync<SaveInfo>();
+            if (_select)
+            {
+                var dto = reader.Read<T>();
+                saveInfo.Dto = dto;
+            }
+            return new DataResult<SaveInfo>(saveInfo);
         }
     }
 }

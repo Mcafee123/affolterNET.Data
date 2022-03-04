@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using affolterNET.Data.Extensions;
 using affolterNET.Data.Interfaces;
 using Dapper;
 using Da = System.ComponentModel.DataAnnotations;
@@ -64,7 +66,19 @@ namespace Example.Data
         [Da.MaxLength(1000)]
         public string Message { get; set; }
 
-        private static readonly List<string> colNames = new List<string>{"Id", "Message"}; public  static  IEnumerable < string > ColNames  =>  colNames ;  public  static  class  Cols { public  const  string  Id  =  "[Id]" ;  public  const  string  Message  =  "[Message]" ;  }
+        [Da.MaxLength(50)]
+        public string Status { get; set; }
+
+        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status"};
+        public IEnumerable<string> GetColumnNames() => colNames;
+        public static IEnumerable<string> ColNames => colNames;
+        public static class Cols
+        {
+            public const string Id = "[Id]";
+            public const string Message = "[Message]";
+            public const string Status = "[Status]";
+        }
+
         public bool IsAutoincrementId()
         {
             return false;
@@ -75,14 +89,16 @@ namespace Example.Data
             return TABLE_NAME;
         }
 
-        public string GetSelectCommand(int maxCount = 1000)
+        public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            return $"select top({maxCount}) [Id], [Message] from dbo.T_DemoTable where (@Id is null or [Id]=@Id)";
+            var cols = "[Id], [Message], [Status]".GetColumns(excludedColumns);
+            return $"select top({maxCount}) {cols.JoinCols()} from dbo.T_DemoTable where (@Id is null or [Id]=@Id)";
         }
 
-        public string GetInsertCommand(bool returnScopeIdentity = false)
+        public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
-            var sql = "insert into dbo.T_DemoTable (Id, Message) values (@Id, @Message)";
+            var cols = "[Id], [Message], [Status]".GetColumns(excludedColumns);
+            var sql = $"insert into dbo.T_DemoTable ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
                 sql += "; select scope_identity() as id;";
@@ -91,9 +107,10 @@ namespace Example.Data
             return sql;
         }
 
-        public string GetUpdateCommand()
+        public string GetUpdateCommand(params string[] excludedColumns)
         {
-            return "update dbo.T_DemoTable set Message=@Message where Id=@Id";
+            var cols = "[Id], [Message], [Status]".GetColumns(excludedColumns);
+            return $"update dbo.T_DemoTable set {cols.JoinForUpdate()} where Id=@Id";
         }
 
         public string GetDeleteCommand()
@@ -106,20 +123,20 @@ namespace Example.Data
             return "delete from dbo.T_DemoTable";
         }
 
-        public string GetSaveByIdCommand(bool select = false)
+        public string GetSaveByIdCommand(bool select = false, params string[] excludedColumns)
         {
             return @$"
                         if exists (select Id from dbo.T_DemoTable where Id = @Id)
                             begin
-                                {GetUpdateCommand()};
-                                {(select ? string.Empty : "select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'updated' as [Action]")}
+                                {GetUpdateCommand(excludedColumns)};
+                                {"select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'updated' as [Action]"}
                             end
                         else
                             begin
-                                {GetInsertCommand(false)}
-                                {(select ? string.Empty : "select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'inserted' as [Action]")}
+                                {GetInsertCommand(false, excludedColumns)}
+                                {"select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], 'inserted' as [Action]"}
                             end
-                        {(select ? GetSelectCommand() : string.Empty)}";
+                        {(select ? GetSelectCommand(1, excludedColumns) : string.Empty)}";
         }
 
         public dbo_T_DemoTable GetFromDb(IDbConnection conn, IDbTransaction trsact)
@@ -131,6 +148,7 @@ namespace Example.Data
         {
             var loaded = this.GetFromDb(conn, trsact);
             this.Message = loaded.Message;
+            this.Status = loaded.Status;
         }
 
         public string GetIdName()
@@ -200,7 +218,7 @@ namespace Example.Data
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}";
+            return $"Id: {Id}; Message: {Message}; Status: {Status}";
         }
     }
 
@@ -212,20 +230,34 @@ namespace Example.Data
         [Da.MaxLength(1000)]
         public string Message { get; set; }
 
-        private static readonly List<string> colNames = new List<string>{"Id", "Message"}; public  static  IEnumerable < string > ColNames  =>  colNames ;  public  static  class  Cols { public  const  string  Id  =  "[Id]" ;  public  const  string  Message  =  "[Message]" ;  }
+        [Da.MaxLength(50)]
+        public string Status { get; set; }
+
+        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status"};
+        public IEnumerable<string> GetColumnNames() => colNames;
+        public static IEnumerable<string> ColNames => colNames;
+        public static class Cols
+        {
+            public const string Id = "[Id]";
+            public const string Message = "[Message]";
+            public const string Status = "[Status]";
+        }
+
         public string GetTableName()
         {
             return TABLE_NAME;
         }
 
-        public string GetSelectCommand(int maxCount = 1000)
+        public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            return $"select top({maxCount}) [Id], [Message] from dbo.V_Demo";
+            var cols = "[Id], [Message], [Status]".GetColumns(excludedColumns);
+            return $"select top({maxCount}) {cols.JoinCols()} from dbo.V_Demo";
         }
 
-        public string GetInsertCommand(bool returnScopeIdentity = false)
+        public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
-            var sql = "insert into dbo.V_Demo (Id, Message) values (@Id, @Message)";
+            var cols = "[Id], [Message], [Status]".GetColumns(excludedColumns);
+            var sql = $"insert into dbo.V_Demo ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
                 sql += "; select scope_identity() as id;";
@@ -234,7 +266,7 @@ namespace Example.Data
             return sql;
         }
 
-        public string GetUpdateCommand()
+        public string GetUpdateCommand(params string[] excludedColumns)
         {
             throw new InvalidOperationException("no updates on views");
         }
@@ -302,7 +334,7 @@ namespace Example.Data
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}";
+            return $"Id: {Id}; Message: {Message}; Status: {Status}";
         }
     }
 }

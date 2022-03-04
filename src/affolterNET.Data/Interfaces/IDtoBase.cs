@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace affolterNET.Data.Interfaces
 {
     public interface IDtoBase
     {
-        string GetInsertCommand(bool returnScopeIdentity = false);
+        string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns);
 
-        string GetSelectCommand(int maxCount = 1000);
+        string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns);
 
-        string GetUpdateCommand();
+        string GetUpdateCommand(params string[] excludedColumns);
 
         string GetDeleteCommand();
 
         string GetDeleteAllCommand();
 
-        string GetSaveByIdCommand(bool select = false);
+        string GetSaveByIdCommand(bool select = false, params string[] excludedColumns);
 
         bool IsAutoincrementId();
 
@@ -46,5 +47,7 @@ namespace affolterNET.Data.Interfaces
         void SetUpdatedDate(DateTime date);
 
         void Reload(IDbConnection conn, IDbTransaction trsact);
+
+        IEnumerable<string> GetColumnNames();
     }
 }

@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using affolterNET.Data.Extensions;
 using affolterNET.Data.Interfaces;
 using affolterNET.Data.Result;
 using Dapper;
 
 namespace affolterNET.Data.Queries
 {
-    [Obsolete("Please use LoadEntityQuery")]
-    public class LoadEntityCommand<T>: CommandQueryBase<IEnumerable<T>>, IQuery<IEnumerable<T>> where T: class, IDtoBase
+    public class LoadEntityQuery<T>: CommandQueryBase<IEnumerable<T>>, IQuery<IEnumerable<T>> where T: class, IDtoBase
     {
-        public LoadEntityCommand(int maxcount = 1000, string? idName = null)
+        public LoadEntityQuery(int maxcount = 1000, string? idName = null)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
@@ -23,7 +23,22 @@ namespace affolterNET.Data.Queries
             AddParam(idName, null!);
         }
         
-        public LoadEntityCommand(object pkValue, string? idName = null)
+        public LoadEntityQuery(int maxcount = 1000, params Tuple<string, object>[] filters)
+        {
+            // command (can work with or without id)
+            var dto = Activator.CreateInstance<T>();
+            Sql = dto.GetSelectCommand(maxcount);
+            foreach (var filter in filters)
+            {
+                //dto.
+                var colname = filter.Item1.StripSquareBrackets();
+                Sql += $" and {colname}=@{colname}";
+                AddParam(colname, filter.Item2);
+            }
+            AddParam(dto.GetIdName(), null!);
+        }
+        
+        public LoadEntityQuery(object pkValue, string? idName = null)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();

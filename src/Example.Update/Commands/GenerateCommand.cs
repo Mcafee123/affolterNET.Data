@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Threading.Tasks;
 using affolterNET.Data.DtoHelper;
 using affolterNET.Data.DtoHelper.CodeGen;
 using affolterNET.Data.DtoHelper.Database;
@@ -43,6 +42,8 @@ namespace Example.Update.Commands
                     .WithUsing("System")
                     .WithUsing("System.Collections.Generic")
                     .WithUsing("System.Data")
+                    .WithUsing("System.Linq")
+                    .WithUsing("affolterNET.Data.Extensions")
                     .WithUsing("affolterNET.Data.Interfaces")
                     .WithUsing("Dapper")
                     .WithUsing("System.ComponentModel.DataAnnotations")
