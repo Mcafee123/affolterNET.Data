@@ -4,6 +4,7 @@ using System.Data;
 using System.Threading.Tasks;
 using affolterNET.Data.Extensions;
 using affolterNET.Data.Interfaces;
+using affolterNET.Data.Models.Filters;
 using affolterNET.Data.Result;
 using Dapper;
 
@@ -23,19 +24,16 @@ namespace affolterNET.Data.Queries
             AddParam(idName, null!);
         }
         
-        public LoadEntityQuery(int maxcount = 1000, params Tuple<string, object>[] filters)
+        public LoadEntityQuery(RootFilter filter, int maxcount = 1000)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
-            Sql = dto.GetSelectCommand(maxcount);
-            foreach (var filter in filters)
+            var sql = dto.GetSelectCommand(maxcount);
+            Sql = $"{sql.Substring(0, sql.IndexOf(" where ", StringComparison.InvariantCultureIgnoreCase))} {filter}";
+            foreach (var p in filter.GetAllParameters())
             {
-                //dto.
-                var colname = filter.Item1.StripSquareBrackets();
-                Sql += $" and {colname}=@{colname}";
-                AddParam(colname, filter.Item2);
+                AddParam(p.Key, p.Value);
             }
-            AddParam(dto.GetIdName(), null!);
         }
         
         public LoadEntityQuery(object pkValue, string? idName = null)
