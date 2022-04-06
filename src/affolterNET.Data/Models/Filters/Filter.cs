@@ -32,6 +32,16 @@ namespace affolterNET.Data.Models.Filters
 
         public bool WasSet => Attribute != null;
 
+        public void AddFilter(string column, object? value, string prefix = "")
+        {
+            Filters.Add(new Filter(column, prefix) { Value = value });
+        }
+
+        public void AddFilter(Filter filter)
+        {
+            Filters.Add(filter);
+        }
+
         private IFilter InternalFilter
         {
             get
