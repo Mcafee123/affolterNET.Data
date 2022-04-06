@@ -201,6 +201,28 @@ namespace affolterNET.Data.Test.Models.Filters
             Assert.Contains("Stadt", names);
             Assert.Contains("Land", names);
         }
+        
+        [Fact]
+        public void GetAttributeNamesWithAddFilterTest()
+        {
+            var filter = new RootFilter();
+            filter.AddFilter("Abc", null,"i");
+            var subfilter1 = new Filter { UseAnd = false };
+            subfilter1.AddFilter("Cba", null, "f");
+            subfilter1.AddFilter("Zyx", null, "e");
+            filter.AddFilter(subfilter1);
+            var subfilter2 = new Filter();
+            subfilter1.AddFilter("Stadt", null, "f");
+            subfilter1.AddFilter("Land", null, "e");
+            filter.AddFilter(subfilter2);
+
+            var names = filter.GetAttributes().Select(a => a.Column).ToList();
+            Assert.Contains("Abc", names);
+            Assert.Contains("Cba", names);
+            Assert.Contains("Zyx", names);
+            Assert.Contains("Stadt", names);
+            Assert.Contains("Land", names);
+        }
 
         [Fact]
         public void NestedFiltersTest()
