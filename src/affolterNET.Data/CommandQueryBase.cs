@@ -174,6 +174,7 @@ namespace affolterNET.Data
                 case "datetime":
                     return "datetime";
                 case "float":
+                case "double":
                     return "double";
                 case "decimal":
                     return "decimal";
