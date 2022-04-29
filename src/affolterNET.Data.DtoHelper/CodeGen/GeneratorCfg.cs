@@ -7,13 +7,15 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 {
     public class GeneratorCfg
     {
-        private readonly List<string> excludeColumns = new List<string>();
+        private readonly List<string> _excludeColumns = new();
 
-        private readonly List<string> excludeSchemas = new List<string>();
+        private readonly List<string> _excludeSchemas = new();
 
-        private readonly List<string> excludeTablePrefixes = new List<string>();
+        private readonly List<string> _excludeTablePrefixes = new();
 
-        private readonly List<string> excludeTables = new List<string>();
+        private readonly List<string> _excludeTables = new();
+
+        private readonly List<ListContentsCfg> _tableContents = new();
 
         public GeneratorCfg()
         {
@@ -24,23 +26,25 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public bool AddUpdateUserToInsert { get; private set; }
 
-        public List<string> BaseTypes { get; } = new List<string>();
+        public List<string> BaseTypes { get; } = new();
 
-        public List<string> ViewBaseTypes { get; } = new List<string>();
+        public List<string> ViewBaseTypes { get; } = new();
 
         public string ClassPrefix { get; } = string.Empty;
 
         public string ClassSuffix { get; } = string.Empty;
 
-        public List<string> Comments { get; } = new List<string>();
+        public List<string> Comments { get; } = new();
 
         public string? ConnString { get; private set; }
 
-        public string[] ExcludeSchemas => excludeSchemas.ToArray();
+        public string[] ExcludeSchemas => _excludeSchemas.ToArray();
 
-        public string[] ExcludeTablePrefixes => excludeTablePrefixes.ToArray();
+        public string[] ExcludeTablePrefixes => _excludeTablePrefixes.ToArray();
 
-        public string[] ExcludeTables => excludeTables.ToArray();
+        public string[] ExcludeTables => _excludeTables.ToArray();
+
+        public ListContentsCfg[] TableContents => _tableContents.ToArray();
 
         public bool IncludeViews { get; }
 
@@ -52,7 +56,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public string? Namespace { get; private set; }
 
-        public Dictionary<string, string> RenameTableSchemas { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> RenameTableSchemas { get; } = new();
 
         public string? TargetFile { get; private set; }
 
@@ -66,19 +70,25 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public GeneratorCfg WithSchemaExclusion(string schemaName)
         {
-            excludeSchemas.Add(schemaName);
+            _excludeSchemas.Add(schemaName);
+            return this;
+        }
+
+        public GeneratorCfg WithContentsList(string tableName, string idAttribute, string nameAttribute, string? className = null)
+        {
+            _tableContents.Add(new ListContentsCfg(tableName, idAttribute, nameAttribute, className));
             return this;
         }
 
         public GeneratorCfg WithTablePrefixExclusion(string tablePrefix)
         {
-            excludeTablePrefixes.Add(tablePrefix);
+            _excludeTablePrefixes.Add(tablePrefix);
             return this;
         }
 
         public GeneratorCfg WithColumnExclusion(string columnPrefix)
         {
-            excludeColumns.Add(columnPrefix);
+            _excludeColumns.Add(columnPrefix);
             return this;
         }
 
@@ -122,25 +132,25 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             {
                 throw new InvalidOperationException($"{nameof(tbl.Schema)} was empty");
             }
-            if (excludeSchemas.IndexOf(tbl.Schema) > -1)
+            if (_excludeSchemas.IndexOf(tbl.Schema) > -1)
             {
                 tbl.Ignore = true;
                 tbl.DebugText = $"Excluded by Schema: {tbl.Schema}";
                 return true;
             }
 
-            if (excludeTablePrefixes.Any(tp => tbl.Name.StartsWith(tp)))
+            if (_excludeTablePrefixes.Any(tp => tbl.Name.StartsWith(tp)))
             {
                 tbl.Ignore = true;
                 tbl.DebugText =
-                    $"Excluded by Table Prefix: {excludeTablePrefixes.Single(tp => tbl.Name.StartsWith(tp))}";
+                    $"Excluded by Table Prefix: {_excludeTablePrefixes.Single(tp => tbl.Name.StartsWith(tp))}";
                 return true;
             }
 
-            if (excludeTables.Any(t => t == tbl.FullName))
+            if (_excludeTables.Any(t => t == tbl.FullName))
             {
                 tbl.Ignore = true;
-                tbl.DebugText = $"Excluded by Table Name: {excludeTables.Single(t => t == tbl.FullName)}";
+                tbl.DebugText = $"Excluded by Table Name: {_excludeTables.Single(t => t == tbl.FullName)}";
                 return true;
             }
 
@@ -149,7 +159,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public bool IsColumnExcluded(string colNamePrefix)
         {
-            if (excludeColumns.Any(c => c.StartsWith(colNamePrefix)))
+            if (_excludeColumns.Any(c => c.StartsWith(colNamePrefix)))
             {
                 return true;
             }
@@ -171,7 +181,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
 
         public GeneratorCfg WithTableNameExclusion(string tableName)
         {
-            excludeTables.Add(tableName);
+            _excludeTables.Add(tableName);
             return this;
         }
 
