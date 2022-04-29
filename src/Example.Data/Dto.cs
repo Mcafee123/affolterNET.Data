@@ -74,7 +74,7 @@ namespace Example.Data
         [Da.MaxLength(50)]
         public string Status { get; set; }
 
-        public Guid Type { get; set; }
+        public Guid? Type { get; set; }
 
         private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type"};
         public IEnumerable<string> GetColumnNames() => colNames;
@@ -416,7 +416,7 @@ namespace Example.Data
         [Da.MaxLength(50)]
         public string Status { get; set; }
 
-        public Guid Type { get; set; }
+        public Guid? Type { get; set; }
 
         private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type"};
         public IEnumerable<string> GetColumnNames() => colNames;

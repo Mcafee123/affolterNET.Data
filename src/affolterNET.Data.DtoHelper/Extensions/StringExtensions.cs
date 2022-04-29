@@ -9,7 +9,7 @@ public static class StringExtensions
         input = input.Replace("ä", "ae");
         input = input.Replace("ö", "oe");
         input = input.Replace("ü", "ue");
-        input = Regex.Replace(input, "[^a-zA-Z]", "");
+        input = Regex.Replace(input, "[^a-zA-Z0-9]", "");
         if (isField)
         {
             input = $"_{input.Substring(0, 1).ToLower()}{input.Substring(1)}";
