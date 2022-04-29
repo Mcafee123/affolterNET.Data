@@ -2,7 +2,6 @@ using System;
 using System.Data.SqlClient;
 using affolterNET.Data.Commands;
 using affolterNET.Data.Models;
-using Dapper;
 using Xunit;
 
 namespace Example.Data.IntegrationTest.Commands
@@ -22,7 +21,8 @@ namespace Example.Data.IntegrationTest.Commands
                 var dto = new dbo_T_DemoTable
                 {
                     Id = Guid.NewGuid(),
-                    Message = "I was inserted!"
+                    Message = "I was inserted!",
+                    Type = DemoTableTypes.Drei
                 };
                 return new SaveEntityCommand<dbo_T_DemoTable>(dto, true, dbo_T_DemoTable.Cols.Status);
             }).ActAndAssert((result, ah) =>

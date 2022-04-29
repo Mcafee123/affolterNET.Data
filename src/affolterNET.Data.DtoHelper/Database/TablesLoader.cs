@@ -47,57 +47,55 @@ namespace affolterNET.Data.DtoHelper.Database
 
             try
             {
-                using (var conn = new SqlConnection(cfg.ConnString))
+                using var conn = new SqlConnection(cfg.ConnString);
+                conn.Open();
+
+                // Assume SQL Server
+                var reader = new SqlServerSchemaReader(tw);
+
+                var result = reader.ReadSchema(conn, cfg);
+
+                // Remove unrequired tables/views
+                for (var i = result.Count - 1; i >= 0; i--)
                 {
-                    conn.Open();
-
-                    // Assume SQL Server
-                    var reader = new SqlServerSchemaReader(tw);
-
-                    var result = reader.ReadSchema(conn, cfg);
-
-                    // Remove unrequired tables/views
-                    for (var i = result.Count - 1; i >= 0; i--)
+                    if (cfg.IsTableExcluded(result[i]))
                     {
-                        if (cfg.IsTableExcluded(result[i]))
-                        {
-                            result.RemoveAt(i);
-                        }
+                        result.RemoveAt(i);
                     }
-
-                    conn.Close();
-
-                    var rxClean =
-                        new Regex(
-                            "^(Equals|GetHashCode|GetType|ToString|repo|Save|IsNew|Insert|Update|Delete|Exists|SingleOrDefault|Single|First|FirstOrDefault|Fetch|Page|Query)$");
-                    foreach (var t in result)
-                    {
-                        t.ClassName = cfg.ClassPrefix + t.ClassName + cfg.ClassSuffix;
-                        foreach (var c in t.AllColumns)
-                        {
-                            if (c.PropertyName == null)
-                            {
-                                throw new InvalidOperationException($"{nameof(c.PropertyName)} was empty");
-                            }
-
-                            c.PropertyName = rxClean.Replace(c.PropertyName, "_$1");
-
-                            // Make sure property name doesn't clash with class name
-                            if (c.PropertyName == t.ClassName)
-                            {
-                                c.PropertyName = "_" + c.PropertyName;
-                            }
-                        }
-                    }
-
-                    var schemas = result
-                        .Select(t => t.Schema)
-                        .Distinct()
-                        .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .Select(s => s!);
- 
-                    return new TablesResultat(schemas) { Tables = result };
                 }
+
+                conn.Close();
+
+                var rxClean =
+                    new Regex(
+                        "^(Equals|GetHashCode|GetType|ToString|repo|Save|IsNew|Insert|Update|Delete|Exists|SingleOrDefault|Single|First|FirstOrDefault|Fetch|Page|Query)$");
+                foreach (var t in result)
+                {
+                    t.ClassName = cfg.ClassPrefix + t.ClassName + cfg.ClassSuffix;
+                    foreach (var c in t.AllColumns)
+                    {
+                        if (c.PropertyName == null)
+                        {
+                            throw new InvalidOperationException($"{nameof(c.PropertyName)} was empty");
+                        }
+
+                        c.PropertyName = rxClean.Replace(c.PropertyName, "_$1");
+
+                        // Make sure property name doesn't clash with class name
+                        if (c.PropertyName == t.ClassName)
+                        {
+                            c.PropertyName = "_" + c.PropertyName;
+                        }
+                    }
+                }
+
+                var schemas = result
+                    .Select(t => t.Schema)
+                    .Distinct()
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(s => s!);
+ 
+                return new TablesResultat(schemas) { Tables = result };
             }
             catch (Exception x)
             {

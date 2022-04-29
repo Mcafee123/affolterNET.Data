@@ -39,6 +39,7 @@ namespace Example.Update.Commands
                     .WithTargetFile(settings.TargetFile)
                     .WithTableNameExclusion("dbo_sysdiagrams")
                     .WithTableNameExclusion("dbo_SchemaVersions")
+                    .WithContentsList("T_DemoTableType", "Id", "Name", "DemoTableTypes")
                     .WithUsing("System")
                     .WithUsing("System.Collections.Generic")
                     .WithUsing("System.Data")
