@@ -28,6 +28,19 @@ namespace Example.Data.IntegrationTest.Queries
         }
 
         [Fact]
+        public void LoadAllEntitiesInViewTest()
+        {
+            CQB<IEnumerable<dbo_V_Demo>>()
+                .Arrange(db => new LoadEntityQuery<dbo_V_Demo>())
+                .ActAndAssert((result, ah) =>
+                {
+                    var list = result.Data.ToList();
+                    Assert.Single(list);
+                    Assert.Equal("It is working!", list.First().Message);
+                });
+        }
+        
+        [Fact]
         public void LoadByIdTest()
         {
             CQB<IEnumerable<dbo_T_DemoTable>>()

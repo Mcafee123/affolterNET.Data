@@ -10,18 +10,18 @@ using Dapper;
 
 namespace affolterNET.Data.Queries
 {
-    public class LoadEntityQuery<T>: CommandQueryBase<IEnumerable<T>>, IQuery<IEnumerable<T>> where T: class, IDtoBase
+    public class LoadEntityQuery<T>: CommandQueryBase<IEnumerable<T>>, IQuery<IEnumerable<T>> where T: class, IViewBase
     {
         public LoadEntityQuery(int maxcount = 1000, string? idName = null)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
             Sql = dto.GetSelectCommand(maxcount);
-            if (idName == null)
+            if (idName == null && dto is IDtoBase dtobase)
             {
-                idName = dto.GetIdName();
+                idName = dtobase.GetIdName();
+                AddParam(idName, null!);
             }
-            AddParam(idName, null!);
         }
         
         public LoadEntityQuery(RootFilter filter, int maxcount = 1000)
@@ -41,11 +41,11 @@ namespace affolterNET.Data.Queries
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
             Sql = dto.GetSelectCommand();
-            if (idName == null)
+            if (dto is IDtoBase dtobase)
             {
-                idName = dto.GetIdName();
+                idName = dtobase.GetIdName();
+                AddParam(idName, pkValue);
             }
-            AddParam(idName, pkValue);
         }
         
         public override async Task<DataResult<IEnumerable<T>>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction)
