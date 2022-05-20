@@ -20,8 +20,6 @@ namespace affolterNET.Data.Interfaces
 
         void SetId(object id);
 
-        string GetTableName();
-
         string GetIdName();
 
         string GetUpdatedUserName();
