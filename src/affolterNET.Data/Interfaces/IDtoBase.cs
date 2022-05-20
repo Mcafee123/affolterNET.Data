@@ -4,11 +4,9 @@ using System.Data;
 
 namespace affolterNET.Data.Interfaces
 {
-    public interface IDtoBase
+    public interface IDtoBase: IViewBase
     {
         string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns);
-
-        string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns);
 
         string GetUpdateCommand(params string[] excludedColumns);
 
@@ -21,8 +19,6 @@ namespace affolterNET.Data.Interfaces
         bool IsAutoincrementId();
 
         void SetId(object id);
-
-        string GetTableName();
 
         string GetIdName();
 
