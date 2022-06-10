@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\affolterNET.Data.DbUp\affolterNET.Data.DbUp.csproj" />
       <ProjectReference Include="..\affolterNET.Data.DtoHelper\affolterNET.Data.DtoHelper.csproj" />
     </ItemGroup>
 </Project>

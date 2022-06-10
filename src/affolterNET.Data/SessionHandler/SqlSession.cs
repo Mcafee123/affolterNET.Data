@@ -68,7 +68,7 @@ namespace affolterNET.Data.SessionHandler
                     Transaction = null;
 
                     // Connection Dispose
-                    Connection?.Close();
+                    Connection.Close();
                     Connection?.Dispose();
                     Connection = null!;
                 }

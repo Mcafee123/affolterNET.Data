@@ -12,5 +12,11 @@ namespace affolterNET.Data.Interfaces
         DataResult<T> Execute(IDbConnection connection, IDbTransaction transaction);
 
         Task<DataResult<T>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction);
+
+        bool ExcludeFromHistory { get; }
+        
+        bool CheckNotExplicitlySetExcludeFromHistory { get; }
+
+        string? Sql { get;  }
     }
 }

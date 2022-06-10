@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data;
-using affolterNET.Data.TestHelpers;
-using Dapper;
+﻿using affolterNET.Data.TestHelpers;
 using Xunit.Abstractions;
 
 namespace Example.Data.IntegrationTest

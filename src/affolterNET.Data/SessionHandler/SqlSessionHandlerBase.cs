@@ -20,6 +20,8 @@ namespace affolterNET.Data.SessionHandler
         }
 
         protected abstract ISqlSession CreateSession();
+        
+        protected abstract void SaveHistory<TResult>(IQuery<TResult> query);
 
         public ISqlSession CreateSqlSession()
         {
@@ -50,8 +52,13 @@ namespace affolterNET.Data.SessionHandler
             IQuery<TResult> query,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
-            Log.Verbose(query.ToString());
-            return await QueryMultipleAsync(() => query.ExecuteAsync(Session!.Connection, Session.Transaction!), isolationLevel);
+            Log.Verbose("{Query}",query.ToString());
+            return await QueryMultipleAsync(() =>
+            {
+                var result = query.ExecuteAsync(Session!.Connection, Session.Transaction!);
+                SaveHistory(query);
+                return result;
+            }, isolationLevel);
         }
 
         public async Task<DataResult<TResult>> QueryMultipleAsync<TResult>(
@@ -118,7 +125,7 @@ namespace affolterNET.Data.SessionHandler
             return $"SqlSessionHandler: {_id}";
         }
 
-        private bool HasSession()
+        protected bool HasSession()
         {
             return Session?.Connection != null;
         }

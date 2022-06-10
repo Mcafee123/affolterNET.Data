@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Example.Update.Commands;
 using Spectre.Console;
 using Spectre.Console.Cli;
