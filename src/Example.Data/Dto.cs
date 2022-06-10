@@ -44,6 +44,11 @@ namespace Example.Data
                 return new dbo_T_DemoTableType();
             }
 
+            if (typeof(dbo_T_History) == typeof(T))
+            {
+                return new dbo_T_History();
+            }
+
             throw new InvalidOperationException();
         }
     }
@@ -402,6 +407,170 @@ namespace Example.Data
         {
             var entry = _dict.FirstOrDefault(kvp => kvp.Key.Equals(g));
             return entry.Equals(default(KeyValuePair<Guid, string>)) ? null : entry.Value;
+        }
+    }
+
+    public class dbo_T_History : IDtoBase
+    {
+        public const string TABLE_NAME = "[dbo].[T_History]";
+        [Da.Key]
+        public int Id { get; set; }
+
+        public DateTime Applied { get; set; }
+
+        [Da.MaxLength(2000)]
+        public string Name { get; set; }
+
+        public string Script { get; set; }
+
+        private static readonly List<string> colNames = new List<string>{"Id", "Applied", "Name", "Script"};
+        public IEnumerable<string> GetColumnNames() => colNames;
+        public static IEnumerable<string> ColNames => colNames;
+        public static class Cols
+        {
+            public const string Id = "[Id]";
+            public const string Applied = "[Applied]";
+            public const string Name = "[Name]";
+            public const string Script = "[Script]";
+        }
+
+        public bool IsAutoincrementId()
+        {
+            return true;
+        }
+
+        public string GetTableName()
+        {
+            return TABLE_NAME;
+        }
+
+        public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
+        {
+            var cols = "[Id], [Name], [Script], [Applied]".GetColumns(excludedColumns);
+            return $"select top({maxCount}) {cols.JoinCols()} from dbo.T_History where (@Id is null or [Id]=@Id)";
+        }
+
+        public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
+        {
+            var cols = "[Name], [Script], [Applied]".GetColumns(excludedColumns);
+            var sql = $"insert into dbo.T_History ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
+            if (returnScopeIdentity)
+            {
+                sql += "; select scope_identity() as id;";
+            }
+
+            return sql;
+        }
+
+        public string GetUpdateCommand(params string[] excludedColumns)
+        {
+            var cols = "[Name], [Script], [Applied]".GetColumns(excludedColumns);
+            return $"update dbo.T_History set {cols.JoinForUpdate()} where Id=@Id";
+        }
+
+        public string GetDeleteCommand()
+        {
+            return "delete from dbo.T_History where Id=@Id";
+        }
+
+        public string GetDeleteAllCommand()
+        {
+            return "delete from dbo.T_History";
+        }
+
+        public string GetSaveByIdCommand(bool select = false, params string[] excludedColumns)
+        {
+            return @$"
+                        if exists (select Id from dbo.T_History where Id = @Id)
+                            begin
+                                {GetUpdateCommand(excludedColumns)};
+                                {"select 'dbo' as [Schema], 'T_History' as [Table], convert(nvarchar(50), @Id) as [Id], 'updated' as [Action]"}
+                            end
+                        else
+                            begin
+                                {GetInsertCommand(true, excludedColumns)}
+                                {"select 'dbo' as [Schema], 'T_History' as [Table], convert(nvarchar(50), @Id) as [Id], 'inserted' as [Action]"}
+                            end
+                        {(select ? GetSelectCommand(1, excludedColumns) : string.Empty)}";
+        }
+
+        public dbo_T_History GetFromDb(IDbConnection conn, IDbTransaction trsact)
+        {
+            return conn.QueryFirstOrDefault<dbo_T_History>(this.GetSelectCommand(1), this, trsact);
+        }
+
+        public void Reload(IDbConnection conn, IDbTransaction trsact)
+        {
+            var loaded = this.GetFromDb(conn, trsact);
+            this.Applied = loaded.Applied;
+            this.Name = loaded.Name;
+            this.Script = loaded.Script;
+        }
+
+        public string GetIdName()
+        {
+            return "Id";
+        }
+
+        public void SetId(object id)
+        {
+            var intId = Convert.ToInt32(id);
+            Id = intId;
+        }
+
+        public string GetVersionName()
+        {
+            return "n.a.";
+        }
+
+        public string GetIsActiveName()
+        {
+            return "n.a.";
+        }
+
+        public void SetIsActive(bool isActive)
+        {
+        }
+
+        public string GetUpdatedUserName()
+        {
+            return "n.a.";
+        }
+
+        public void SetUpdatedUser(string userName)
+        {
+        }
+
+        public string GetInsertedUserName()
+        {
+            return "n.a.";
+        }
+
+        public void SetInsertedUser(string userName)
+        {
+        }
+
+        public string GetUpdatedDateName()
+        {
+            return "n.a.";
+        }
+
+        public void SetUpdatedDate(DateTime date)
+        {
+        }
+
+        public string GetInsertedDateName()
+        {
+            return "n.a.";
+        }
+
+        public void SetInsertedDate(DateTime date)
+        {
+        }
+
+        public override string ToString()
+        {
+            return $"Id: {Id}; Name: {Name}; Script: {Script}; Applied: {Applied}";
         }
     }
 
