@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <PackageId>affolterNET.Data</PackageId>
+        <PackageId>affolterNET.Data.DbUp</PackageId>
         <Authors>affolter.NET GmbH</Authors>
         <Company>affolter.NET GmbH</Company>
         <Description>Library to help with DbUp</Description>
