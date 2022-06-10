@@ -80,7 +80,7 @@ namespace affolterNET.Data.TestHelpers
             }
         }
 
-        protected virtual string GetConnString()
+        public virtual string GetConnString()
         {
             if (_connString == null)
             {

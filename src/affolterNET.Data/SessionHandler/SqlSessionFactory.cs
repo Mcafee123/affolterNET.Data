@@ -8,7 +8,7 @@ namespace affolterNET.Data.SessionHandler
 
         public SqlSessionFactory(string connectionString)
         {
-            this._connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public ISqlSession CreateSession()

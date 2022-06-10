@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <PackageId>affolterNET.Data.DbUp</PackageId>
+        <Authors>affolter.NET GmbH</Authors>
+        <Company>affolter.NET GmbH</Company>
+        <Description>Library to help with DbUp</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>SQL, DB, Dapper, Command, Query, ORM</PackageTags>
+        <RepositoryUrl>https://github.com/Mcafee123/affolterNET.Data</RepositoryUrl>
+        <ProjectGuid>9845AC6B-E6C3-40F2-8FA5-50A3DBD81544</ProjectGuid>
+        <IsPackable>true</IsPackable>
+        <Authors>Martin Affolter</Authors>
+        <Company>affolter.NET GmbH</Company>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>true</WarningsAsErrors>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="dbup-core" Version="4.5.0" />
+      <PackageReference Include="dbup-sqlserver" Version="4.5.0" />
+      <PackageReference Include="Spectre.Console" Version="0.42.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\affolterNET.Data\affolterNET.Data.csproj" />
+    </ItemGroup>
+
+</Project>

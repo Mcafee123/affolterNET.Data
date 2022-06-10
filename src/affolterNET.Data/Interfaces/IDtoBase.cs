@@ -43,7 +43,5 @@ namespace affolterNET.Data.Interfaces
         void SetUpdatedDate(DateTime date);
 
         void Reload(IDbConnection conn, IDbTransaction trsact);
-
-        IEnumerable<string> GetColumnNames();
     }
 }

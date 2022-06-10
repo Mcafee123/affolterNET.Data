@@ -17,7 +17,11 @@ namespace affolterNET.Data.TestHelpers
         }
 
 #pragma warning disable 8767
-        public string ConnectionString { get; set; }
+        public string ConnectionString {
+            get => _conn.ConnectionString;
+            set
+            {}
+        } 
 #pragma warning restore 8767
 
         public int ConnectionTimeout => _conn.ConnectionTimeout;

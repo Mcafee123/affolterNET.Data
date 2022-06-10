@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using affolterNET.Data.Interfaces;
 using affolterNET.Data.Interfaces.SessionHandler;
 using affolterNET.Data.SessionHandler;
 
@@ -25,7 +26,12 @@ namespace affolterNET.Data.TestHelpers.SessionHandler
         
             return Session;
         }
-        
+
+        protected override void SaveHistory<TResult>(IQuery<TResult> query)
+        {
+            // do not save
+        }
+
         // private readonly IDbConnection _cnn;
         // private readonly Guid _id;
         // private readonly IDbTransaction? _transaction;

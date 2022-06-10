@@ -17,10 +17,21 @@ namespace affolterNET.Data
         public const string ScopeIdentity = "select scope_identity() as id";
         public const string LastChangedDate = "LastChangedDate";
 
-        protected CommandQueryBase()
+        protected CommandQueryBase(bool? excludeFromHistory = null)
         {
             Params = new ExpandoObject();
+            if (excludeFromHistory == null)
+            {
+                CheckNotExplicitlySetExcludeFromHistory = true;
+                excludeFromHistory = GetType()!.Namespace!.IndexOf("Commands", StringComparison.CurrentCultureIgnoreCase) == -1;
+            }
+
+            ExcludeFromHistory = excludeFromHistory.Value;
         }
+
+        public bool CheckNotExplicitlySetExcludeFromHistory { get; }
+
+        public bool ExcludeFromHistory { get; }
 
         protected dynamic Params { get; }
 

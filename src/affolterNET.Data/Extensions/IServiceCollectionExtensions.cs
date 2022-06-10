@@ -11,11 +11,15 @@ namespace affolterNET.Data.Extensions
         public static IServiceCollection AddAffolterNETDataServices(
             this IServiceCollection services,
             IConfiguration cfg,
-            string connString)
+            string connString,
+            EnumHistoryMode historyMode = EnumHistoryMode.None,
+            string? historyTableName = null)
         {
             services.AddScoped<ISqlSessionHandler, SqlSessionHandler>();
             services.AddTransient<ISqlSession, SqlSession>();
             services.AddSingleton<ISqlSessionFactory>(provider => new SqlSessionFactory(connString));
+            services.AddTransient<IHistorySaver, HistorySaver>(sp => new HistorySaver(connString, historyMode, historyTableName));
+
             return services;
         }
     }
