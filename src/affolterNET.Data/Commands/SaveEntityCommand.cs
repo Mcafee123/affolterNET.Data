@@ -19,6 +19,14 @@ namespace affolterNET.Data.Commands
             Sql = dto.GetSaveByIdCommand(select, excludedColumns);
             AddParams(dto);
         }
+        
+        public SaveEntityCommand(T dto, string userName, bool select = false, params string[] excludedColumns)
+        {
+            _select = select;
+            Sql = dto.GetSaveByIdCommand(select, excludedColumns);
+            AddMeta(dto, userName);
+            AddParams(dto);
+        }
 
         public override async Task<DataResult<SaveInfo>> ExecuteAsync(IDbConnection connection,
             IDbTransaction transaction)

@@ -26,6 +26,8 @@ namespace affolterNET.Data.DtoHelper.Database
         public string? PropertyName { get; set; }
 
         public string? PropertyType { get; set; }
+        
+        public string? DataType { get; set; }
 
         public bool IsVersionCol()
         {
@@ -80,11 +82,21 @@ namespace affolterNET.Data.DtoHelper.Database
         public string WriteProperty(int indent)
         {
             var myIndent = GetIndent(indent);
+            var isNullable = string.Empty;
             var dapperKey = string.Empty;
             if (IsPK)
             {
                 dapperKey = string.Format("{0}[Da.Key]", myIndent);
             }
+            else
+            {
+                if (!IsNullable)
+                {
+                    isNullable = string.Format("{0}[Da.Required]", myIndent);    
+                }
+            }
+
+            var dataType = string.Format($"{{0}}[Da.DataType(\"{DataType}\")]", myIndent);
 
             var maxLength = string.Empty;
             if (MaxLength.HasValue)
@@ -92,14 +104,23 @@ namespace affolterNET.Data.DtoHelper.Database
                 maxLength = string.Format("{0}[Da.MaxLength({1})]", myIndent, MaxLength);
             }
 
+            var defaultValue = string.Empty;
+            if (IsVersionCol() && DataType == "timestamp")
+            {
+                defaultValue = " = {0,0,0,0,0,0,0,0};";
+            }
             var prop = string.Format(
-                "{0}{1}{2}public {3}{4} {5} {{ get; set;}}",
+                "{0}{1}{2}{3}{4}public {5}{6} {7} {{ get; set;}}{8}",
+                dataType,
                 dapperKey,
                 maxLength,
+                isNullable,
                 myIndent,
                 PropertyType,
                 CheckNullable(),
-                PropertyName);
+                PropertyName,
+                defaultValue);
+
             return prop;
         }
 

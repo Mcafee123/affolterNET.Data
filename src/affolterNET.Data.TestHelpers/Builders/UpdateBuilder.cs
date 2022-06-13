@@ -16,8 +16,8 @@ namespace affolterNET.Data.TestHelpers.Builders
         public UpdateBuilder(IDbConnection conn, IDbTransaction trsact, IDtoBase dto)
             : base(conn, trsact, dto)
         {
-            AddUpdate("LetzteAenderungAm", DateTime.Now);
-            AddUpdate("LetzteAenderungDurch", $"UpdateBuilder: {dto.GetTableName()}");
+            AddUpdate(dto.GetUpdatedDateName(), DateTime.Now);
+            AddUpdate(dto.GetUpdatedUserName(), $"UpdateBuilder: {dto.GetTableName()}");
         }
 
         public UpdateBuilder<T> WithUpdate(string col, object value)

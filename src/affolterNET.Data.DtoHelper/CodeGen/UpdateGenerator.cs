@@ -24,12 +24,12 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             {
                 if (col.IsVersionCol())
                 {
-                    versionWhere = $" and {col.Name}=@{col.Name}";
+                    versionWhere = $" and {col.Name.EnsureSquareBrackets()}=@{col.Name}";
                 }
 
                 if (col.IsPK)
                 {
-                    updateWhere = string.Format("where {0}=@{0}", col.Name);
+                    updateWhere = $"where {col.Name.EnsureSquareBrackets()}=@{col.Name}";
                 }
             }
             var columns = tbl.AllColumns

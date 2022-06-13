@@ -8,9 +8,10 @@ namespace affolterNET.Data.Commands
 {
     public class SaveAndReloadEntityCommand<T> : CommandQueryBase<T>, IQuery<T> where T : class, IDtoBase
     {
-        public SaveAndReloadEntityCommand(T dto)
+        public SaveAndReloadEntityCommand(T dto, string? userName = null)
         {
             Sql = dto.GetSaveByIdCommand();
+            AddMeta(dto, userName);
             AddParams(dto);
         }
 

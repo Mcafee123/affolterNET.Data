@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using affolterNET.Data.DtoHelper.Database;
 
@@ -67,6 +68,14 @@ namespace affolterNET.Data.DtoHelper.CodeGen
         public List<string> Usings { get; } = new List<string>();
 
         public Func<string?, bool> VersionFunc { get; private set; } = s => false;
+        
+        public bool InsertedUpdatedDateUtc { get; set; } = true;
+
+        public GeneratorCfg WithInsertedUpdatedDateUtc(bool asUtc = true)
+        {
+            InsertedUpdatedDateUtc = asUtc;
+            return this;
+        }
 
         public GeneratorCfg WithSchemaExclusion(string schemaName)
         {

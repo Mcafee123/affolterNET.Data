@@ -39,27 +39,6 @@ namespace affolterNET.Data.TestHelpers.Helpers
             return item;
         }
 
-        // public void CheckErstelltLetzteAenderung(IDto check, bool istUpdate, bool istAktiv = true)
-        // {
-        // var dbUserName = Thread.CurrentPrincipal.Identity.GetAngemeldeterBenutzerString();
-        // Assert.AreEqual(check.IstAktiv, istAktiv, "Gelöscht-Zustand ist falsch");
-        // if (istUpdate)
-        // {
-        // this.CheckDateMitToleranz(check.LetzteAenderungAm, DateTime.Now);
-        // Assert.AreEqual(
-        // check.LetzteAenderungDurch,
-        // $"{dbUserName}",
-        // "LetzteAenderungDurch darf nicht NULL sein bei UPDATE");
-        // }
-        // else
-        // {
-        // this.CheckDateMitToleranz(check.LetzteAenderungAm);
-        // Assert.AreEqual(check.LetzteAenderungDurch, null, "LetzteAenderungDurch muss NULL sein bei INSERT");
-        // this.CheckDateMitToleranz(check.ErstelltAm, DateTime.Now);
-        // Assert.AreEqual(check.ErstelltDurch, $"{dbUserName}");
-        // }
-        // }
-
         public void CheckDate(DateTime? toCheck, DateTime? toCompare = null)
         {
             if (toCompare == null)

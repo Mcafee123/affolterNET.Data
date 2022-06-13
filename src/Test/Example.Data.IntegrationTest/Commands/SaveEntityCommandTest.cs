@@ -24,7 +24,7 @@ namespace Example.Data.IntegrationTest.Commands
                     Message = "I was inserted!",
                     Type = DemoTableTypes.Drei
                 };
-                return new SaveEntityCommand<dbo_T_DemoTable>(dto, true, dbo_T_DemoTable.Cols.Status);
+                return new SaveEntityCommand<dbo_T_DemoTable>(dto, "tinu", true, dbo_T_DemoTable.Cols.Status);
             }).ActAndAssert((result, ah) =>
             {
                 Assert.Equal("inserted", result.Data.Action);
@@ -40,7 +40,7 @@ namespace Example.Data.IntegrationTest.Commands
                 {
                     Id = Guid.NewGuid()
                 };
-                return new SaveEntityCommand<dbo_T_DemoTable>(dto, true, dbo_T_DemoTable.Cols.Status);
+                return new SaveEntityCommand<dbo_T_DemoTable>(dto, "tinu", true, dbo_T_DemoTable.Cols.Status);
             }).Act());
             Assert.Equal("Cannot insert the value NULL into column 'Message', table 'example.dbo.T_DemoTable'; column does not allow nulls. INSERT fails.\nThe statement has been terminated.", ex.Message);
         }

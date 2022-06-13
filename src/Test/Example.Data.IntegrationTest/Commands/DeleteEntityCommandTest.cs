@@ -16,7 +16,7 @@ namespace Example.Data.IntegrationTest.Commands
                 .Arrange(db =>
                 {
                     var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new DeleteEntityCommand<dbo_T_DemoTable>(singleEntry.Id);
+                    return new DeleteEntityCommand<dbo_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
                 })
                 .ActAndAssert((result, ah) =>
                 {

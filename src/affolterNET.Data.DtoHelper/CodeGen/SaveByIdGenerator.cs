@@ -28,15 +28,16 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 {{
                     return 
                         @$""
+                        declare @rowcnt int
                         if exists (select {pk.Name} from {tbl.Schema}.{tbl.Name} where {pk.Name} = @{pk.Name})
                             begin
-                                {{GetUpdateCommand(excludedColumns)}};
-                                {{""select '{tbl.Schema}' as [Schema], '{tbl.Name}' as [Table], convert(nvarchar(50), @{pk.Name}) as [Id], 'updated' as [Action]""}}
+                                {{GetUpdateCommand(excludedColumns)}}; set @rowcnt = (select @@rowcount);
+                                select '{tbl.Schema}' as [Schema], '{tbl.Name}' as [Table], convert(nvarchar(50), @{pk.Name}) as [Id], case when @rowcnt = 0 then '{{Constants.NoAction}}' else '{{Constants.Updated}}' end as [Action];
                             end
                         else
                             begin
-                                {{GetInsertCommand({(tbl.GetPrimaryKeyColumn()?.IsAutoIncrement == true ? "true" : "false")}, excludedColumns)}}
-                                {{""select '{tbl.Schema}' as [Schema], '{tbl.Name}' as [Table], convert(nvarchar(50), @{pk.Name}) as [Id], 'inserted' as [Action]""}}
+                                {{GetInsertCommand({(tbl.GetPrimaryKeyColumn()?.IsAutoIncrement == true ? "true" : "false")}, excludedColumns)}}; set @rowcnt = (select @@rowcount);
+                                select '{tbl.Schema}' as [Schema], '{tbl.Name}' as [Table], convert(nvarchar(50), @{pk.Name}) as [Id], case when @rowcnt = 0 then '{{Constants.NoAction}}' else '{{Constants.Inserted}}' end as [Action];
                             end
                         {{(select ? GetSelectCommand(1, excludedColumns) : string.Empty)}}"";
                 }}

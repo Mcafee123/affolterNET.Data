@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using affolterNET.Data.Extensions;
 using affolterNET.Data.Interfaces;
 using Dapper;
 
@@ -17,10 +18,10 @@ namespace affolterNET.Data.TestHelpers.Builders
         {
             updateStatements.Add("IstAktiv=@IstAktiv");
             Paras.Add("IstAktiv", 0);
-            updateStatements.Add("LetzteAenderungAm=@LetzteAenderungAm");
-            Paras.Add("LetzteAenderungAm", DateTime.Now);
-            updateStatements.Add("LetzteAenderungDurch=@LetzteAenderungDurch");
-            Paras.Add("LetzteAenderungDurch", $"SoftDeleteBuilder: {TableName}");
+            updateStatements.Add($"{dto.GetUpdatedDateName().EnsureSquareBrackets()}=@{dto.GetUpdatedDateName()}");
+            Paras.Add(dto.GetUpdatedDateName(), DateTime.Now);
+            updateStatements.Add($"{dto.GetUpdatedUserName().EnsureSquareBrackets()}=@{dto.GetUpdatedUserName()}");
+            Paras.Add(dto.GetUpdatedUserName(), $"SoftDeleteBuilder: {TableName}");
         }
 
         public int Execute()

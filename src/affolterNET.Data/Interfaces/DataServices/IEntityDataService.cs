@@ -10,8 +10,8 @@ namespace affolterNET.Data.Interfaces.DataServices
         Task<DataResult<IEnumerable<T>>> GetAll(int maxcount = 1000);
         Task<T> GetById(object pkValue, string? param = null);
         Task<SaveInfo> Save(T dto);
-        Task<T> SaveAndReload(T dto);
+        Task<T> SaveAndReload(T dto, string? userName = null);
         Task<bool> DeleteAll();
-        Task<bool> DeleteById(object pkValue, string? param = null);
+        Task<bool> DeleteById(object pkValue, byte[] timestamp, string? param = null);
     }
 }

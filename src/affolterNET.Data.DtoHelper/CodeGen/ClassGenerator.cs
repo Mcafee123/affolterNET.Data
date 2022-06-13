@@ -46,24 +46,24 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             var sgSelect = new SelectGenerator(_tbl);
             sgSelect.Generate(Add);
 
-            // InsertGenerator
-            var sgInsert = new InsertGenerator(_tbl);
-            sgInsert.Generate(Add);
-
-            // UpdateGenerator
-            var sgUpdate = new UpdateGenerator(_tbl);
-            sgUpdate.Generate(Add);
-
-            // DeleteGenerator
-            var sgDelete = new DeleteGenerator(_tbl);
-            sgDelete.Generate(Add);
-            
-            // SaveByIdGenerator
-            var sgSaveById = new SaveByIdGenerator(_tbl);
-            sgSaveById.Generate(Add);
-
             if (!_tbl.IsView)
             {
+                // InsertGenerator
+                var sgInsert = new InsertGenerator(_tbl);
+                sgInsert.Generate(Add);
+
+                // UpdateGenerator
+                var sgUpdate = new UpdateGenerator(_tbl);
+                sgUpdate.Generate(Add);
+
+                // DeleteGenerator
+                var sgDelete = new DeleteGenerator(_tbl);
+                sgDelete.Generate(Add);
+            
+                // SaveByIdGenerator
+                var sgSaveById = new SaveByIdGenerator(_tbl);
+                sgSaveById.Generate(Add);
+                
                 // Refresh()
                 var sgRefresh = new RefreshGenerator(_tbl);
                 sgRefresh.Generate(Add);
@@ -76,71 +76,86 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 // SetId
                 var sgSetId = new StringGenerator(_tbl.GetPrimaryKeyColumn().WriteSetId(0));
                 sgSetId.Generate(Add);
+
+                // SetInserted
+                var dateTime = _tbl.InsertedUpdatedDateUtc ? "DateTime.UtcNow" : "DateTime.Now";
+                var setInserted = new StringGenerator($@"public void SetInserted(string userName) {{
+                    SetInsertedUser(userName);
+                    SetInsertedDate({ dateTime });
+                }}");
+                setInserted.Generate(Add);
+                
+                // SetUpdated
+                var setUpdated = new StringGenerator($@"public void SetUpdated(string userName) {{
+                    SetUpdatedUser(userName);
+                    SetUpdatedDate({ dateTime });
+                }}");
+                setUpdated.Generate(Add);
+
+                // GetVersionName
+                var sgVersionName =
+                    new StringGenerator($"public string GetVersionName() {{ return \"{_tbl.GetVersionName()}\"; }}");
+                sgVersionName.Generate(Add);
+
+                // GetIsActiveName
+                var sgGetIsActive = new StringGenerator(
+                    $"public string GetIsActiveName() {{ return \"{_tbl.GetIsActiveName()}\"; }}");
+                sgGetIsActive.Generate(Add);
+
+                // SetIsActive
+                var isActive = _tbl.GetIsActiveName();
+                isActive = isActive == Constants.NotAvailable ? string.Empty : $"this.{isActive} = isActive;";
+                var sgSetIsActive = new StringGenerator($"public void SetIsActive(bool isActive) {{ {isActive} }}");
+                sgSetIsActive.Generate(Add);
+
+                // GetUpdatedUserName
+                var sgUpdateUser = new StringGenerator(
+                    $"public string GetUpdatedUserName() {{ return \"{_tbl.GetUpdatedUserName()}\"; }}");
+                sgUpdateUser.Generate(Add);
+
+                // SetUpdatedUser
+                var updatedUser = _tbl.GetUpdatedUserName();
+                updatedUser = updatedUser == Constants.NotAvailable ? string.Empty : $"this.{updatedUser} = userName;";
+                var sgSetUpdatedUser =
+                    new StringGenerator($"public void SetUpdatedUser(string userName) {{ {updatedUser} }}");
+                sgSetUpdatedUser.Generate(Add);
+
+                // GetInsertedUserName
+                var sgInsertUser = new StringGenerator(
+                    $"public string GetInsertedUserName() {{ return \"{_tbl.GetInsertedUserName()}\"; }}");
+                sgInsertUser.Generate(Add);
+
+                // SetInsertedUser
+                var insertedUser = _tbl.GetInsertedUserName();
+                insertedUser = insertedUser == Constants.NotAvailable ? string.Empty : $"this.{insertedUser} = userName;";
+                var sgSetInsertedUser =
+                    new StringGenerator($"public void SetInsertedUser(string userName) {{ {insertedUser} }}");
+                sgSetInsertedUser.Generate(Add);
+
+                // GetUpdatedDateName
+                var sgUpdateDate = new StringGenerator(
+                    $"public string GetUpdatedDateName() {{ return \"{_tbl.GetUpdatedDateName()}\"; }}");
+                sgUpdateDate.Generate(Add);
+
+                // SetUpdatedDate
+                var updatedDate = _tbl.GetUpdatedDateName();
+                updatedDate = updatedDate == Constants.NotAvailable ? string.Empty : $"this.{updatedDate} = date;";
+                var sgSetUpdatedDate =
+                    new StringGenerator($"public void SetUpdatedDate(DateTime date) {{ {updatedDate} }}");
+                sgSetUpdatedDate.Generate(Add);
+
+                // GetInsertedDateName
+                var sgInsertDate = new StringGenerator(
+                    $"public string GetInsertedDateName() {{ return \"{_tbl.GetInsertedDateName()}\"; }}");
+                sgInsertDate.Generate(Add);
+
+                // SetInsertedDate
+                var insertedDate = _tbl.GetInsertedDateName();
+                insertedDate = insertedDate == Constants.NotAvailable ? string.Empty : $"this.{insertedDate} = date;";
+                var sgSetInsertedDate =
+                    new StringGenerator($"public void SetInsertedDate(DateTime date) {{ {insertedDate} }}");
+                sgSetInsertedDate.Generate(Add);
             }
-
-            // GetVersionName
-            var sgVersionName =
-                new StringGenerator($"public string GetVersionName() {{ return \"{_tbl.GetVersionName()}\"; }}");
-            sgVersionName.Generate(Add);
-
-            // GetIsActiveName
-            var sgGetIsActive = new StringGenerator(
-                $"public string GetIsActiveName() {{ return \"{_tbl.GetIsActiveName()}\"; }}");
-            sgGetIsActive.Generate(Add);
-
-            // SetIsActive
-            var isActive = _tbl.GetIsActiveName();
-            isActive = isActive == _tbl.NotAvailable ? string.Empty : $"this.{isActive} = isActive;";
-            var sgSetIsActive = new StringGenerator($"public void SetIsActive(bool isActive) {{ {isActive} }}");
-            sgSetIsActive.Generate(Add);
-
-            // GetUpdatedUserName
-            var sgUpdateUser = new StringGenerator(
-                $"public string GetUpdatedUserName() {{ return \"{_tbl.GetUpdatedUserName()}\"; }}");
-            sgUpdateUser.Generate(Add);
-
-            // SetUpdatedUser
-            var updatedUser = _tbl.GetUpdatedUserName();
-            updatedUser = updatedUser == _tbl.NotAvailable ? string.Empty : $"this.{updatedUser} = userName;";
-            var sgSetUpdatedUser =
-                new StringGenerator($"public void SetUpdatedUser(string userName) {{ {updatedUser} }}");
-            sgSetUpdatedUser.Generate(Add);
-
-            // GetInsertedUserName
-            var sgInsertUser = new StringGenerator(
-                $"public string GetInsertedUserName() {{ return \"{_tbl.GetInsertedUserName()}\"; }}");
-            sgInsertUser.Generate(Add);
-
-            // SetInsertedUser
-            var insertedUser = _tbl.GetInsertedUserName();
-            insertedUser = insertedUser == _tbl.NotAvailable ? string.Empty : $"this.{insertedUser} = userName;";
-            var sgSetInsertedUser =
-                new StringGenerator($"public void SetInsertedUser(string userName) {{ {insertedUser} }}");
-            sgSetInsertedUser.Generate(Add);
-
-            // GetUpdatedDateName
-            var sgUpdateDate = new StringGenerator(
-                $"public string GetUpdatedDateName() {{ return \"{_tbl.GetUpdatedDateName()}\"; }}");
-            sgUpdateDate.Generate(Add);
-
-            // SetUpdatedDate
-            var updatedDate = _tbl.GetUpdatedDateName();
-            updatedDate = updatedDate == _tbl.NotAvailable ? string.Empty : $"this.{updatedDate} = date;";
-            var sgSetUpdatedDate =
-                new StringGenerator($"public void SetUpdatedDate(DateTime date) {{ {updatedDate} }}");
-            sgSetUpdatedDate.Generate(Add);
-
-            // GetInsertedDateName
-            var sgInsertDate = new StringGenerator(
-                $"public string GetInsertedDateName() {{ return \"{_tbl.GetInsertedDateName()}\"; }}");
-            sgInsertDate.Generate(Add);
-
-            // SetInsertedDate
-            var insertedDate = _tbl.GetInsertedDateName();
-            insertedDate = insertedDate == _tbl.NotAvailable ? string.Empty : $"this.{insertedDate} = date;";
-            var sgSetInsertedDate =
-                new StringGenerator($"public void SetInsertedDate(DateTime date) {{ {insertedDate} }}");
-            sgSetInsertedDate.Generate(Add);
 
             // ToString()
             var sgToString = new StringGenerator($"public override string ToString() {{ return $\"{_tbl}\";}}");

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using affolterNET.Data.Extensions;
+using affolterNET.Data.Interfaces;
 using affolterNET.Data.Models;
 using affolterNET.Data.Result;
 using Dapper;
@@ -23,7 +25,8 @@ namespace affolterNET.Data
             if (excludeFromHistory == null)
             {
                 CheckNotExplicitlySetExcludeFromHistory = true;
-                excludeFromHistory = GetType()!.Namespace!.IndexOf("Commands", StringComparison.CurrentCultureIgnoreCase) == -1;
+                excludeFromHistory =
+                    GetType()!.Namespace!.IndexOf("Commands", StringComparison.CurrentCultureIgnoreCase) == -1;
             }
 
             ExcludeFromHistory = excludeFromHistory.Value;
@@ -36,6 +39,8 @@ namespace affolterNET.Data
         protected dynamic Params { get; }
 
         public IDictionary<string, object> ParamsDict => Params;
+
+        public Dictionary<string, string> SqlDataTypes { get; } = new();
 
         protected object ParamsObject => Params;
 
@@ -50,15 +55,25 @@ namespace affolterNET.Data
 
             foreach (var property in paramsObject.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (predicate == null || predicate(property.Name))
+                if (predicate != null && !predicate(property.Name))
                 {
-                    var val = property.GetValue(paramsObject);
-                    AddParam(property.Name, val!);   
+                    continue;
                 }
+
+                var sqlDataType =
+                    property.CustomAttributes.FirstOrDefault(da => da.AttributeType.Name == "DataTypeAttribute")
+                        ?.ConstructorArguments.FirstOrDefault();
+                if (sqlDataType != null)
+                {
+                    SqlDataTypes.Add(property.Name, sqlDataType.ToString()!.TrimStart('"').TrimEnd('"'));
+                }
+
+                var val = property.GetValue(paramsObject);
+                AddParam(property.Name, val!);
             }
         }
 
-        protected void AddParam(string propertyName, object propertyValue)
+        protected void AddParam(string propertyName, object propertyValue, string? sqlDataType = null)
         {
             var pn = propertyName.StripSquareBrackets();
             if (ParamsDict.ContainsKey(pn))
@@ -69,6 +84,20 @@ namespace affolterNET.Data
             {
                 ParamsDict.Add(pn, propertyValue);
             }
+
+            if (sqlDataType != null)
+            {
+                SqlDataTypes.Add(pn, sqlDataType);
+            }
+        }
+
+        protected void AddMeta(IDtoBase dto, string? userName)
+        {
+            var dtNow = DateTime.UtcNow;
+            dto.SetInsertedDate(dtNow);
+            dto.SetInsertedUser(userName ?? string.Empty);
+            dto.SetUpdatedDate(dtNow);
+            dto.SetUpdatedUser(userName ?? string.Empty);
         }
 
         public virtual DataResult<TResult> Execute(IDbConnection connection, IDbTransaction transaction)
@@ -91,7 +120,7 @@ namespace affolterNET.Data
                 reader.EndQueryMultiple();
             }
         }
-
+        
         protected async Task<DataResult<IEnumerable<SaveInfo>>> TransformSaveInfo(SqlMapper.GridReader reader)
         {
             var results = new List<SaveInfo>();
@@ -103,7 +132,7 @@ namespace affolterNET.Data
 
             return new DataResult<IEnumerable<SaveInfo>>(results);
         }
-        
+
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -115,11 +144,25 @@ namespace affolterNET.Data
                 foreach (var key in ParamsDict.Keys)
                 {
                     var val = ParamsDict[key];
-                    var def =
+                    var propertyType =
                         "nvarchar(100) -- Parameter Typ konnte nicht evaluiert werden (Wert=null 0der kein passender SqlType)";
-                    var propertyType = val == null ? def : SqlType(val.GetType(), def);
-                    sb.AppendLine($"declare @{key} {propertyType};");
-                    var wert = SchreibeWert(propertyType, val ?? "null");
+                    if (SqlDataTypes.ContainsKey(key))
+                    {
+                        propertyType = SqlDataTypes[key];
+                    }
+                    else
+                    {
+                        propertyType = val == null ? propertyType : SqlType(val.GetType(), propertyType);
+                    }
+
+                    var propertyTypeDef = propertyType;
+                    if (propertyTypeDef == "nvarchar")
+                    {
+                        propertyTypeDef = "nvarchar(max)";
+                    }
+
+                    sb.AppendLine($"declare @{key} {propertyTypeDef};");
+                    var wert = SchreibeWert(propertyTypeDef, val ?? "null");
                     sb.AppendLine($"set @{key} = {wert};");
                     sb.Append(Environment.NewLine);
                 }
@@ -139,7 +182,8 @@ namespace affolterNET.Data
 
             switch (propertyType)
             {
-                case "nvarchar(100)":
+                case "uniqueidentifier":
+                case "nvarchar(max)":
                     return $"'{val}'";
                 case "int":
                     var i = val as int?;
@@ -149,7 +193,7 @@ namespace affolterNET.Data
                     return v.HasValue ? v.Value ? "1" : "0" : "null";
                 case "binary":
                     // hex wert bauen
-                    var hex = BitConverter.ToString((byte[]) val);
+                    var hex = BitConverter.ToString((byte[])val);
                     hex = $"0x{hex.Replace("-", string.Empty)}";
                     return hex;
                 case "datetime":
@@ -172,7 +216,7 @@ namespace affolterNET.Data
             switch (csharpType.Name.ToLower())
             {
                 case "string":
-                    return "nvarchar(100)";
+                    return "nvarchar(max)";
                 case "long":
                     return "bigint";
                 case "short":

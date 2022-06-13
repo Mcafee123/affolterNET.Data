@@ -58,9 +58,9 @@ namespace affolterNET.Data.DataServices
             return result.Data;
         }
 
-        public async Task<T> SaveAndReload(T dto)
+        public async Task<T> SaveAndReload(T dto, string? userName)
         {
-            var cmd = new SaveAndReloadEntityCommand<T>(dto);
+            var cmd = new SaveAndReloadEntityCommand<T>(dto, userName);
             var result = await _sessionHandler.QueryAsync(cmd);
             if (!result.IsSuccessful)
             {
@@ -81,9 +81,9 @@ namespace affolterNET.Data.DataServices
             return result.Data;
         }
         
-        public async Task<bool> DeleteById(object pkValue, string? param = null)
+        public async Task<bool> DeleteById(object pkValue, byte[] timestamp, string? param = null)
         {
-            var cmd = new DeleteEntityCommand<T>(pkValue, param);
+            var cmd = new DeleteEntityCommand<T>(pkValue, timestamp, param);
             var result = await _sessionHandler.QueryAsync(cmd);
             if (!result.IsSuccessful)
             {

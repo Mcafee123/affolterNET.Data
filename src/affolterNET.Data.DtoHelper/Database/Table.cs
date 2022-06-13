@@ -63,6 +63,8 @@ namespace affolterNET.Data.DtoHelper.Database
             this.cfg = cfg;
         }
 
+        public bool InsertedUpdatedDateUtc => cfg.InsertedUpdatedDateUtc;
+
         public string? ClassName { get; set; }
 
         public string CleanName
@@ -92,8 +94,6 @@ namespace affolterNET.Data.DtoHelper.Database
         public Column this[string columnName] => GetColumn(columnName);
 
         public string Name { get; set; } = null!;
-
-        public string NotAvailable { get; } = "n.a.";
 
         public string? ObjectName { get; set; }
 
@@ -162,7 +162,9 @@ namespace affolterNET.Data.DtoHelper.Database
                         };
 
                         col.PropertyName = CleanUp(col.Name);
-                        col.PropertyType = GetPropertyType(rdr["DataType"].ToString()!);
+                        var dataType = rdr["DataType"].ToString()!;
+                        col.DataType = dataType;
+                        col.PropertyType = GetPropertyType(dataType);
                         col.IsNullable = rdr["IsNullable"].ToString() == "YES";
                         col.IsAutoIncrement = (int)rdr["IsIdentity"] == 1;
                         if (col.MaxLength < 1)
@@ -323,9 +325,9 @@ alter table {Schema}.{Name} add constraint DF_{Schema}_{Name}_ErstelltAm DEFAULT
             return delete + constraints;
         }
 
-        public string WriteUpdateTrigger(bool deleteonly = false)
+        public string WriteUpdateTrigger(string updateDateName, string updateUserName, bool deleteonly = false)
         {
-            if (Columns.All(c => c.Name != "LetzteAenderungAm") || Columns.All(c => c.Name != "LetzteAenderungDurch"))
+            if (Columns.All(c => c.Name != updateDateName) || Columns.All(c => c.Name != updateUserName))
             {
                 return $"-- {Schema}.{Name}: Update-Trigger wird aufgrund fehlender Spalten nicht erstellt";
             }
@@ -346,11 +348,11 @@ begin
 	IF UPDATE (ErstelltDurch) 
 		throw 60003, 'Es sind keine Updates des Attributs ErstelltDurch zugelassen', 1
 
-	IF NOT UPDATE (LetzteAenderungAm) 
-		throw 60004, 'LetzteAenderungAm muss gesetzt werden', 1
+	IF NOT UPDATE ({updateDateName}) 
+		throw 60004, '{updateDateName} muss gesetzt werden', 1
 
-	IF NOT UPDATE (LetzteAenderungDurch) 
-		throw 60005, 'LetzteAenderungDurch muss gesetzt werden', 1
+	IF NOT UPDATE ({updateUserName}) 
+		throw 60005, '{updateUserName} muss gesetzt werden', 1
 end";
             return trg;
         }
@@ -376,7 +378,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
                 return versionCol.Name;
             }
 
-            return NotAvailable;
+            return Constants.NotAvailable;
         }
 
         public string GetIsActiveName()
@@ -387,7 +389,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
                 return isActiveCol.Name;
             }
 
-            return NotAvailable;
+            return Constants.NotAvailable;
         }
 
         public string GetUpdatedUserName()
@@ -398,7 +400,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
                 return updateUserCol.Name;
             }
 
-            return NotAvailable;
+            return Constants.NotAvailable;
         }
 
         public string GetInsertedUserName()
@@ -409,7 +411,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
                 return insertUserCol.Name;
             }
 
-            return NotAvailable;
+            return Constants.NotAvailable;
         }
 
         public string GetUpdatedDateName()
@@ -420,7 +422,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
                 return updateDateCol.Name;
             }
 
-            return NotAvailable;
+            return Constants.NotAvailable;
         }
 
         public string GetInsertedDateName()
@@ -431,7 +433,7 @@ while exists (select * from sys.triggers where parent_id = OBJECT_ID(N'{tableNam
                 return insertDateCol.Name;
             }
 
-            return NotAvailable;
+            return Constants.NotAvailable;
         }
     }
 }
