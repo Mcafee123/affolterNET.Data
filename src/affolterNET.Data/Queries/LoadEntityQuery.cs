@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using affolterNET.Data.Extensions;
 using affolterNET.Data.Interfaces;
 using affolterNET.Data.Models.Filters;
 using affolterNET.Data.Result;
@@ -12,7 +11,7 @@ namespace affolterNET.Data.Queries
 {
     public class LoadEntityQuery<T>: CommandQueryBase<IEnumerable<T>>, IQuery<IEnumerable<T>> where T: class, IViewBase
     {
-        public LoadEntityQuery(int maxcount = 1000, string? idName = null)
+        public LoadEntityQuery(string userName = "", int maxcount = 1000, string? idName = null): base(userName)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
@@ -24,7 +23,7 @@ namespace affolterNET.Data.Queries
             }
         }
         
-        public LoadEntityQuery(RootFilter filter, int maxcount = 1000)
+        public LoadEntityQuery(RootFilter filter, string userName = "", int maxcount = 1000): base(userName)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
@@ -36,7 +35,7 @@ namespace affolterNET.Data.Queries
             }
         }
         
-        public LoadEntityQuery(object pkValue, string? idName = null)
+        public LoadEntityQuery(object pkValue, string userName = "", string? idName = null): base(userName)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();

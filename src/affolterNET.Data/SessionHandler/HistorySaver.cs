@@ -53,13 +53,14 @@ public class HistorySaver : IHistorySaver
             }
         }
 
+        // query.ExcludeFromHistory is explicitly set or will be derived from the query itself In CommandQueryBase.
         if ((HistoryMode == EnumHistoryMode.CommandsOnly || HistoryMode == EnumHistoryMode.CommandsOnlyAndCheck) && query.ExcludeFromHistory)
         {
             return true;
         }
 
         var name = query.GetType().GetGenericArgsFriendlyName();
-        return await SaveHistory(name, query.ToString()!);
+        return await SaveHistory(name, query.ToString()!, query.UserName);
     }
 
     /// <summary>
@@ -67,21 +68,22 @@ public class HistorySaver : IHistorySaver
     /// </summary>
     /// <param name="name"></param>
     /// <param name="query"></param>
+    /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> SaveHistory(string name, string query)
+    public async Task<bool> SaveHistory(string name, string query, string user)
     {
         if (HistoryMode == EnumHistoryMode.None)
         {
             return true;
         }
 
-        var ok = await Insert(name, query);
+        var ok = await Insert(name, query, user);
         if (!ok)
         {
             var tok = await CreateTable();
             if (tok)
             {
-                ok = await Insert(name, query);
+                ok = await Insert(name, query, user);
                 return ok;
             }
         }
@@ -91,18 +93,21 @@ public class HistorySaver : IHistorySaver
 
     public EnumHistoryMode HistoryMode { get; }
     
-    public async Task<bool> Insert(string name, string query)
+    public async Task<bool> Insert(string name, string query, string user)
     {
         try
         {
             var connection = new SqlConnection(_connectionString);
+            var sql =
+                $"insert into {_historyTableName} (Name, Script, Applied, UserName) values (@Name, @Script, getutcdate(), @UserName)";
             var ok = await connection.ExecuteAsync(
-                $"insert into {_historyTableName} (Name, Script, Applied) values (@Name, @Script, getutcdate())",
-                new { Name = name, Script = query }).ConfigureAwait(false);
+                sql,
+                new { Name = name, Script = query, UserName = user }).ConfigureAwait(false);
             if (ok != 1)
             {
                 Console.WriteLine("SaveHistory failed");
             }
+
             return true;
         }
         catch (SqlException ex)
@@ -114,6 +119,11 @@ public class HistorySaver : IHistorySaver
 
             throw;
         }
+        catch
+        {
+            Console.WriteLine("Table creation error");
+            throw;
+        }
     }
 
     public async Task<bool> CreateTable()
@@ -123,7 +133,7 @@ public class HistorySaver : IHistorySaver
         {
             var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(
-                $"create table {_historyTableName} (Id int identity not null primary key, Name nvarchar(2000) not null, Script nvarchar(max) not null, Applied datetime2 not null)");
+                $"create table {_historyTableName} (Id int identity not null primary key, Name nvarchar(2000) not null, Script nvarchar(max) not null, Applied datetime2 not null, UserName nvarchar(200) null)");
             return true;
         }
         catch

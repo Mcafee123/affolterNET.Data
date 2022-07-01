@@ -27,6 +27,11 @@ public class UpdateService
         [DefaultValue("T_History")]
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string? HistoryTableName { get; set;  } 
+        
+        [CommandOption("-u|--historyUserName")]
+        [DefaultValue("dbup")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public string? HistoryUserName { get; set;  } 
     }
 
     public async Task<int> UpdateDb(CommandContext context, Settings settings)
@@ -47,7 +52,7 @@ public class UpdateService
         if (!string.IsNullOrWhiteSpace(settings.HistoryTableName))
         {
             var saver = new HistorySaver(connectionString, settings.HistoryMode, settings.HistoryTableName);
-            var writer = new HistoryLog(saver, connectionString);
+            var writer = new HistoryLog(saver, connectionString, settings.HistoryUserName!);
             upg.LogTo(writer);
         }
         var upgrader = upg.Build();

@@ -35,9 +35,9 @@ namespace affolterNET.Data.DataServices
             return result;
         }
         
-        public async Task<T> GetById(object pkValue, string? param = null)
+        public async Task<T> GetById(object pkValue, string userName = "", string? param = null)
         {
-            var qry = new LoadEntityQuery<T>(pkValue, param);
+            var qry = new LoadEntityQuery<T>(pkValue, userName, param);
             var result = await _sessionHandler.QueryAsync(qry);
             if (!result.IsSuccessful)
             {

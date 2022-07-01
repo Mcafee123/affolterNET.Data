@@ -8,7 +8,7 @@ namespace affolterNET.Data.Commands
 {
     public class SaveAndReloadEntityCommand<T> : CommandQueryBase<T>, IQuery<T> where T : class, IDtoBase
     {
-        public SaveAndReloadEntityCommand(T dto, string? userName = null)
+        public SaveAndReloadEntityCommand(T dto, string? userName = null): base(userName ?? string.Empty)
         {
             Sql = dto.GetSaveByIdCommand();
             AddMeta(dto, userName);

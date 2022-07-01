@@ -20,7 +20,7 @@ namespace affolterNET.Data.Commands
             AddParams(dto);
         }
         
-        public SaveEntityCommand(T dto, string userName, bool select = false, params string[] excludedColumns)
+        public SaveEntityCommand(T dto, string userName, bool select = false, params string[] excludedColumns): base(userName)
         {
             _select = select;
             Sql = dto.GetSaveByIdCommand(select, excludedColumns);

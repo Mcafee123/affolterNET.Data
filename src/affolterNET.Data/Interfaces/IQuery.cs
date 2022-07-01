@@ -18,5 +18,7 @@ namespace affolterNET.Data.Interfaces
         bool CheckNotExplicitlySetExcludeFromHistory { get; }
 
         string? Sql { get;  }
+
+        string UserName { get; }
     }
 }

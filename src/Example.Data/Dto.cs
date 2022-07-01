@@ -499,7 +499,11 @@ namespace Example.Data
         [Da.Required]
         public string Script { get; set; }
 
-        private static readonly List<string> colNames = new List<string>{"Id", "Applied", "Name", "Script"};
+        [Da.DataType("nvarchar")]
+        [Da.MaxLength(200)]
+        public string UserName { get; set; }
+
+        private static readonly List<string> colNames = new List<string>{"Id", "Applied", "Name", "Script", "UserName"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
@@ -508,6 +512,7 @@ namespace Example.Data
             public const string Applied = "[Applied]";
             public const string Name = "[Name]";
             public const string Script = "[Script]";
+            public const string UserName = "[UserName]";
         }
 
         public bool IsAutoincrementId()
@@ -522,13 +527,13 @@ namespace Example.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Name], [Script], [Applied]".GetColumns(excludedColumns);
+            var cols = "[Id], [Name], [Script], [Applied], [UserName]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from dbo.T_History where (@Id is null or [Id]=@Id)";
         }
 
         public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
-            var cols = "[Name], [Script], [Applied]".GetColumns(excludedColumns);
+            var cols = "[Name], [Script], [Applied], [UserName]".GetColumns(excludedColumns);
             var sql = $"insert into dbo.T_History ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
@@ -540,7 +545,7 @@ namespace Example.Data
 
         public string GetUpdateCommand(params string[] excludedColumns)
         {
-            var cols = "[Name], [Script], [Applied]".GetColumns(excludedColumns);
+            var cols = "[Name], [Script], [Applied], [UserName]".GetColumns(excludedColumns);
             return $"update dbo.T_History set {cols.JoinForUpdate()} where [Id]=@Id";
         }
 
@@ -582,6 +587,7 @@ namespace Example.Data
             this.Applied = loaded.Applied;
             this.Name = loaded.Name;
             this.Script = loaded.Script;
+            this.UserName = loaded.UserName;
         }
 
         public string GetIdName()
@@ -659,7 +665,7 @@ namespace Example.Data
 
         public override string ToString()
         {
-            return $"Id: {Id}; Name: {Name}; Script: {Script}; Applied: {Applied}";
+            return $"Id: {Id}; Name: {Name}; Script: {Script}; Applied: {Applied}; UserName: {UserName}";
         }
     }
 

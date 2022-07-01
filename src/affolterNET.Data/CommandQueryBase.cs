@@ -19,8 +19,9 @@ namespace affolterNET.Data
         public const string ScopeIdentity = "select scope_identity() as id";
         public const string LastChangedDate = "LastChangedDate";
 
-        protected CommandQueryBase(bool? excludeFromHistory = null)
+        protected CommandQueryBase(string user = "", bool? excludeFromHistory = null)
         {
+            UserName = user;
             Params = new ExpandoObject();
             if (excludeFromHistory == null)
             {
@@ -31,6 +32,8 @@ namespace affolterNET.Data
 
             ExcludeFromHistory = excludeFromHistory.Value;
         }
+
+        public string UserName { get; set; }
 
         public bool CheckNotExplicitlySetExcludeFromHistory { get; }
 

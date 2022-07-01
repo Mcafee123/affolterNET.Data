@@ -8,11 +8,13 @@ namespace affolterNET.Data.DbUp.Services;
 public class HistoryLog: IUpgradeLog
 {
     private readonly IHistorySaver _historySaver;
+    private readonly string _user;
     private readonly SqlConnection _connection;
 
-    public HistoryLog(IHistorySaver historySaver, string connString)
+    public HistoryLog(IHistorySaver historySaver, string connString, string user)
     {
         _historySaver = historySaver;
+        _user = user;
         _connection = new SqlConnection(connString);
     }
     
@@ -33,7 +35,7 @@ public class HistoryLog: IUpgradeLog
             }
 
             var contents = ReadContents(fileName);
-            _historySaver.SaveHistory(fileName, contents).GetAwaiter().GetResult();
+            _historySaver.SaveHistory(fileName, contents, _user).GetAwaiter().GetResult();
         }
     }
 

@@ -5,7 +5,7 @@ namespace affolterNET.Data.Interfaces.SessionHandler;
 
 public interface IHistorySaver
 {
-    Task<bool> SaveHistory(string name, string query);
+    Task<bool> SaveHistory(string name, string query, string user);
 
     Task<bool> SaveHistory<TResult>(IQuery<TResult> query);
 
