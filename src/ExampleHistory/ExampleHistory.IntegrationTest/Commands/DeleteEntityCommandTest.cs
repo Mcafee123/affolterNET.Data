@@ -17,7 +17,7 @@ namespace ExampleHistory.IntegrationTest.Commands
                 .Arrange(db =>
                 {
                     var singleEntry = db.Select<ExampleHistory_T_DemoTable>().ExecuteSingle();
-                    return new DeleteEntityCommand<ExampleHistory_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
+                    return new DeleteEntityCommand<ExampleHistory_T_DemoTable>(singleEntry.Id);
                 })
                 .ActAndAssert((result, ah) =>
                 {

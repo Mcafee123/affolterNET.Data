@@ -24,7 +24,6 @@ create table ExampleUserDate.T_DemoTable(
     InsertUser nvarchar(1000) not null,
     UpdateDate datetime null,
     UpdateUser nvarchar(1000) null,
-    VersionTimestamp rowversion
 )
 
 insert into ExampleUserDate.T_DemoTableType (Id, Name) values ('c1060bb2-07b0-4e5d-ad0b-35f3993d823d', 'Eins')

@@ -79,7 +79,6 @@ namespace ExampleUserDate.Update.Commands
                     .WithInsertUser(insUser => insUser == "InsertUser")
                     .WithUpdateDate(updDate => updDate == "UpdateDate")
                     .WithUpdateUser(updUser => updUser == "UpdateUser")
-                    .WithVersion(version => version == "VersionTimestamp")
                     .WithNamespace(settings.NameSpace)
                     .WithBaseType(settings.BaseClass)
                     .WithBaseViewType(settings.ViewBaseClass);

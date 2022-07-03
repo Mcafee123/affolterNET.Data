@@ -83,26 +83,7 @@ namespace ExampleHistory.Data
         [Da.DataType("uniqueidentifier")]
         public Guid? Type { get; set; }
 
-        [Da.DataType("datetime")]
-        [Da.Required]
-        public DateTime InsertDate { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.MaxLength(1000)]
-        [Da.Required]
-        public string InsertUser { get; set; }
-
-        [Da.DataType("datetime")]
-        public DateTime? UpdateDate { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.MaxLength(1000)]
-        public string UpdateUser { get; set; }
-
-        [Da.DataType("timestamp")]
-        [Da.Required]
-        public byte[] VersionTimestamp { get; set; } = {0, 0, 0, 0, 0, 0, 0, 0};
-        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type", "InsertDate", "InsertUser", "UpdateDate", "UpdateUser", "VersionTimestamp"};
+        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
@@ -111,11 +92,6 @@ namespace ExampleHistory.Data
             public const string Message = "[Message]";
             public const string Status = "[Status]";
             public const string Type = "[Type]";
-            public const string InsertDate = "[InsertDate]";
-            public const string InsertUser = "[InsertUser]";
-            public const string UpdateDate = "[UpdateDate]";
-            public const string UpdateUser = "[UpdateUser]";
-            public const string VersionTimestamp = "[VersionTimestamp]";
         }
 
         public bool IsAutoincrementId()
@@ -130,13 +106,13 @@ namespace ExampleHistory.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser], [VersionTimestamp]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from ExampleHistory.T_DemoTable where (@Id is null or [Id]=@Id)";
         }
 
         public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
             var sql = $"insert into ExampleHistory.T_DemoTable ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
@@ -148,13 +124,13 @@ namespace ExampleHistory.Data
 
         public string GetUpdateCommand(params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status], [UpdateDate], [UpdateUser]".GetColumns(excludedColumns);
-            return $"update ExampleHistory.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id and [VersionTimestamp]=@VersionTimestamp";
+            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
+            return $"update ExampleHistory.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id";
         }
 
         public string GetDeleteCommand()
         {
-            return "delete from ExampleHistory.T_DemoTable where Id=@Id and VersionTimestamp=@VersionTimestamp";
+            return "delete from ExampleHistory.T_DemoTable where Id=@Id";
         }
 
         public string GetDeleteAllCommand()
@@ -190,11 +166,6 @@ namespace ExampleHistory.Data
             this.Message = loaded.Message;
             this.Status = loaded.Status;
             this.Type = loaded.Type;
-            this.InsertDate = loaded.InsertDate;
-            this.InsertUser = loaded.InsertUser;
-            this.UpdateDate = loaded.UpdateDate;
-            this.UpdateUser = loaded.UpdateUser;
-            this.VersionTimestamp = loaded.VersionTimestamp;
         }
 
         public string GetIdName()
@@ -226,7 +197,7 @@ namespace ExampleHistory.Data
 
         public string GetVersionName()
         {
-            return "VersionTimestamp";
+            return "n.a.";
         }
 
         public string GetIsActiveName()
@@ -240,47 +211,43 @@ namespace ExampleHistory.Data
 
         public string GetUpdatedUserName()
         {
-            return "UpdateUser";
+            return "n.a.";
         }
 
         public void SetUpdatedUser(string userName)
         {
-            this.UpdateUser = userName;
         }
 
         public string GetInsertedUserName()
         {
-            return "InsertUser";
+            return "n.a.";
         }
 
         public void SetInsertedUser(string userName)
         {
-            this.InsertUser = userName;
         }
 
         public string GetUpdatedDateName()
         {
-            return "UpdateDate";
+            return "n.a.";
         }
 
         public void SetUpdatedDate(DateTime date)
         {
-            this.UpdateDate = date;
         }
 
         public string GetInsertedDateName()
         {
-            return "InsertDate";
+            return "n.a.";
         }
 
         public void SetInsertedDate(DateTime date)
         {
-            this.InsertDate = date;
         }
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; InsertDate: {InsertDate}; InsertUser: {InsertUser}; UpdateDate: {UpdateDate}; UpdateUser: {UpdateUser}; VersionTimestamp: {VersionTimestamp}";
+            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}";
         }
     }
 
@@ -495,26 +462,7 @@ namespace ExampleHistory.Data
         [Da.DataType("uniqueidentifier")]
         public Guid? Type { get; set; }
 
-        [Da.DataType("datetime")]
-        [Da.Required]
-        public DateTime InsertDate { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.MaxLength(1000)]
-        [Da.Required]
-        public string InsertUser { get; set; }
-
-        [Da.DataType("datetime")]
-        public DateTime? UpdateDate { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.MaxLength(1000)]
-        public string UpdateUser { get; set; }
-
-        [Da.DataType("timestamp")]
-        [Da.Required]
-        public byte[] VersionTimestamp { get; set; } = {0, 0, 0, 0, 0, 0, 0, 0};
-        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type", "InsertDate", "InsertUser", "UpdateDate", "UpdateUser", "VersionTimestamp"};
+        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
@@ -523,11 +471,6 @@ namespace ExampleHistory.Data
             public const string Message = "[Message]";
             public const string Status = "[Status]";
             public const string Type = "[Type]";
-            public const string InsertDate = "[InsertDate]";
-            public const string InsertUser = "[InsertUser]";
-            public const string UpdateDate = "[UpdateDate]";
-            public const string UpdateUser = "[UpdateUser]";
-            public const string VersionTimestamp = "[VersionTimestamp]";
         }
 
         public string GetTableName()
@@ -537,13 +480,13 @@ namespace ExampleHistory.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser], [VersionTimestamp]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from ExampleHistory.V_Demo";
         }
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; InsertDate: {InsertDate}; InsertUser: {InsertUser}; UpdateDate: {UpdateDate}; UpdateUser: {UpdateUser}; VersionTimestamp: {VersionTimestamp}";
+            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}";
         }
     }
 }

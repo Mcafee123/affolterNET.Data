@@ -99,10 +99,7 @@ namespace ExampleUserDate.Data
         [Da.MaxLength(1000)]
         public string UpdateUser { get; set; }
 
-        [Da.DataType("timestamp")]
-        [Da.Required]
-        public byte[] VersionTimestamp { get; set; } = {0, 0, 0, 0, 0, 0, 0, 0};
-        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type", "InsertDate", "InsertUser", "UpdateDate", "UpdateUser", "VersionTimestamp"};
+        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type", "InsertDate", "InsertUser", "UpdateDate", "UpdateUser"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
@@ -115,7 +112,6 @@ namespace ExampleUserDate.Data
             public const string InsertUser = "[InsertUser]";
             public const string UpdateDate = "[UpdateDate]";
             public const string UpdateUser = "[UpdateUser]";
-            public const string VersionTimestamp = "[VersionTimestamp]";
         }
 
         public bool IsAutoincrementId()
@@ -130,7 +126,7 @@ namespace ExampleUserDate.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser], [VersionTimestamp]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from ExampleUserDate.T_DemoTable where (@Id is null or [Id]=@Id)";
         }
 
@@ -149,12 +145,12 @@ namespace ExampleUserDate.Data
         public string GetUpdateCommand(params string[] excludedColumns)
         {
             var cols = "[Id], [Message], [Type], [Status], [UpdateDate], [UpdateUser]".GetColumns(excludedColumns);
-            return $"update ExampleUserDate.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id and [VersionTimestamp]=@VersionTimestamp";
+            return $"update ExampleUserDate.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id";
         }
 
         public string GetDeleteCommand()
         {
-            return "delete from ExampleUserDate.T_DemoTable where Id=@Id and VersionTimestamp=@VersionTimestamp";
+            return "delete from ExampleUserDate.T_DemoTable where Id=@Id";
         }
 
         public string GetDeleteAllCommand()
@@ -194,7 +190,6 @@ namespace ExampleUserDate.Data
             this.InsertUser = loaded.InsertUser;
             this.UpdateDate = loaded.UpdateDate;
             this.UpdateUser = loaded.UpdateUser;
-            this.VersionTimestamp = loaded.VersionTimestamp;
         }
 
         public string GetIdName()
@@ -226,7 +221,7 @@ namespace ExampleUserDate.Data
 
         public string GetVersionName()
         {
-            return "VersionTimestamp";
+            return "n.a.";
         }
 
         public string GetIsActiveName()
@@ -280,7 +275,7 @@ namespace ExampleUserDate.Data
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; InsertDate: {InsertDate}; InsertUser: {InsertUser}; UpdateDate: {UpdateDate}; UpdateUser: {UpdateUser}; VersionTimestamp: {VersionTimestamp}";
+            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; InsertDate: {InsertDate}; InsertUser: {InsertUser}; UpdateDate: {UpdateDate}; UpdateUser: {UpdateUser}";
         }
     }
 
@@ -511,10 +506,7 @@ namespace ExampleUserDate.Data
         [Da.MaxLength(1000)]
         public string UpdateUser { get; set; }
 
-        [Da.DataType("timestamp")]
-        [Da.Required]
-        public byte[] VersionTimestamp { get; set; } = {0, 0, 0, 0, 0, 0, 0, 0};
-        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type", "InsertDate", "InsertUser", "UpdateDate", "UpdateUser", "VersionTimestamp"};
+        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type", "InsertDate", "InsertUser", "UpdateDate", "UpdateUser"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
@@ -527,7 +519,6 @@ namespace ExampleUserDate.Data
             public const string InsertUser = "[InsertUser]";
             public const string UpdateDate = "[UpdateDate]";
             public const string UpdateUser = "[UpdateUser]";
-            public const string VersionTimestamp = "[VersionTimestamp]";
         }
 
         public string GetTableName()
@@ -537,13 +528,13 @@ namespace ExampleUserDate.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser], [VersionTimestamp]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from ExampleUserDate.V_Demo";
         }
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; InsertDate: {InsertDate}; InsertUser: {InsertUser}; UpdateDate: {UpdateDate}; UpdateUser: {UpdateUser}; VersionTimestamp: {VersionTimestamp}";
+            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; InsertDate: {InsertDate}; InsertUser: {InsertUser}; UpdateDate: {UpdateDate}; UpdateUser: {UpdateUser}";
         }
     }
 }

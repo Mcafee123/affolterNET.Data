@@ -9,15 +9,18 @@ namespace affolterNET.Data.TestHelpers.Builders
 {
     public class UpdateBuilder<T> : CrudBase<T> where T : IDtoBase
     {
-        private readonly IList<string> updateStatements = new List<string>();
+        private readonly IList<string> _updateStatements = new List<string>();
 
         private string sql = string.Empty;
 
         public UpdateBuilder(IDbConnection conn, IDbTransaction trsact, IDtoBase dto)
             : base(conn, trsact, dto)
         {
-            AddUpdate(dto.GetUpdatedDateName(), DateTime.Now);
-            AddUpdate(dto.GetUpdatedUserName(), $"UpdateBuilder: {dto.GetTableName()}");
+            if (dto.GetUpdatedUserName() != Constants.NotAvailable)
+            {
+                AddUpdate(dto.GetUpdatedDateName(), DateTime.Now);
+                AddUpdate(dto.GetUpdatedUserName(), $"UpdateBuilder: {dto.GetTableName()}");
+            }
         }
 
         public UpdateBuilder<T> WithUpdate(string col, object value)
@@ -40,9 +43,9 @@ namespace affolterNET.Data.TestHelpers.Builders
         public int Execute()
         {
             sql = $"update {TableName}";
-            if (updateStatements.Count > 0)
+            if (_updateStatements.Count > 0)
             {
-                sql += $" set {string.Join(", ", updateStatements)}";
+                sql += $" set {string.Join(", ", _updateStatements)}";
             }
 
             if (WhereStatements.Count > 0)
@@ -56,7 +59,7 @@ namespace affolterNET.Data.TestHelpers.Builders
         private void AddUpdate(string col, object value)
         {
             var withoutBrackets = $"upd_{col.StripSquareBrackets()}";
-            updateStatements.Add($"{col}=@{withoutBrackets}");
+            _updateStatements.Add($"{col}=@{withoutBrackets}");
             Paras.Add(withoutBrackets, value);
         }
     }
