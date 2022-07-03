@@ -35,19 +35,14 @@ namespace Example.Data
         public IDtoBase Get<T>()
             where T : IDtoBase
         {
-            if (typeof(dbo_T_DemoTable) == typeof(T))
+            if (typeof(Example_T_DemoTable) == typeof(T))
             {
-                return new dbo_T_DemoTable();
+                return new Example_T_DemoTable();
             }
 
-            if (typeof(dbo_T_DemoTableType) == typeof(T))
+            if (typeof(Example_T_DemoTableType) == typeof(T))
             {
-                return new dbo_T_DemoTableType();
-            }
-
-            if (typeof(dbo_T_History) == typeof(T))
-            {
-                return new dbo_T_History();
+                return new Example_T_DemoTableType();
             }
 
             throw new InvalidOperationException();
@@ -59,18 +54,18 @@ namespace Example.Data
         public IViewBase Get<T>()
             where T : IViewBase
         {
-            if (typeof(dbo_V_Demo) == typeof(T))
+            if (typeof(Example_V_Demo) == typeof(T))
             {
-                return new dbo_V_Demo();
+                return new Example_V_Demo();
             }
 
             throw new InvalidOperationException();
         }
     }
 
-    public class dbo_T_DemoTable : IDtoBase
+    public class Example_T_DemoTable : IDtoBase
     {
-        public const string TABLE_NAME = "[dbo].[T_DemoTable]";
+        public const string TABLE_NAME = "[Example].[T_DemoTable]";
         [Da.DataType("uniqueidentifier")]
         [Da.Key]
         public Guid Id { get; set; }
@@ -136,13 +131,13 @@ namespace Example.Data
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
             var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser], [VersionTimestamp]".GetColumns(excludedColumns);
-            return $"select top({maxCount}) {cols.JoinCols()} from dbo.T_DemoTable where (@Id is null or [Id]=@Id)";
+            return $"select top({maxCount}) {cols.JoinCols()} from Example.T_DemoTable where (@Id is null or [Id]=@Id)";
         }
 
         public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
             var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser]".GetColumns(excludedColumns);
-            var sql = $"insert into dbo.T_DemoTable ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
+            var sql = $"insert into Example.T_DemoTable ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
                 sql += "; select scope_identity() as id;";
@@ -154,39 +149,39 @@ namespace Example.Data
         public string GetUpdateCommand(params string[] excludedColumns)
         {
             var cols = "[Id], [Message], [Type], [Status], [UpdateDate], [UpdateUser]".GetColumns(excludedColumns);
-            return $"update dbo.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id and [VersionTimestamp]=@VersionTimestamp";
+            return $"update Example.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id and [VersionTimestamp]=@VersionTimestamp";
         }
 
         public string GetDeleteCommand()
         {
-            return "delete from dbo.T_DemoTable where Id=@Id and VersionTimestamp=@VersionTimestamp";
+            return "delete from Example.T_DemoTable where Id=@Id and VersionTimestamp=@VersionTimestamp";
         }
 
         public string GetDeleteAllCommand()
         {
-            return "delete from dbo.T_DemoTable";
+            return "delete from Example.T_DemoTable";
         }
 
         public string GetSaveByIdCommand(bool select = false, params string[] excludedColumns)
         {
             return @$"
                         declare @rowcnt int
-                        if exists (select Id from dbo.T_DemoTable where Id = @Id)
+                        if exists (select Id from Example.T_DemoTable where Id = @Id)
                             begin
                                 {GetUpdateCommand(excludedColumns)}; set @rowcnt = (select @@rowcount);
-                                select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Updated}' end as [Action];
+                                select 'Example' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Updated}' end as [Action];
                             end
                         else
                             begin
                                 {GetInsertCommand(false, excludedColumns)}; set @rowcnt = (select @@rowcount);
-                                select 'dbo' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Inserted}' end as [Action];
+                                select 'Example' as [Schema], 'T_DemoTable' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Inserted}' end as [Action];
                             end
                         {(select ? GetSelectCommand(1, excludedColumns) : string.Empty)}";
         }
 
-        public dbo_T_DemoTable GetFromDb(IDbConnection conn, IDbTransaction trsact)
+        public Example_T_DemoTable GetFromDb(IDbConnection conn, IDbTransaction trsact)
         {
-            return conn.QueryFirstOrDefault<dbo_T_DemoTable>(this.GetSelectCommand(1), this, trsact);
+            return conn.QueryFirstOrDefault<Example_T_DemoTable>(this.GetSelectCommand(1), this, trsact);
         }
 
         public void Reload(IDbConnection conn, IDbTransaction trsact)
@@ -289,9 +284,9 @@ namespace Example.Data
         }
     }
 
-    public class dbo_T_DemoTableType : IDtoBase
+    public class Example_T_DemoTableType : IDtoBase
     {
-        public const string TABLE_NAME = "[dbo].[T_DemoTableType]";
+        public const string TABLE_NAME = "[Example].[T_DemoTableType]";
         [Da.DataType("uniqueidentifier")]
         [Da.Key]
         public Guid Id { get; set; }
@@ -323,13 +318,13 @@ namespace Example.Data
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
             var cols = "[Id], [Name]".GetColumns(excludedColumns);
-            return $"select top({maxCount}) {cols.JoinCols()} from dbo.T_DemoTableType where (@Id is null or [Id]=@Id)";
+            return $"select top({maxCount}) {cols.JoinCols()} from Example.T_DemoTableType where (@Id is null or [Id]=@Id)";
         }
 
         public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
             var cols = "[Id], [Name]".GetColumns(excludedColumns);
-            var sql = $"insert into dbo.T_DemoTableType ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
+            var sql = $"insert into Example.T_DemoTableType ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
                 sql += "; select scope_identity() as id;";
@@ -341,39 +336,39 @@ namespace Example.Data
         public string GetUpdateCommand(params string[] excludedColumns)
         {
             var cols = "[Id], [Name]".GetColumns(excludedColumns);
-            return $"update dbo.T_DemoTableType set {cols.JoinForUpdate()} where [Id]=@Id";
+            return $"update Example.T_DemoTableType set {cols.JoinForUpdate()} where [Id]=@Id";
         }
 
         public string GetDeleteCommand()
         {
-            return "delete from dbo.T_DemoTableType where Id=@Id";
+            return "delete from Example.T_DemoTableType where Id=@Id";
         }
 
         public string GetDeleteAllCommand()
         {
-            return "delete from dbo.T_DemoTableType";
+            return "delete from Example.T_DemoTableType";
         }
 
         public string GetSaveByIdCommand(bool select = false, params string[] excludedColumns)
         {
             return @$"
                         declare @rowcnt int
-                        if exists (select Id from dbo.T_DemoTableType where Id = @Id)
+                        if exists (select Id from Example.T_DemoTableType where Id = @Id)
                             begin
                                 {GetUpdateCommand(excludedColumns)}; set @rowcnt = (select @@rowcount);
-                                select 'dbo' as [Schema], 'T_DemoTableType' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Updated}' end as [Action];
+                                select 'Example' as [Schema], 'T_DemoTableType' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Updated}' end as [Action];
                             end
                         else
                             begin
                                 {GetInsertCommand(false, excludedColumns)}; set @rowcnt = (select @@rowcount);
-                                select 'dbo' as [Schema], 'T_DemoTableType' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Inserted}' end as [Action];
+                                select 'Example' as [Schema], 'T_DemoTableType' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Inserted}' end as [Action];
                             end
                         {(select ? GetSelectCommand(1, excludedColumns) : string.Empty)}";
         }
 
-        public dbo_T_DemoTableType GetFromDb(IDbConnection conn, IDbTransaction trsact)
+        public Example_T_DemoTableType GetFromDb(IDbConnection conn, IDbTransaction trsact)
         {
-            return conn.QueryFirstOrDefault<dbo_T_DemoTableType>(this.GetSelectCommand(1), this, trsact);
+            return conn.QueryFirstOrDefault<Example_T_DemoTableType>(this.GetSelectCommand(1), this, trsact);
         }
 
         public void Reload(IDbConnection conn, IDbTransaction trsact)
@@ -465,213 +460,23 @@ namespace Example.Data
         }
     }
 
-    public static class DemoTableTypes
+    public static class ExampleDemoTableTypes
     {
         public static Guid Eins => _dict.First(kvp => kvp.Value == "Eins").Key;
         public static Guid Zwei => _dict.First(kvp => kvp.Value == "Zwei").Key;
         public static Guid Drei => _dict.First(kvp => kvp.Value == "Drei").Key;
         private static Dictionary<Guid, string> _dict = new()
         {{Guid.Parse("c1060bb2-07b0-4e5d-ad0b-35f3993d823d"), "Eins"}, {Guid.Parse("d749abff-6a43-4348-839f-61323fdc52d1"), "Zwei"}, {Guid.Parse("36a072b9-7216-4b99-bf8d-79730a4a1f37"), "Drei"}};
-        public static string? GetDemoTableTypesString(this Guid g)
+        public static string? GetExampleDemoTableTypesString(this Guid g)
         {
             var entry = _dict.FirstOrDefault(kvp => kvp.Key.Equals(g));
             return entry.Equals(default(KeyValuePair<Guid, string>)) ? null : entry.Value;
         }
     }
 
-    public class dbo_T_History : IDtoBase
+    public class Example_V_Demo : IViewBase
     {
-        public const string TABLE_NAME = "[dbo].[T_History]";
-        [Da.DataType("int")]
-        [Da.Key]
-        public int Id { get; set; }
-
-        [Da.DataType("datetime2")]
-        [Da.Required]
-        public DateTime Applied { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.MaxLength(2000)]
-        [Da.Required]
-        public string Name { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.Required]
-        public string Script { get; set; }
-
-        [Da.DataType("nvarchar")]
-        [Da.MaxLength(200)]
-        public string UserName { get; set; }
-
-        private static readonly List<string> colNames = new List<string>{"Id", "Applied", "Name", "Script", "UserName"};
-        public IEnumerable<string> GetColumnNames() => colNames;
-        public static IEnumerable<string> ColNames => colNames;
-        public static class Cols
-        {
-            public const string Id = "[Id]";
-            public const string Applied = "[Applied]";
-            public const string Name = "[Name]";
-            public const string Script = "[Script]";
-            public const string UserName = "[UserName]";
-        }
-
-        public bool IsAutoincrementId()
-        {
-            return true;
-        }
-
-        public string GetTableName()
-        {
-            return TABLE_NAME;
-        }
-
-        public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
-        {
-            var cols = "[Id], [Name], [Script], [Applied], [UserName]".GetColumns(excludedColumns);
-            return $"select top({maxCount}) {cols.JoinCols()} from dbo.T_History where (@Id is null or [Id]=@Id)";
-        }
-
-        public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
-        {
-            var cols = "[Name], [Script], [Applied], [UserName]".GetColumns(excludedColumns);
-            var sql = $"insert into dbo.T_History ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
-            if (returnScopeIdentity)
-            {
-                sql += "; select scope_identity() as id;";
-            }
-
-            return sql;
-        }
-
-        public string GetUpdateCommand(params string[] excludedColumns)
-        {
-            var cols = "[Name], [Script], [Applied], [UserName]".GetColumns(excludedColumns);
-            return $"update dbo.T_History set {cols.JoinForUpdate()} where [Id]=@Id";
-        }
-
-        public string GetDeleteCommand()
-        {
-            return "delete from dbo.T_History where Id=@Id";
-        }
-
-        public string GetDeleteAllCommand()
-        {
-            return "delete from dbo.T_History";
-        }
-
-        public string GetSaveByIdCommand(bool select = false, params string[] excludedColumns)
-        {
-            return @$"
-                        declare @rowcnt int
-                        if exists (select Id from dbo.T_History where Id = @Id)
-                            begin
-                                {GetUpdateCommand(excludedColumns)}; set @rowcnt = (select @@rowcount);
-                                select 'dbo' as [Schema], 'T_History' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Updated}' end as [Action];
-                            end
-                        else
-                            begin
-                                {GetInsertCommand(true, excludedColumns)}; set @rowcnt = (select @@rowcount);
-                                select 'dbo' as [Schema], 'T_History' as [Table], convert(nvarchar(50), @Id) as [Id], case when @rowcnt = 0 then '{Constants.NoAction}' else '{Constants.Inserted}' end as [Action];
-                            end
-                        {(select ? GetSelectCommand(1, excludedColumns) : string.Empty)}";
-        }
-
-        public dbo_T_History GetFromDb(IDbConnection conn, IDbTransaction trsact)
-        {
-            return conn.QueryFirstOrDefault<dbo_T_History>(this.GetSelectCommand(1), this, trsact);
-        }
-
-        public void Reload(IDbConnection conn, IDbTransaction trsact)
-        {
-            var loaded = this.GetFromDb(conn, trsact);
-            this.Applied = loaded.Applied;
-            this.Name = loaded.Name;
-            this.Script = loaded.Script;
-            this.UserName = loaded.UserName;
-        }
-
-        public string GetIdName()
-        {
-            return "Id";
-        }
-
-        public void SetId(object id)
-        {
-            var intId = Convert.ToInt32(id);
-            Id = intId;
-        }
-
-        public void SetInserted(string userName)
-        {
-            SetInsertedUser(userName);
-            SetInsertedDate(DateTime.UtcNow);
-        }
-
-        public void SetUpdated(string userName)
-        {
-            SetUpdatedUser(userName);
-            SetUpdatedDate(DateTime.UtcNow);
-        }
-
-        public string GetVersionName()
-        {
-            return "n.a.";
-        }
-
-        public string GetIsActiveName()
-        {
-            return "n.a.";
-        }
-
-        public void SetIsActive(bool isActive)
-        {
-        }
-
-        public string GetUpdatedUserName()
-        {
-            return "n.a.";
-        }
-
-        public void SetUpdatedUser(string userName)
-        {
-        }
-
-        public string GetInsertedUserName()
-        {
-            return "n.a.";
-        }
-
-        public void SetInsertedUser(string userName)
-        {
-        }
-
-        public string GetUpdatedDateName()
-        {
-            return "n.a.";
-        }
-
-        public void SetUpdatedDate(DateTime date)
-        {
-        }
-
-        public string GetInsertedDateName()
-        {
-            return "n.a.";
-        }
-
-        public void SetInsertedDate(DateTime date)
-        {
-        }
-
-        public override string ToString()
-        {
-            return $"Id: {Id}; Name: {Name}; Script: {Script}; Applied: {Applied}; UserName: {UserName}";
-        }
-    }
-
-    public class dbo_V_Demo : IViewBase
-    {
-        public const string TABLE_NAME = "[dbo].[V_Demo]";
+        public const string TABLE_NAME = "[Example].[V_Demo]";
         [Da.DataType("uniqueidentifier")]
         [Da.Required]
         public Guid Id { get; set; }
@@ -732,7 +537,7 @@ namespace Example.Data
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
             var cols = "[Id], [Message], [Type], [Status], [InsertDate], [InsertUser], [UpdateDate], [UpdateUser], [VersionTimestamp]".GetColumns(excludedColumns);
-            return $"select top({maxCount}) {cols.JoinCols()} from dbo.V_Demo";
+            return $"select top({maxCount}) {cols.JoinCols()} from Example.V_Demo";
         }
 
         public override string ToString()

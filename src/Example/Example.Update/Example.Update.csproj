@@ -18,12 +18,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Scripts\init-tables.sql" />
-        <EmbeddedResource Include="Scripts\init-tables.sql" />
+        <None Remove="Scripts\Example.sql" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\affolterNET.Data.DbUp\affolterNET.Data.DbUp.csproj" />
       <ProjectReference Include="..\..\affolterNET.Data.DtoHelper\affolterNET.Data.DtoHelper.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Scripts\Example.sql" />
     </ItemGroup>
 </Project>

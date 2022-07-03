@@ -40,7 +40,7 @@ public class ListContentsGenerator
     public ClassDeclarationSyntax Generate(ClassDeclarationSyntax scd)
     {
         using var conn = new SqlConnection(_genCfg.ConnString);
-        var cmd = $"select {_ctsCfg.IdAttribute} as Id, {_ctsCfg.NameAttribute} as Value from {_tbl.Name}";
+        var cmd = $"select {_ctsCfg.IdAttribute} as Id, {_ctsCfg.NameAttribute} as Value from {_tbl.Schema}.{_tbl.Name}";
         var results = conn.Query(cmd).ToList();
 
         var dictName = "_dict";

@@ -6,7 +6,7 @@ dbname="example"
 default_sql_port="1433"
 password="Som3V3ryS3cretP4ssw0rd!"
 dockernetworkname="Example"
-rootpath="../src/Example"
+rootpath="../src"
 
 echo
 echo
@@ -52,8 +52,7 @@ create_network_if_not_exists
 generate() {
 
     local projectname=$1
-    projectname="Example"
-    update_tool_path="$rootpath/$projectname.Update"
+    update_tool_path="$rootpath/$projectname/$projectname.Update"
     update_tool_dll="$projectname.Update.dll"
 
     # update db - from localhost
@@ -65,7 +64,7 @@ generate() {
     
     echo "dotnet $update_tool_dll \"dbup\" \"$localconnstring\" -h All"
     dotnet $update_tool_dll "dbup" "$localconnstring" "-h All"
-    
+
     echo "dotnet $update_tool_dll \"gen\" \"$localconnstring\""
     dotnet $update_tool_dll "gen" "$localconnstring"
     popd
@@ -82,4 +81,9 @@ if [ "$running" == "0" ]; then
 
     # update db
     generate "Example"
+    generate "ExampleHistory"
+    generate "ExampleUserDate"
+    generate "ExampleVersion"
+    generate "ExampleVersionUserDate"
+    generate "ExampleVersionUserDateHistory"
 fi

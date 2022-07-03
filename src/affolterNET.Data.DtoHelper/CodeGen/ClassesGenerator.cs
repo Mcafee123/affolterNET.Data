@@ -53,7 +53,7 @@ namespace affolterNET.Data.DtoHelper.CodeGen
                 cds.Add(classDeclaration);
                 
                 // ListContents - to use contents like Enums
-                var lcCfg = _cfg.TableContents.FirstOrDefault(te => te.TableName == tbl.Name);
+                var lcCfg = _cfg.TableContents.FirstOrDefault(te => te.TableName.ToLower() == tbl.Name.ToLower() && te.SchemaName.ToLower() == tbl.Schema.ToLower());
                 if (lcCfg != null)
                 {
                     var staticClassDeclaration = SyntaxFactory.ClassDeclaration(lcCfg.ClassName);

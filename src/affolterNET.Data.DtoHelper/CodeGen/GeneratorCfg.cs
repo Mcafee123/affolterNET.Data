@@ -83,12 +83,18 @@ namespace affolterNET.Data.DtoHelper.CodeGen
             return this;
         }
 
-        public GeneratorCfg WithContentsList(string tableName, string idAttribute, string nameAttribute, string? className = null)
+        public GeneratorCfg WithContentsList(string tableName, string idAttribute, string nameAttribute, string className)
         {
             _tableContents.Add(new ListContentsCfg(tableName, idAttribute, nameAttribute, className));
             return this;
         }
 
+        public GeneratorCfg WithContentsList(string schemaName, string tableName, string idAttribute, string nameAttribute, string className)
+        {
+            _tableContents.Add(new ListContentsCfg(schemaName, tableName, idAttribute, nameAttribute, className));
+            return this;
+        }
+        
         public GeneratorCfg WithTablePrefixExclusion(string tablePrefix)
         {
             _excludeTablePrefixes.Add(tablePrefix);
