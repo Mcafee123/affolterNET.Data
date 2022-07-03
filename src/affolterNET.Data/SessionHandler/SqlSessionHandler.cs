@@ -8,9 +8,13 @@ namespace affolterNET.Data.SessionHandler
         private readonly ISqlSessionFactory _factory;
         private readonly IHistorySaver _historySaver;
 
-        public SqlSessionHandler(ISqlSessionFactory factory, IHistorySaver historySaver)
+        public SqlSessionHandler(ISqlSessionFactory factory, IHistorySaver? historySaver = null)
         {
             _factory = factory;
+            if (historySaver == null)
+            {
+                historySaver = new HistorySaver("");
+            }
             _historySaver = historySaver;
         }
         

@@ -29,7 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\affolterNET.Data.TestHelpers\affolterNET.Data.TestHelpers.csproj" />
-      <ProjectReference Include="..\..\Example\Example.Data\Example.Data.csproj" />
+      <ProjectReference Include="..\Example.Data\Example.Data.csproj" />
     </ItemGroup>
 
 </Project>

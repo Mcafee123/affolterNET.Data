@@ -3,11 +3,10 @@
 # author: martin@affolter.net
 
 dbname="example"
-projectname="Example"
 default_sql_port="1433"
 password="Som3V3ryS3cretP4ssw0rd!"
-update_tool_path="../src/$projectname.Update"
-update_tool_dll="$projectname.Update.dll"
+dockernetworkname="Example"
+rootpath="../src/Example"
 
 echo
 echo
@@ -23,7 +22,7 @@ if [ -z "$restart" ]; then
     restart=${1:-"0"}
 fi
 if [ -z "$network" ]; then
-    network=${2:-"$projectname-network"}
+    network=${2:-"$dockernetworkname-network"}
 fi
 if [ -z "$port" ]; then
     port=${3:-"1436"}
@@ -50,17 +49,16 @@ fi
 
 create_network_if_not_exists
 
-running="$(is_container_running $dbcontainername $restart)"
-echo "db running: $running"
-if [ "$running" == "0" ]; then
-    # run db container
-    echo "build"
-    docker build -t $dbcontainername . --build-arg DATABASE_PASSWORD=$password
-    echo "run"
-    docker run -d --name $dbcontainername -p $port:$default_sql_port --network $network $dbcontainername
+generate() {
+
+    local projectname=$1
+    projectname="Example"
+    update_tool_path="$rootpath/$projectname.Update"
+    update_tool_dll="$projectname.Update.dll"
 
     # update db - from localhost
     pushd .
+
     cd "$update_tool_path"
     dotnet publish -c Release -o ./pub
     cd "pub"
@@ -71,4 +69,17 @@ if [ "$running" == "0" ]; then
     echo "dotnet $update_tool_dll \"gen\" \"$localconnstring\""
     dotnet $update_tool_dll "gen" "$localconnstring"
     popd
+}
+
+running="$(is_container_running $dbcontainername $restart)"
+echo "db running: $running"
+if [ "$running" == "0" ]; then
+    # run db container
+    echo "build"
+    docker build -t $dbcontainername . --build-arg DATABASE_PASSWORD=$password
+    echo "run"
+    docker run -d --name $dbcontainername -p $port:$default_sql_port --network $network $dbcontainername
+
+    # update db
+    generate "Example"
 fi

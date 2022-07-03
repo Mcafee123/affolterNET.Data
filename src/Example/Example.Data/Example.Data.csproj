@@ -6,6 +6,6 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\affolterNET.Data\affolterNET.Data.csproj" />
+      <ProjectReference Include="..\..\affolterNET.Data\affolterNET.Data.csproj" />
     </ItemGroup>
 </Project>
