@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using affolterNET.Data.Models.Filters;
 using affolterNET.Data.Queries;
+using ExampleVersion.Data;
 using Xunit;
 
 namespace ExampleVersion.IntegrationTest.Queries
@@ -16,8 +17,8 @@ namespace ExampleVersion.IntegrationTest.Queries
         [Fact]
         public void LoadAllEntitiesTest()
         {
-            CQB<IEnumerable<dbo_T_DemoTable>>()
-                .Arrange(db => new LoadEntityQuery<dbo_T_DemoTable>())
+            CQB<IEnumerable<ExampleVersion_T_DemoTable>>()
+                .Arrange(db => new LoadEntityQuery<ExampleVersion_T_DemoTable>())
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();
@@ -29,8 +30,8 @@ namespace ExampleVersion.IntegrationTest.Queries
         [Fact]
         public void LoadAllEntitiesInViewTest()
         {
-            CQB<IEnumerable<dbo_V_Demo>>()
-                .Arrange(db => new LoadEntityQuery<dbo_V_Demo>())
+            CQB<IEnumerable<ExampleVersion_V_Demo>>()
+                .Arrange(db => new LoadEntityQuery<ExampleVersion_V_Demo>())
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();
@@ -42,11 +43,11 @@ namespace ExampleVersion.IntegrationTest.Queries
         [Fact]
         public void LoadByIdTest()
         {
-            CQB<IEnumerable<dbo_T_DemoTable>>()
+            CQB<IEnumerable<ExampleVersion_T_DemoTable>>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new LoadEntityQuery<dbo_T_DemoTable>(singleEntry.Id);
+                    var singleEntry = db.Select<ExampleVersion_T_DemoTable>().ExecuteSingle();
+                    return new LoadEntityQuery<ExampleVersion_T_DemoTable>(singleEntry.Id);
                 })
                 .ActAndAssert((result, ah) =>
                 {
@@ -59,15 +60,15 @@ namespace ExampleVersion.IntegrationTest.Queries
         [Fact]
         public void LoadByOtherTest()
         {
-            CQB<IEnumerable<dbo_T_DemoTable>>()
+            CQB<IEnumerable<ExampleVersion_T_DemoTable>>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    var filter = new RootFilter(dbo_T_DemoTable.Cols.Message)
+                    var singleEntry = db.Select<ExampleVersion_T_DemoTable>().ExecuteSingle();
+                    var filter = new RootFilter(ExampleVersion_T_DemoTable.Cols.Message)
                     {
                         Value = singleEntry.Message
                     };
-                    return new LoadEntityQuery<dbo_T_DemoTable>(filter);
+                    return new LoadEntityQuery<ExampleVersion_T_DemoTable>(filter);
                 })
                 .ActAndAssert((result, ah) =>
                 {

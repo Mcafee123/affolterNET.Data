@@ -4,7 +4,7 @@ using affolterNET.Data.DtoHelper.CodeGen;
 using affolterNET.Data.DtoHelper.Database;
 using Spectre.Console.Cli;
 
-namespace ExampleHistory.Update.Commands
+namespace ExampleUserDate.Update.Commands
 {
     public class GenerateCommand : AsyncCommand<GenerateCommand.Settings>
     {

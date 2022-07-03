@@ -9,14 +9,14 @@ public class ExtensionsTest
     [Fact]
     public void GetDemoTableTypesStringTestNok()
     {
-        var g = Guid.NewGuid().GetDemoTableTypesString();
+        var g = Guid.NewGuid().GetExampleHistoryDemoTableTypesString();
         Assert.Null(g);
     }
     
     [Fact]
     public void GetDemoTableTypesStringTestOk()
     {
-        var g = DemoTableTypes.Eins.GetDemoTableTypesString();
+        var g = ExampleHistoryDemoTableTypes.Eins.GetExampleHistoryDemoTableTypesString();
         Assert.Equal("Eins", g);
     }
 }

@@ -2,9 +2,10 @@ using System;
 using System.Data.SqlClient;
 using affolterNET.Data.Commands;
 using affolterNET.Data.Models;
+using ExampleVersionUserDate.Data;
 using Xunit;
 
-namespace ExampleVersion.IntegrationTest.Commands
+namespace ExampleVersionUserDate.IntegrationTest.Commands
 {
     [Collection(nameof(ExampleFixture))]
     public class SaveEntityCommandTest : IntegrationTest
@@ -18,13 +19,13 @@ namespace ExampleVersion.IntegrationTest.Commands
         {
             CQB<SaveInfo>().Arrange(db =>
             {
-                var dto = new dbo_T_DemoTable
+                var dto = new ExampleVersionUserDate_T_DemoTable
                 {
                     Id = Guid.NewGuid(),
                     Message = "I was inserted!",
-                    Type = DemoTableTypes.Drei
+                    Type = ExampleVersionUserDateDemoTableTypes.Drei
                 };
-                return new SaveEntityCommand<dbo_T_DemoTable>(dto, "tinu", true, dbo_T_DemoTable.Cols.Status);
+                return new SaveEntityCommand<ExampleVersionUserDate_T_DemoTable>(dto, "tinu", true, ExampleVersionUserDate_T_DemoTable.Cols.Status);
             }).ActAndAssert((result, ah) =>
             {
                 Assert.Equal("inserted", result.Data.Action);
@@ -36,13 +37,13 @@ namespace ExampleVersion.IntegrationTest.Commands
         {
             var ex = Assert.Throws<SqlException>(() => CQB<SaveInfo>().Arrange(db =>
             {
-                var dto = new dbo_T_DemoTable
+                var dto = new ExampleVersionUserDate_T_DemoTable
                 {
                     Id = Guid.NewGuid()
                 };
-                return new SaveEntityCommand<dbo_T_DemoTable>(dto, "tinu", true, dbo_T_DemoTable.Cols.Status);
+                return new SaveEntityCommand<ExampleVersionUserDate_T_DemoTable>(dto, "tinu", true, ExampleVersionUserDate_T_DemoTable.Cols.Status);
             }).Act());
-            Assert.Equal("Cannot insert the value NULL into column 'Message', table 'example.dbo.T_DemoTable'; column does not allow nulls. INSERT fails.\nThe statement has been terminated.", ex.Message);
+            Assert.Equal("Cannot insert the value NULL into column 'Message', table 'example.ExampleVersionUserDate.T_DemoTable'; column does not allow nulls. INSERT fails.\nThe statement has been terminated.", ex.Message);
         }
     }
 }

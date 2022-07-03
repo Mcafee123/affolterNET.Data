@@ -17,8 +17,8 @@ namespace Example.IntegrationTest.Queries
         [Fact]
         public void LoadAllEntitiesTest()
         {
-            CQB<IEnumerable<dbo_T_DemoTable>>()
-                .Arrange(db => new LoadEntityQuery<dbo_T_DemoTable>())
+            CQB<IEnumerable<Example_T_DemoTable>>()
+                .Arrange(db => new LoadEntityQuery<Example_T_DemoTable>())
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();
@@ -30,8 +30,8 @@ namespace Example.IntegrationTest.Queries
         [Fact]
         public void LoadAllEntitiesInViewTest()
         {
-            CQB<IEnumerable<dbo_V_Demo>>()
-                .Arrange(db => new LoadEntityQuery<dbo_V_Demo>())
+            CQB<IEnumerable<Example_V_Demo>>()
+                .Arrange(db => new LoadEntityQuery<Example_V_Demo>())
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();
@@ -43,11 +43,11 @@ namespace Example.IntegrationTest.Queries
         [Fact]
         public void LoadByIdTest()
         {
-            CQB<IEnumerable<dbo_T_DemoTable>>()
+            CQB<IEnumerable<Example_T_DemoTable>>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new LoadEntityQuery<dbo_T_DemoTable>(singleEntry.Id);
+                    var singleEntry = db.Select<Example_T_DemoTable>().ExecuteSingle();
+                    return new LoadEntityQuery<Example_T_DemoTable>(singleEntry.Id);
                 })
                 .ActAndAssert((result, ah) =>
                 {
@@ -60,15 +60,15 @@ namespace Example.IntegrationTest.Queries
         [Fact]
         public void LoadByOtherTest()
         {
-            CQB<IEnumerable<dbo_T_DemoTable>>()
+            CQB<IEnumerable<Example_T_DemoTable>>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    var filter = new RootFilter(dbo_T_DemoTable.Cols.Message)
+                    var singleEntry = db.Select<Example_T_DemoTable>().ExecuteSingle();
+                    var filter = new RootFilter(Example_T_DemoTable.Cols.Message)
                     {
                         Value = singleEntry.Message
                     };
-                    return new LoadEntityQuery<dbo_T_DemoTable>(filter);
+                    return new LoadEntityQuery<Example_T_DemoTable>(filter);
                 })
                 .ActAndAssert((result, ah) =>
                 {

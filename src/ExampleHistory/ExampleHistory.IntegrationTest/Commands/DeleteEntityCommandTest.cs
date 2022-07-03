@@ -1,4 +1,5 @@
 using affolterNET.Data.Commands;
+using ExampleHistory.Data;
 using Xunit;
 
 namespace ExampleHistory.IntegrationTest.Commands
@@ -15,8 +16,8 @@ namespace ExampleHistory.IntegrationTest.Commands
             CQB<bool>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new DeleteEntityCommand<dbo_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
+                    var singleEntry = db.Select<ExampleHistory_T_DemoTable>().ExecuteSingle();
+                    return new DeleteEntityCommand<ExampleHistory_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
                 })
                 .ActAndAssert((result, ah) =>
                 {

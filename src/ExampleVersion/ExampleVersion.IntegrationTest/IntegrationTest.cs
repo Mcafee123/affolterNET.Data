@@ -1,4 +1,5 @@
 ﻿using affolterNET.Data.TestHelpers;
+using ExampleVersion.Data;
 using Xunit.Abstractions;
 
 namespace ExampleVersion.IntegrationTest

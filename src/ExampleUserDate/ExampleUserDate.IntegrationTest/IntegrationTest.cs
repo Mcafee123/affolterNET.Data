@@ -1,8 +1,8 @@
 ﻿using affolterNET.Data.TestHelpers;
-using ExampleHistory.Data;
+using ExampleUserDate.Data;
 using Xunit.Abstractions;
 
-namespace ExampleHistory.IntegrationTest
+namespace ExampleUserDate.IntegrationTest
 {
     public class IntegrationTest : IntegrationTestBase
     {

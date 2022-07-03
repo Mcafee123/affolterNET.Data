@@ -1,21 +1,22 @@
 using System;
+using ExampleVersionUserDateHistory.Data;
 using Xunit;
 
-namespace ExampleVersion.IntegrationTest;
+namespace ExampleVersionUserDateHistory.IntegrationTest;
 
 public class ExtensionsTest
 {
     [Fact]
     public void GetDemoTableTypesStringTestNok()
     {
-        var g = Guid.NewGuid().GetDemoTableTypesString();
+        var g = Guid.NewGuid().GetExampleVersionUserDateHistoryDemoTableTypesString();
         Assert.Null(g);
     }
     
     [Fact]
     public void GetDemoTableTypesStringTestOk()
     {
-        var g = DemoTableTypes.Eins.GetDemoTableTypesString();
+        var g = ExampleVersionUserDateHistoryDemoTableTypes.Eins.GetExampleVersionUserDateHistoryDemoTableTypesString();
         Assert.Equal("Eins", g);
     }
 }

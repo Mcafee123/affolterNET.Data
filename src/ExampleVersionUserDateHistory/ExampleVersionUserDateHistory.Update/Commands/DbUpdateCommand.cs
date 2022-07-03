@@ -1,7 +1,7 @@
 using affolterNET.Data.DbUp.Services;
 using Spectre.Console.Cli;
 
-namespace ExampleVersion.Update.Commands
+namespace ExampleVersionUserDateHistory.Update.Commands
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class DbUpdateCommand : AsyncCommand<UpdateService.Settings>

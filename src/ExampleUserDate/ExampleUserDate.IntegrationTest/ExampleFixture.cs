@@ -1,7 +1,7 @@
 using affolterNET.Data.TestHelpers;
 using Xunit;
 
-namespace ExampleHistory.IntegrationTest
+namespace ExampleUserDate.IntegrationTest
 {
     public class ExampleFixture : DbFixture
     {

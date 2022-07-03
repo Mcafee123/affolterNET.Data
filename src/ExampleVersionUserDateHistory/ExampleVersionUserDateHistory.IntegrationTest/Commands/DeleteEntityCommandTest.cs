@@ -1,7 +1,8 @@
 using affolterNET.Data.Commands;
+using ExampleVersionUserDateHistory.Data;
 using Xunit;
 
-namespace ExampleVersion.IntegrationTest.Commands
+namespace ExampleVersionUserDateHistory.IntegrationTest.Commands
 {
     [Collection(nameof(ExampleFixture))]
     public class DeleteEntityCommandTest: IntegrationTest
@@ -15,8 +16,8 @@ namespace ExampleVersion.IntegrationTest.Commands
             CQB<bool>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new DeleteEntityCommand<dbo_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
+                    var singleEntry = db.Select<ExampleVersionUserDateHistory_T_DemoTable>().ExecuteSingle();
+                    return new DeleteEntityCommand<ExampleVersionUserDateHistory_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
                 })
                 .ActAndAssert((result, ah) =>
                 {

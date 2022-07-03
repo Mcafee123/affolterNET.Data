@@ -16,8 +16,8 @@ namespace Example.IntegrationTest.Commands
             CQB<bool>()
                 .Arrange(db =>
                 {
-                    var singleEntry = db.Select<dbo_T_DemoTable>().ExecuteSingle();
-                    return new DeleteEntityCommand<dbo_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
+                    var singleEntry = db.Select<Example_T_DemoTable>().ExecuteSingle();
+                    return new DeleteEntityCommand<Example_T_DemoTable>(singleEntry.Id, singleEntry.VersionTimestamp);
                 })
                 .ActAndAssert((result, ah) =>
                 {
