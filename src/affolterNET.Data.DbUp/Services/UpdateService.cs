@@ -18,6 +18,11 @@ public class UpdateService
         [CommandArgument(0, "<connstring>")]
         public string ConnString { get; set; } = null!;
 
+        [CommandOption("-c|--historyConnString")]
+        [DefaultValue(null)]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public string? HistoryConnString { get; set;  } 
+        
         [CommandOption("-h|--historyMode")]
         [DefaultValue(EnumHistoryMode.None)]
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -49,10 +54,10 @@ public class UpdateService
         var upg = DeployChanges.To.SqlDatabase(connectionString)
             .WithScriptsEmbeddedInAssembly(ass)
             .LogToConsole();
-        if (!string.IsNullOrWhiteSpace(settings.HistoryTableName))
+        if (settings.HistoryMode != EnumHistoryMode.None)
         {
-            var saver = new HistorySaver(connectionString, settings.HistoryMode, settings.HistoryTableName);
-            var writer = new HistoryLog(saver, connectionString, settings.HistoryUserName!);
+            var saver = new HistorySaver(settings.HistoryConnString ?? connectionString, settings.HistoryMode, settings.HistoryTableName);
+            var writer = new HistoryLog(saver, settings.HistoryUserName!);
             upg.LogTo(writer);
         }
         var upgrader = upg.Build();

@@ -9,13 +9,11 @@ public class HistoryLog: IUpgradeLog
 {
     private readonly IHistorySaver _historySaver;
     private readonly string _user;
-    private readonly SqlConnection _connection;
 
-    public HistoryLog(IHistorySaver historySaver, string connString, string user)
+    public HistoryLog(IHistorySaver historySaver, string user)
     {
         _historySaver = historySaver;
         _user = user;
-        _connection = new SqlConnection(connString);
     }
     
     public void WriteInformation(string format, params object[] args)
