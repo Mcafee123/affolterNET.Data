@@ -73,7 +73,7 @@ stages:
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
         inputs:
           command: 'pack'
-          packagesToPack: 'src/**/*.csproj;!**/Test/*.csproj'
+          packagesToPack: 'src/**/affolterNET*.csproj;!**/Test/*.csproj'
           versioningScheme: 'byBuildNumber'
 
       - task: DotNetCoreCLI@2
@@ -85,7 +85,7 @@ stages:
           command: custom
           custom: nuget
           arguments: >
-            push $(Build.ArtifactStagingDirectory)/*.nupkg
+            push $(Build.ArtifactStagingDirectory)/affolterNET*.nupkg
             -s https://api.nuget.org/v3/index.json
             -k $(NuGetApiKey) 
 
