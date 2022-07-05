@@ -41,3 +41,4 @@ Files/
 .DS_Store
 /src/.idea/**
 src/**/pub/**
+__*.sh
