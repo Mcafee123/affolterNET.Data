@@ -60,7 +60,7 @@ public class HistorySaver : IHistorySaver
         }
 
         var name = query.GetType().GetGenericArgsFriendlyName();
-        return await SaveHistory(name, query.ToString()!, query.UserName);
+        return await SaveHistory(name, query.ToString()!, query.UserName, query.ExcludeFromHistory ? "read" : "write");
     }
 
     /// <summary>
@@ -70,20 +70,20 @@ public class HistorySaver : IHistorySaver
     /// <param name="query"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    public async Task<bool> SaveHistory(string name, string query, string user)
+    public async Task<bool> SaveHistory(string name, string query, string user, string access)
     {
         if (HistoryMode == EnumHistoryMode.None)
         {
             return true;
         }
 
-        var ok = await Insert(name, query, user);
+        var ok = await Insert(name, query, user, access);
         if (!ok)
         {
             var tok = await CreateTable();
             if (tok)
             {
-                ok = await Insert(name, query, user);
+                ok = await Insert(name, query, user, access);
                 return ok;
             }
         }
@@ -93,16 +93,16 @@ public class HistorySaver : IHistorySaver
 
     public EnumHistoryMode HistoryMode { get; }
     
-    public async Task<bool> Insert(string name, string query, string user)
+    public async Task<bool> Insert(string name, string query, string user, string access)
     {
         try
         {
             var connection = new SqlConnection(_connectionString);
             var sql =
-                $"insert into {_historyTableName} (Name, Script, Applied, UserName) values (@Name, @Script, getutcdate(), @UserName)";
+                $"insert into {_historyTableName} (Name, Script, Applied, UserName, Access) values (@Name, @Script, getutcdate(), @UserName, @Access)";
             var ok = await connection.ExecuteAsync(
                 sql,
-                new { Name = name, Script = query, UserName = user }).ConfigureAwait(false);
+                new { Name = name, Script = query, UserName = user, Access = access }).ConfigureAwait(false);
             await connection.CloseAsync();
             await connection.DisposeAsync();
             if (ok != 1)
@@ -135,7 +135,7 @@ public class HistorySaver : IHistorySaver
         {
             var connection = new SqlConnection(_connectionString);
             await connection.ExecuteAsync(
-                $"create table {_historyTableName} (Id int identity not null primary key, Name nvarchar(2000) not null, Script nvarchar(max) not null, Applied datetime2 not null, UserName nvarchar(200) null)");
+                $"create table {_historyTableName} (Id int identity not null primary key, Name nvarchar(2000) not null, Script nvarchar(max) not null, Applied datetime2 not null, UserName nvarchar(200) null, Access nvarchar(20) null)");
             return true;
         }
         catch
