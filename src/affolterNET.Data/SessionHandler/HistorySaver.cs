@@ -103,6 +103,8 @@ public class HistorySaver : IHistorySaver
             var ok = await connection.ExecuteAsync(
                 sql,
                 new { Name = name, Script = query, UserName = user }).ConfigureAwait(false);
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
             if (ok != 1)
             {
                 Console.WriteLine("SaveHistory failed");
