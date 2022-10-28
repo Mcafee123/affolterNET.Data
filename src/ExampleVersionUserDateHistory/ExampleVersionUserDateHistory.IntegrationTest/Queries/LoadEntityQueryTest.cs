@@ -28,10 +28,44 @@ namespace ExampleVersionUserDateHistory.IntegrationTest.Queries
         }
 
         [Fact]
+        public void LoadEntityWithFilterTest()
+        {
+            var filter = new RootFilter(ExampleVersionUserDateHistory_T_DemoTable.Cols.Message)
+            {
+                Value = "It is working!"
+            };
+            CQB<IEnumerable<ExampleVersionUserDateHistory_T_DemoTable>>()
+                .Arrange(db => new LoadEntityQuery<ExampleVersionUserDateHistory_T_DemoTable>(filter))
+                .ActAndAssert((result, ah) =>
+                {
+                    var list = result.Data.ToList();
+                    Assert.Single(list);
+                    Assert.Equal("It is working!", list.First().Message);
+                });
+        }
+        
+        [Fact]
         public void LoadAllEntitiesInViewTest()
         {
             CQB<IEnumerable<ExampleVersionUserDateHistory_V_Demo>>()
                 .Arrange(db => new LoadEntityQuery<ExampleVersionUserDateHistory_V_Demo>())
+                .ActAndAssert((result, ah) =>
+                {
+                    var list = result.Data.ToList();
+                    Assert.Single(list);
+                    Assert.Equal("It is working!", list.First().Message);
+                });
+        }
+        
+        [Fact]
+        public void LoadEntityWithFilterInViewTest()
+        {
+            var filter = new RootFilter(ExampleVersionUserDateHistory_V_Demo.Cols.Message)
+            {
+                Value = "It is working!"
+            };
+            CQB<IEnumerable<ExampleVersionUserDateHistory_V_Demo>>()
+                .Arrange(db => new LoadEntityQuery<ExampleVersionUserDateHistory_V_Demo>(filter))
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();

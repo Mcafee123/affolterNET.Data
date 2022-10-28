@@ -28,7 +28,16 @@ namespace affolterNET.Data.Queries
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
             var sql = dto.GetSelectCommand(maxcount);
-            Sql = $"{sql.Substring(0, sql.IndexOf(" where ", StringComparison.InvariantCultureIgnoreCase))} {filter}";
+            var whereIdx = sql.IndexOf(" where ", StringComparison.InvariantCultureIgnoreCase);
+            if (whereIdx > -1)
+            {
+                Sql = $"{sql.Substring(0, whereIdx)} {filter}";    
+            }
+            else
+            {
+                Sql = $"{sql} {filter}";
+            }
+            
             foreach (var p in filter.GetAllParameters())
             {
                 AddParam(p.Key, p.Value);

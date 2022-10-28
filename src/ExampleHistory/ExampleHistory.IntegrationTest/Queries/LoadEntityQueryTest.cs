@@ -26,12 +26,46 @@ namespace ExampleHistory.IntegrationTest.Queries
                     Assert.Equal("It is working!", list.First().Message);
                 });
         }
+        
+        [Fact]
+        public void LoadEntityWithFilterTest()
+        {
+            var filter = new RootFilter(ExampleHistory_T_DemoTable.Cols.Message)
+            {
+                Value = "It is working!"
+            };
+            CQB<IEnumerable<ExampleHistory_T_DemoTable>>()
+                .Arrange(db => new LoadEntityQuery<ExampleHistory_T_DemoTable>(filter))
+                .ActAndAssert((result, ah) =>
+                {
+                    var list = result.Data.ToList();
+                    Assert.Single(list);
+                    Assert.Equal("It is working!", list.First().Message);
+                });
+        }
 
         [Fact]
         public void LoadAllEntitiesInViewTest()
         {
             CQB<IEnumerable<ExampleHistory_V_Demo>>()
                 .Arrange(db => new LoadEntityQuery<ExampleHistory_V_Demo>())
+                .ActAndAssert((result, ah) =>
+                {
+                    var list = result.Data.ToList();
+                    Assert.Single(list);
+                    Assert.Equal("It is working!", list.First().Message);
+                });
+        }
+        
+        [Fact]
+        public void LoadEntityWithFilterInViewTest()
+        {
+            var filter = new RootFilter(ExampleHistory_V_Demo.Cols.Message)
+            {
+                Value = "It is working!"
+            };
+            CQB<IEnumerable<ExampleHistory_V_Demo>>()
+                .Arrange(db => new LoadEntityQuery<ExampleHistory_V_Demo>(filter))
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();
