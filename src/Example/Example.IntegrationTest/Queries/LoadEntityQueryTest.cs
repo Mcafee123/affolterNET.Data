@@ -44,6 +44,23 @@ namespace Example.IntegrationTest.Queries
                     Assert.Equal("It is working!", list.First().Message);
                 });
         }
+        
+        [Fact]
+        public void LoadEntityWithSingleFilterTest()
+        {
+            var filter = new RootFilter(Example_T_DemoTable.Cols.Message)
+            {
+                Value = "It is working!"
+            };
+            CQB<IEnumerable<Example_T_DemoTable>>()
+                .Arrange(db => LoadEntityQuery<Example_T_DemoTable>.CreateWithFilter(Example_T_DemoTable.Cols.Message, "It is working!"))
+                .ActAndAssert((result, ah) =>
+                {
+                    var list = result.Data.ToList();
+                    Assert.Single(list);
+                    Assert.Equal("It is working!", list.First().Message);
+                });
+        }
 
         [Fact]
         public void LoadAllEntitiesInViewTest()

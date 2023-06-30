@@ -11,6 +11,15 @@ namespace affolterNET.Data.Queries
 {
     public class LoadEntityQuery<T>: CommandQueryBase<IEnumerable<T>>, IQuery<IEnumerable<T>> where T: class, IViewBase
     {
+        public static LoadEntityQuery<T> CreateWithFilter(string colName, object? value, string userName = "", int maxcount = 1000)
+        {
+            var filter = new RootFilter(colName)
+            {
+                Value = value
+            };
+            return new LoadEntityQuery<T>(filter, userName, maxcount);
+        }
+
         public LoadEntityQuery(string userName = "", int maxcount = 1000, string? idName = null): base(userName)
         {
             // command (can work with or without id)
@@ -24,36 +33,6 @@ namespace affolterNET.Data.Queries
         }
         
         public LoadEntityQuery(RootFilter filter, string userName = "", int maxcount = 1000): base(userName)
-        {
-            InitFilteredQuery(filter, userName, maxcount);
-        }
-
-        public LoadEntityQuery(string colName, object value, string userName = "", int maxcount = 1000)
-        {
-            var filter = new RootFilter();
-            filter.AddFilter(colName, value);
-            InitFilteredQuery(filter, userName, maxcount);
-        }
-
-        public LoadEntityQuery(object pkValue, string userName = "", string? idName = null): base(userName)
-        {
-            // command (can work with or without id)
-            var dto = Activator.CreateInstance<T>();
-            Sql = dto.GetSelectCommand();
-            if (dto is IDtoBase dtobase)
-            {
-                idName = dtobase.GetIdName();
-                AddParam(idName, pkValue);
-            }
-        }
-        
-        public override async Task<DataResult<IEnumerable<T>>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction)
-        {
-            var result = await connection.QueryAsync<T>(Sql, ParamsObject, transaction);
-            return new DataResult<IEnumerable<T>>(result);
-        }
-
-        private void InitFilteredQuery(RootFilter filter, string userName = "", int maxcount = 1000)
         {
             // command (can work with or without id)
             var dto = Activator.CreateInstance<T>();
@@ -72,6 +51,24 @@ namespace affolterNET.Data.Queries
             {
                 AddParam(p.Key, p.Value);
             }
+        }
+        
+        public LoadEntityQuery(object pkValue, string userName = "", string? idName = null): base(userName)
+        {
+            // command (can work with or without id)
+            var dto = Activator.CreateInstance<T>();
+            Sql = dto.GetSelectCommand();
+            if (dto is IDtoBase dtobase)
+            {
+                idName = dtobase.GetIdName();
+                AddParam(idName, pkValue);
+            }
+        }
+        
+        public override async Task<DataResult<IEnumerable<T>>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction)
+        {
+            var result = await connection.QueryAsync<T>(Sql, ParamsObject, transaction);
+            return new DataResult<IEnumerable<T>>(result);
         }
     }
 }
