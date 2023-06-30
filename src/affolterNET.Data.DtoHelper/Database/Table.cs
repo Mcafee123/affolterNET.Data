@@ -195,10 +195,12 @@ namespace affolterNET.Data.DtoHelper.Database
                 case "uniqueidentifier":
                     sysType = "Guid";
                     break;
+                case "date":
+                    sysType = nameof(DateOnly);
+                    break;
                 case "smalldatetime":
                 case "datetime":
                 case "datetime2":
-                case "date":
                 case "time":
                     sysType = "DateTime";
                     break;
