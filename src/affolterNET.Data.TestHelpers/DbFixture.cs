@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using affolterNET.Data.Interfaces.SessionHandler;
 using affolterNET.Data.TestHelpers.Interfaces;
 using affolterNET.Data.TestHelpers.SessionHandler;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 
 namespace affolterNET.Data.TestHelpers
@@ -39,6 +40,7 @@ namespace affolterNET.Data.TestHelpers
         { 
             _connStringKey = connStringKey;
             _userSecretsId = userSecretsId;
+            SqlMapper.AddTypeMap(typeof(DateOnly), DbType.Date, true);
         }
 
         public void Dispose()

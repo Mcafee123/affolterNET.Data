@@ -70,6 +70,10 @@ namespace Example.Data
         [Da.Key]
         public Guid Id { get; set; }
 
+        [Da.DataType("date")]
+        [Da.Required]
+        public DateOnly DateTest { get; set; }
+
         [Da.DataType("nvarchar")]
         [Da.MaxLength(1000)]
         [Da.Required]
@@ -83,12 +87,13 @@ namespace Example.Data
         [Da.DataType("uniqueidentifier")]
         public Guid? Type { get; set; }
 
-        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type"};
+        private static readonly List<string> colNames = new List<string>{"Id", "DateTest", "Message", "Status", "Type"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
         {
             public const string Id = "[Id]";
+            public const string DateTest = "[DateTest]";
             public const string Message = "[Message]";
             public const string Status = "[Status]";
             public const string Type = "[Type]";
@@ -106,13 +111,13 @@ namespace Example.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status], [DateTest]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from Example.T_DemoTable where (@Id is null or [Id]=@Id)";
         }
 
         public string GetInsertCommand(bool returnScopeIdentity = false, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status], [DateTest]".GetColumns(excludedColumns);
             var sql = $"insert into Example.T_DemoTable ({cols.JoinCols()}) values ({cols.JoinCols(true)})";
             if (returnScopeIdentity)
             {
@@ -124,7 +129,7 @@ namespace Example.Data
 
         public string GetUpdateCommand(params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status], [DateTest]".GetColumns(excludedColumns);
             return $"update Example.T_DemoTable set {cols.JoinForUpdate()} where [Id]=@Id";
         }
 
@@ -163,6 +168,7 @@ namespace Example.Data
         public void Reload(IDbConnection conn, IDbTransaction trsact)
         {
             var loaded = this.GetFromDb(conn, trsact);
+            this.DateTest = loaded.DateTest;
             this.Message = loaded.Message;
             this.Status = loaded.Status;
             this.Type = loaded.Type;
@@ -247,7 +253,7 @@ namespace Example.Data
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}";
+            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; DateTest: {DateTest}";
         }
     }
 
@@ -444,6 +450,10 @@ namespace Example.Data
     public class Example_V_Demo : IViewBase
     {
         public const string TABLE_NAME = "[Example].[V_Demo]";
+        [Da.DataType("date")]
+        [Da.Required]
+        public DateOnly DateTest { get; set; }
+
         [Da.DataType("uniqueidentifier")]
         [Da.Required]
         public Guid Id { get; set; }
@@ -461,11 +471,12 @@ namespace Example.Data
         [Da.DataType("uniqueidentifier")]
         public Guid? Type { get; set; }
 
-        private static readonly List<string> colNames = new List<string>{"Id", "Message", "Status", "Type"};
+        private static readonly List<string> colNames = new List<string>{"DateTest", "Id", "Message", "Status", "Type"};
         public IEnumerable<string> GetColumnNames() => colNames;
         public static IEnumerable<string> ColNames => colNames;
         public static class Cols
         {
+            public const string DateTest = "[DateTest]";
             public const string Id = "[Id]";
             public const string Message = "[Message]";
             public const string Status = "[Status]";
@@ -479,13 +490,13 @@ namespace Example.Data
 
         public string GetSelectCommand(int maxCount = 1000, params string[] excludedColumns)
         {
-            var cols = "[Id], [Message], [Type], [Status]".GetColumns(excludedColumns);
+            var cols = "[Id], [Message], [Type], [Status], [DateTest]".GetColumns(excludedColumns);
             return $"select top({maxCount}) {cols.JoinCols()} from Example.V_Demo";
         }
 
         public override string ToString()
         {
-            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}";
+            return $"Id: {Id}; Message: {Message}; Type: {Type}; Status: {Status}; DateTest: {DateTest}";
         }
     }
 }

@@ -199,6 +199,9 @@ namespace affolterNET.Data
                     var hex = BitConverter.ToString((byte[])val);
                     hex = $"0x{hex.Replace("-", string.Empty)}";
                     return hex;
+                case "date":
+                    var d = val as DateOnly?;
+                    return $"'{d?.ToString("yyyy-MM-dd")}'";
                 case "datetime":
                     var dt = val as DateTime?;
                     return $"'{dt?.ToString("yyyy-MM-dd HH:mm:ss.fff")}'";

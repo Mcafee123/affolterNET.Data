@@ -1,4 +1,7 @@
-﻿using affolterNET.Data.Interfaces.SessionHandler;
+﻿using System;
+using System.Data;
+using affolterNET.Data.Interfaces.SessionHandler;
+using Dapper;
 
 namespace affolterNET.Data.SessionHandler
 {
@@ -9,6 +12,7 @@ namespace affolterNET.Data.SessionHandler
         public SqlSessionFactory(string connectionString)
         {
             _connectionString = connectionString;
+            SqlMapper.AddTypeMap(typeof(DateOnly), DbType.Date, true);
         }
 
         public ISqlSession CreateSession()

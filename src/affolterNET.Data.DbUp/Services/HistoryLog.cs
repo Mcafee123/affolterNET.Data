@@ -1,4 +1,4 @@
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Reflection;
 using affolterNET.Data.Interfaces.SessionHandler;
 using DbUp.Engine.Output;

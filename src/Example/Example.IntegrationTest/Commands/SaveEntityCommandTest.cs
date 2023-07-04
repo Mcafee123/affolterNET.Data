@@ -1,5 +1,5 @@
 using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using affolterNET.Data.Commands;
 using affolterNET.Data.Models;
 using Example.Data;
@@ -23,7 +23,8 @@ namespace Example.IntegrationTest.Commands
                 {
                     Id = Guid.NewGuid(),
                     Message = "I was inserted!",
-                    Type = ExampleDemoTableTypes.Drei
+                    Type = ExampleDemoTableTypes.Drei,
+                    DateTest = new DateOnly(1990, 6, 29)
                 };
                 return new SaveEntityCommand<Example_T_DemoTable>(dto, "tinu", true, Example_T_DemoTable.Cols.Status);
             }).ActAndAssert((result, ah) =>
@@ -39,7 +40,8 @@ namespace Example.IntegrationTest.Commands
             {
                 var dto = new Example_T_DemoTable
                 {
-                    Id = Guid.NewGuid()
+                    Id = Guid.NewGuid(),
+                    DateTest = new DateOnly(1990, 6, 29)
                 };
                 return new SaveEntityCommand<Example_T_DemoTable>(dto, "tinu", true, Example_T_DemoTable.Cols.Status);
             }).Act());
