@@ -34,7 +34,7 @@ echo
 echo "start $dbcontainername / network: $network / db-port: $port"
 echo
 
-localconnstring="Server=localhost,$port;Database=$dbname;User Id=sa;Password=${password};"
+localconnstring="Server=localhost,$port;Database=$dbname;User Id=sa;Password=${password};Encrypt=False"
 connstring="Server=$dbcontainername,$default_sql_port;Database=$dbname;User Id=sa;Password=${password};"
 echo "localconnstring: $localconnstring"
 echo "##vso[task.setvariable variable=localconnstring]$localconnstring"
