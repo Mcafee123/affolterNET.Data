@@ -53,12 +53,14 @@ namespace affolterNET.Data.SessionHandler
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
             Log.Verbose("{Query}",query.ToString());
-            return await QueryMultipleAsync(() =>
+            var result = await QueryMultipleAsync(() =>
             {
                 var result = query.ExecuteAsync(Session!.Connection, Session.Transaction!);
                 SaveHistory(query);
                 return result;
             }, isolationLevel);
+            result.SqlCommand = query.ToString(); 
+            return result;
         }
 
         public async Task<DataResult<TResult>> QueryMultipleAsync<TResult>(

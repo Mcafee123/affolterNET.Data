@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using affolterNET.Data.Interfaces;
 using affolterNET.Data.Result;
 using Dapper;
+using Microsoft.Data.SqlClient;
 
 namespace affolterNET.Data.Commands
 {
@@ -29,17 +30,18 @@ namespace affolterNET.Data.Commands
             }
 
             Sql = dto.GetDeleteCommand();
-            if (param == null)
-            {
-                param = dto.GetIdName();
-            }
+            param ??= dto.GetIdName();
             AddParam(param, pkValue);
         }
         
         public override async Task<DataResult<bool>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction)
         {
-            var result = await connection.ExecuteAsync(Sql, ParamsObject, transaction);
-            return new DataResult<bool>(result > 0);
+            var code = await connection.ExecuteAsync(Sql, ParamsObject, transaction);
+            var result = new DataResult<bool>(code > 0)
+            {
+                SqlCommand = ToString()
+            };
+            return result;
         }
     }
 }

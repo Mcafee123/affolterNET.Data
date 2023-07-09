@@ -67,8 +67,12 @@ namespace affolterNET.Data.Queries
         
         public override async Task<DataResult<IEnumerable<T>>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction)
         {
-            var result = await connection.QueryAsync<T>(Sql, ParamsObject, transaction);
-            return new DataResult<IEnumerable<T>>(result);
+            var iEnum = await connection.QueryAsync<T>(Sql, ParamsObject, transaction);
+            var result = new DataResult<IEnumerable<T>>(iEnum)
+            {
+                SqlCommand = ToString()
+            };
+            return result;
         }
     }
 }

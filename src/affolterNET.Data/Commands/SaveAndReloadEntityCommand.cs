@@ -17,8 +17,12 @@ namespace affolterNET.Data.Commands
 
         public override async Task<DataResult<T>> ExecuteAsync(IDbConnection connection, IDbTransaction transaction)
         {
-            var result = await connection.QueryFirstOrDefaultAsync<T>(Sql, ParamsObject, transaction);
-            return new DataResult<T>(result);
+            var firstOrDefault = await connection.QueryFirstOrDefaultAsync<T>(Sql, ParamsObject, transaction);
+            var result = new DataResult<T>(firstOrDefault)
+            {
+                SqlCommand = ToString()
+            };
+            return result;
         }
     }
 }

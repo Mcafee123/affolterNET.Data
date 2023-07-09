@@ -27,6 +27,8 @@ namespace affolterNET.Data.Result
 
         public T Data { get; }
 
+        public string? SqlCommand { get; set; }
+
         public Exception? Exception { get; }
 
         public bool HasException => Exception != null;

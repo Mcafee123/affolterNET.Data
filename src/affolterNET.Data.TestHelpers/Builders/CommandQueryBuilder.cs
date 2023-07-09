@@ -91,8 +91,9 @@ namespace affolterNET.Data.TestHelpers.Builders
             {
                 var query = _arrange(_dbOperations);
                 _assertHelper.SetParams(query.ParamsDict);
-                Debug.WriteLine(query.ToString());
-                return Task.Run(() => query.ExecuteAsync(Connection, Transaction)).GetAwaiter().GetResult();
+                var result = Task.Run(() => query.ExecuteAsync(Connection, Transaction)).GetAwaiter().GetResult();
+                result.SqlCommand = query.ToString();
+                return result;
             }
 
             return default!;

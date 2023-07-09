@@ -22,6 +22,7 @@ namespace Example.IntegrationTest.Commands
                 .ActAndAssert((result, ah) =>
                 {
                     Assert.True(result.Data);
+                    var sql = result.SqlCommand;
                 });
         }
     }

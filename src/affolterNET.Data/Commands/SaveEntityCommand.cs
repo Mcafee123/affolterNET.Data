@@ -50,7 +50,11 @@ namespace affolterNET.Data.Commands
                 var dto = reader.Read<T>();
                 saveInfo.Dto = dto;
             }
-            return new DataResult<SaveInfo>(saveInfo);
+            var result = new DataResult<SaveInfo>(saveInfo)
+            {
+                SqlCommand = ToString()
+            };
+            return result;
         }
     }
 }
