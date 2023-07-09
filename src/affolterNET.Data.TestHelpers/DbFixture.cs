@@ -41,6 +41,7 @@ namespace affolterNET.Data.TestHelpers
             _connStringKey = connStringKey;
             _userSecretsId = userSecretsId;
             SqlMapper.AddTypeMap(typeof(DateOnly), DbType.Date, true);
+            SqlMapper.AddTypeMap(typeof(DateOnly?), DbType.Date, true);
         }
 
         public void Dispose()

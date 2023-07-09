@@ -13,6 +13,7 @@ namespace affolterNET.Data.SessionHandler
         {
             _connectionString = connectionString;
             SqlMapper.AddTypeMap(typeof(DateOnly), DbType.Date, true);
+            SqlMapper.AddTypeMap(typeof(DateOnly?), DbType.Date, true);
         }
 
         public ISqlSession CreateSession()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using affolterNET.Data.Models.Filters;
@@ -44,7 +45,7 @@ namespace Example.IntegrationTest.Queries
                     Assert.Equal("It is working!", list.First().Message);
                 });
         }
-        
+
         [Fact]
         public void LoadEntityWithSingleFilterTest()
         {
@@ -53,7 +54,9 @@ namespace Example.IntegrationTest.Queries
                 Value = "It is working!"
             };
             CQB<IEnumerable<Example_T_DemoTable>>()
-                .Arrange(db => LoadEntityQuery<Example_T_DemoTable>.CreateWithFilter(Example_T_DemoTable.Cols.Message, "It is working!"))
+                .Arrange(db =>
+                    LoadEntityQuery<Example_T_DemoTable>.CreateWithFilter(Example_T_DemoTable.Cols.Message,
+                        "It is working!"))
                 .ActAndAssert((result, ah) =>
                 {
                     var list = result.Data.ToList();
@@ -74,7 +77,7 @@ namespace Example.IntegrationTest.Queries
                     Assert.Equal("It is working!", list.First().Message);
                 });
         }
-        
+
         [Fact]
         public void LoadEntityWithFilterInViewTest()
         {
@@ -91,7 +94,7 @@ namespace Example.IntegrationTest.Queries
                     Assert.Equal("It is working!", list.First().Message);
                 });
         }
-        
+
         [Fact]
         public void LoadByIdTest()
         {
@@ -127,6 +130,26 @@ namespace Example.IntegrationTest.Queries
                     var list = result.Data.ToList();
                     Assert.Single(list);
                     Assert.Equal("It is working!", list.First().Message);
+                });
+        }
+
+        [Fact]
+        public void LoadWithDateOnlyNullableTest()
+        {
+            CQB<IEnumerable<Example_T_DemoTable>>()
+                .Arrange(db =>
+                {
+                    db.Insert(new Example_T_DemoTable
+                    {
+                        Id = Guid.NewGuid(), Message = "hat Ende", DateTest = new DateOnly(2023, 1, 1),
+                        DateEndTest = new DateOnly(2024, 1, 1), Status = "geht es?"
+                    });
+                    return new LoadEntityQuery<Example_T_DemoTable>();
+                })
+                .ActAndAssert((result, ah) =>
+                {
+                    Assert.NotNull(result.SqlCommand);
+                    Assert.NotEmpty(result.SqlCommand!);
                 });
         }
     }

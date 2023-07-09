@@ -14,13 +14,14 @@ create table Example.T_DemoTable(
         constraint PK_DemoTable
             primary key clustered,
     Message nvarchar(1000) not null,
-    Type uniqueidentifier
+    Type uniqueidentifier,
         constraint FK_Example_T_DemoTable_Example_T_DemoTableType
             foreign key references Example.T_DemoTableType (Id),
     Status nvarchar(50) not null
         constraint DF_T_DemoTable_Status
             default 'auto default',
-    DateTest date not null
+    DateTest date not null,
+    DateEndTest date null
 )
 
 insert into Example.T_DemoTableType (Id, Name) values ('c1060bb2-07b0-4e5d-ad0b-35f3993d823d', 'Eins')
