@@ -29,11 +29,23 @@ namespace affolterNET.Data.SessionHandler
             return Session;
         }
 
+        /// <summary>
+        /// Exceptions will be caught
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="isolationLevel"></param>
+        /// <returns></returns>
         public DataResult<int> Execute(ICommand command, IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
             return ExecuteAsync(command, isolationLevel).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Exceptions will be caught
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="isolationLevel"></param>
+        /// <returns></returns>
         public async Task<DataResult<int>> ExecuteAsync(
             ICommand command,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
@@ -41,6 +53,13 @@ namespace affolterNET.Data.SessionHandler
             return await QueryAsync(command, isolationLevel);
         }
 
+        /// <summary>
+        /// Exceptions will be caught
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="isolationLevel"></param>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public DataResult<TResult> Query<TResult>(
             IQuery<TResult> query,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
@@ -48,21 +67,47 @@ namespace affolterNET.Data.SessionHandler
             return QueryAsync(query, isolationLevel).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// exceptions will be caught
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="isolationLevel"></param>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public async Task<DataResult<TResult>> QueryAsync<TResult>(
             IQuery<TResult> query,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
-            Log.Verbose("{Query}",query.ToString());
-            var result = await QueryMultipleAsync(() =>
+            DataResult<TResult>? result = null;
+            try
             {
-                var result = query.ExecuteAsync(Session!.Connection, Session.Transaction!);
-                SaveHistory(query);
+                result = await QueryMultipleAsync(() =>
+                {
+                    var res = query.ExecuteAsync(Session!.Connection, Session.Transaction!);
+                    SaveHistory(query);
+                    return res;
+                }, isolationLevel);
                 return result;
-            }, isolationLevel);
-            result.SqlCommand = query.ToString(); 
+            }
+            catch (Exception ex)
+            {
+                result = new DataResult<TResult>(ex);
+            }
+            finally
+            {
+                result!.SqlCommand = query.ToString();
+            }
+
             return result;
         }
 
+        /// <summary>
+        /// this throws exceptions
+        /// </summary>
+        /// <param name="dbAction"></param>
+        /// <param name="isolationLevel"></param>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public async Task<DataResult<TResult>> QueryMultipleAsync<TResult>(
             Func<Task<DataResult<TResult>>> dbAction,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
@@ -115,6 +160,12 @@ namespace affolterNET.Data.SessionHandler
             }
         }
 
+        /// <summary>
+        /// This throws exceptions
+        /// </summary>
+        /// <param name="dbAction"></param>
+        /// <param name="isolationLevel"></param>
+        /// <returns></returns>
         public async Task<DataResult<int>> ExecuteMultipleAsync(
             Func<Task<DataResult<int>>> dbAction,
             IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
